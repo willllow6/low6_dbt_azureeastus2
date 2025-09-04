@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+
+  - name: bet365_overunder
+    description: bet365 overunder database
+    database: low6_azureeastus2
+    schema: adfbet365overunderprod
+    tables:
+
+      - name: entries
+        identifier: entries
+
+      - name: picks
+        identifier: picks
+
+      - name: users
+        identifier: users
