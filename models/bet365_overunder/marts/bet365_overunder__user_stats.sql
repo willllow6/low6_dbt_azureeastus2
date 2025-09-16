@@ -14,10 +14,11 @@ user_stats as (
         state_province,
         segment_group,
         registration_date,
+        registration_date_et,
         count(*) as registrations,
         sum(case when has_logged_in_since_launch then 1 else 0 end) as users_logged_in_since_launch
     from users
-    group by 1,2,3,4
+    group by 1,2,3,4,5
 
 )
 

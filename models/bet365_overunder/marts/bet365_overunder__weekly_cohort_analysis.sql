@@ -10,7 +10,7 @@ user_entry_weeks as (
 
     select
         user_id as user_id,
-        date_trunc('week', entry_date) as entry_week
+        date_trunc('week', entry_date_et) as entry_week
     from entries
     group by 1,2
     

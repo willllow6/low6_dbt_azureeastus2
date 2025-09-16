@@ -54,6 +54,7 @@ joined as (
         users.segment_group,
 
         ranked_entries.user_entry_number,
+        ranked_entries.contest_date_et,
         ranked_entries.entered_picks,
         ranked_entries.scored_picks,
         ranked_entries.correct_picks,
@@ -69,11 +70,16 @@ joined as (
         end as is_first_win,
 
         ranked_entries.entry_hour,
+        ranked_entries.entry_hour_et,
         ranked_entries.entry_date,
+        ranked_entries.entry_date_et,
 
         ranked_entries.entered_at,
+        ranked_entries.entered_at_et,
         ranked_entries.locked_at,
-        ranked_entries.settled_at
+        ranked_entries.locked_at_et,
+        ranked_entries.settled_at,
+        ranked_entries.settled_at_et
 
     from ranked_entries
     inner join users

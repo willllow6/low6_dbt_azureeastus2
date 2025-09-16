@@ -11,11 +11,14 @@ entry_stats as (
 
     select
         entry_date,
+        entry_date_et,
         entry_hour,
+        entry_hour_et,
         entry_type,
         country,
         state_province,
         segment_group,
+        contest_date_et,
         entered_picks,
         currency_code,
         count(*) as entries,
@@ -26,7 +29,7 @@ entry_stats as (
         sum(case when is_winner then 1 else 0 end) as winning_entries,
         sum(case when is_first_win then 1 else 0 end) as first_wins
     from entries
-    group by 1,2,3,4,5,6,7,8
+    group by 1,2,3,4,5,6,7,8,9,10,11
 
 )
 

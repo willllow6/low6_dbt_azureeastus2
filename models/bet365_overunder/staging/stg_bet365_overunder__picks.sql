@@ -25,6 +25,7 @@ renamed as (
         pick_details_json:position::string            as player_position,
         pick_details_json:team::string                as team_abbr,
         pick_details_json:opponent::string            as opponent_abbr,
+        pick_details_json:opponent::string  || ' vs ' || pick_details_json:team::string as fixture_name,
         pick_details_json:marketLabel::string         as market_name,
         pick_details_json:handicap::float             as market_handicap,
         pick_details_json:odds::string                as odds_fractional,
@@ -39,7 +40,8 @@ renamed as (
             else null
         end as is_correct,
 
-        created_at as picked_at
+        created_at as picked_at,
+        convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as picked_at_et
     
     from source
 

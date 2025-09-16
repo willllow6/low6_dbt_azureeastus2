@@ -28,6 +28,7 @@ joined as (
         picks.player_position,
         picks.team_abbr,
         picks.opponent_abbr,
+        picks.fixture_name,
         picks.market_name,
         picks.market_handicap,
         picks.odds_fractional,
@@ -38,9 +39,12 @@ joined as (
         entries.country,
         entries.state_province,
         entries.segment_group,
+        entries.contest_date_et,
         entries.entry_date,
+        entries.entry_date_et,
 
-        picks.picked_at
+        picks.picked_at,
+        picks.picked_at_et
     from picks
     inner join entries
         on picks.entry_id = entries.entry_id

@@ -38,7 +38,9 @@ joined as (
         users.has_logged_in_since_launch,
 
         users.registration_date,
+        users.registration_date_et,
         users.registered_at,
+        users.registered_at_et,
         users.updated_at,
         users.last_login_at
     

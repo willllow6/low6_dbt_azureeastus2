@@ -14,6 +14,7 @@ renamed as (
         id as entry_id,
         user_id,
         
+        cast(convert_timezone('UTC','America/New_York',to_timestamp_ntz(locked_at)) as date) as contest_date_et,
         total_picks as entered_picks,
         scored_picks,
         correct_picks,
@@ -22,13 +23,18 @@ renamed as (
 
         case when prize_amount > 0 then true else false end as is_winner,
 
-        hour(created_at) as entry_hour,
+        hour(to_timestamp_ntz(created_at)) as entry_hour,
+        hour(convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at))) as entry_hour_et,
 
-        cast(created_at as date) as entry_date,
+        cast(to_timestamp_ntz(created_at) as date) as entry_date,
+        cast(convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as date) as entry_date_et,
 
-        created_at as entered_at,
-        locked_at,
-        settled_at
+        to_timestamp_ntz(created_at) as entered_at,
+        convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as entered_at_et,
+        to_timestamp_ntz(locked_at) as locked_at,
+        convert_timezone('UTC','America/New_York',to_timestamp_ntz(locked_at)) as locked_at_et,
+        to_timestamp_ntz(settled_at) as settled_at,
+        convert_timezone('UTC','America/New_York',to_timestamp_ntz(settled_at)) as settled_at_et
     
     from source
 
