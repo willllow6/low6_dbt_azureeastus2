@@ -1,0 +1,37 @@
+version: 2
+
+sources:
+
+  - name: pln_arcade
+    description: pln arcade games
+    database: low6_azureeastus2
+    schema: adfplnarcadeprod
+    tables:
+
+      - name: coin_transactions
+        identifier: cointransactions
+
+      - name: entries
+        identifier: entries
+
+      - name: game_prizes
+        identifier: gameprizes
+
+      - name: game_providers
+        identifier: gameproviders
+         
+      - name: marketplace_store_items
+        identifier: marketplacestoreitems
+
+      - name: rewards
+        identifier: rewards
+
+      - name: store_purchases
+        identifier: storepurchases
+         
+      - name: users
+        identifier: users
+
+      - name: vouchers
+        identifier: vouchers
+
