@@ -37,3 +37,12 @@ models:
     bet365_overunder:
       +schema: bet365_overunder
       +query_tag: bet365
+
+    pln_arcade:
+      +schema: pln_arcade
+      +query_tag: pln
+
+    betway_picks:
+      +schema: betway_picks
+      +query_tag: betway
+      +pre-hook: "{{ create_share('betway_share',['EHA76962']) }}"
