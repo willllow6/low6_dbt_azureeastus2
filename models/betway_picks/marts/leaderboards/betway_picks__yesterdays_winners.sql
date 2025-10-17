@@ -10,22 +10,20 @@ contest_leaderboards as (
 yesterdays_winners as (
 
     select
-        region,
-        contest_title,
-        contest_start_date,
-        leaderboard_position,
-        username,
-        betway_id,
-        points,
-        tiebreaker_prediction,
-        tiebreaker_outcome,
-        tiebreaker_margin,
-        entered_at,
-        entered_at_et
+        betway_SubscriberKey as SubscriberKey,
+        betway_UserId as UserId,
+        betway_CasinoId as CasinoId,
+        'EN' as language,
+        case
+            when leaderboard_rank = 1
+                then 'First'
+            when leaderboard_rank = 2
+                then 'Second'
+        end as first_or_second
     from contest_leaderboards
     where 
         contest_start_date = CURRENT_DATE() - 1
-        and leaderboard_position <= 10
+        and leaderboard_rank < 3
     order by region, leaderboard_position
 
 )

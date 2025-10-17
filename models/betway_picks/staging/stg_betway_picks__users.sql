@@ -16,6 +16,9 @@ renamed as (
         -- user_id,
         service_user_id,
         sso_user_id,
+        split_part(sso_user_id,'_',1) as betway_UserId,
+        split_part(sso_user_id,'_',2) as betway_CasinoId,
+        split_part(sso_user_id,'_',2) || '-' || username as betway_SubscriberKey,
         -- usertoken as user_token,
 
         ---------- strings

@@ -20,6 +20,9 @@ joined as (
         contest_leaderboards.contest_leaderboard_id,
         contest_leaderboards.user_id,
         entries.betway_id,
+        entries.betway_UserId,
+        entries.betway_CasinoId,
+        entries.betway_SubscriberKey,
         contest_leaderboards.contest_id,
 
         entries.username,
@@ -44,9 +47,18 @@ joined as (
         on contest_leaderboards.user_id = entries.user_id
         and contest_leaderboards.contest_id = entries.contest_id
 
+),
+
+new_rank as (
+
+    select
+        *,
+        dense_rank() over (partition by contest_id order by points desc, tiebreaker_margin) as leaderboard_rank
+    from joined
 )
 
-select * from joined
+
+select * from new_rank
 
 
 

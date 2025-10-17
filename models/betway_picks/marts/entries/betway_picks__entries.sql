@@ -68,6 +68,9 @@ join_tables as (
         entries.entry_id,
         entries.user_id,
         users.sso_user_id as betway_id,
+        users.betway_UserId,
+        users.betway_CasinoId,
+        users.betway_SubscriberKey,
         entries.contest_id,
 
         users.username,
