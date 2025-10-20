@@ -104,7 +104,7 @@ join_tables as (
         entries.entered_at,
         entries.entry_date_et,
         entries.entry_day_et,
-        hour(entries.entered_at) as entry_hour_et,
+        hour(entries.entered_at_et) as entry_hour_et,
         entries.entered_at_et
 
     from aggregate_selections_to_entries as entries 
