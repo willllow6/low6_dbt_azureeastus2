@@ -46,3 +46,7 @@ models:
       +schema: betway_picks
       +query_tag: betway
       +pre-hook: "{{ create_share('betway_share',['EHA76962']) }}"
+
+    sackings_picks:
+      +schema: sackings_picks
+      +query_tag: sackings

@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+
+  - name: sackings_picks
+    description: sac kings picks prod db
+    database: low6_azureeastus2
+    schema: adfsackingspicksprod
+    tags: ['sackings']
+    tables:
+      - name: account
+      - name: contest
+      - name: customer
+      - name: customerscore
+      - name: cutsomerresponse
+      - name: leaguedetail
+      - name: leagueheader
+      - name: listtype
+
+                    
