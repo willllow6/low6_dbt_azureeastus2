@@ -11,6 +11,7 @@ pick_stats as (
 
     select
         picked_option,
+        sport_name,
         fixture_name,
         player_name,
         player_position,
@@ -25,7 +26,7 @@ pick_stats as (
         count(*) as picks,
         sum(case when is_correct then 1 else 0 end) as correct_picks
     from picks
-    group by 1,2,3,4,5,6,7,8,9,10,11,12
+    group by 1,2,3,4,5,6,7,8,9,10,11,12,13
 
 )
 

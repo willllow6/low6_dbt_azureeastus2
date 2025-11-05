@@ -20,7 +20,7 @@ renamed as (
         -- pick_details_json:fid::string                 as fixture_option_id,
         -- pick_details_json:fixtureId::string           as fixture_id,
         -- pick_details_json:propId::string              as prop_id,
-        -- pick_details_json:marketId::string            as market_id,
+        ifnull(pick_details_json:sportLabel::string,'NFL')          as sport_name,
         pick_details_json:playerName::string          as player_name,
         pick_details_json:position::string            as player_position,
         pick_details_json:team::string                as team_abbr,

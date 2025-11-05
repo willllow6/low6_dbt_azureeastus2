@@ -23,6 +23,7 @@ joined as (
         entries.user_id,
         entries.gaming_id,
 
+        picks.sport_name,
         picks.picked_option,
         picks.player_name,
         picks.player_position,
