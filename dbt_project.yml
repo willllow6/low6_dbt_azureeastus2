@@ -50,3 +50,7 @@ models:
     sackings_picks:
       +schema: sackings_picks
       +query_tag: sackings
+
+    oilers_picks:
+      +schema: oilers_picks
+      +query_tag: oilers
