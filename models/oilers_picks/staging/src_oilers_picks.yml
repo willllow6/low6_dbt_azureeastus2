@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+
+  - name: oilers_picks
+    description: oilers picks prod db
+    database: low6_azureeastus2
+    schema: adfoilerspicksprod
+    tags: ['oilers']
+    tables:
+      - name: leagues
+      - name: leaguetournaments
+      - name: leagueusers
+      - name: pickemquestionoptions
+      - name: pickemquestions
+      - name: pickems
+      - name: userpickempoints
+      - name: users 
+      - name: userselections
+
+                    
