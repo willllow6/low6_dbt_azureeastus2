@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+
+  - name: bet99_picks
+    description: bet99 picks prod db
+    database: low6_azureeastus2
+    schema: adfbet99picksprod
+    tags: ['bet99']
+    tables:
+
+      - name: aggregate_leaderboards
+        identifier: aggregate_leaderboards
+
+      - name: leagues
+        identifier: leagues
+
+      - name: options
+        identifier: options
+
+      - name: pickem_leaderboards
+        identifier: pickem_leaderboards
+
+      - name: pickems
+        identifier: pickems
+
+      - name: questions
+        identifier: questions
+
+      - name: user_selections
+        identifier: user_selections
+
+      - name: users
+        identifier: users
+                    

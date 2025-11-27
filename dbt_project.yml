@@ -54,3 +54,7 @@ models:
     oilers_picks:
       +schema: oilers_picks
       +query_tag: oilers
+
+    bet99_picks:
+      +schema: bet99_picks
+      +query_tag: bet99
