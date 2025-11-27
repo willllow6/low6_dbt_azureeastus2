@@ -10,9 +10,11 @@ source as (
 renamed as (
 
     select
-        gameproviderid as game_provider_id,
-        gameprovidername as game_provider_name,
+        game_provider_id,
+        game_provider_name,
+        game_code,
         setting as game_provider_settings
+
     from source
 
 )

@@ -17,10 +17,10 @@ renamed as (
         prize_tier,
         prize_type,
         amount as prize_amount,
-        cast(createdat as date) as created_date,
-        cast(convert_timezone('UTC','America/New_York',createdat) as date) as created_date_et,
-        createdat as created_at,
-        convert_timezone('UTC','America/New_York',createdat) as created_at_et
+        cast(created_at as date) as created_date,
+        cast(convert_timezone('UTC','America/New_York',created_at) as date) as created_date_et,
+        created_at,
+        convert_timezone('UTC','America/New_York',created_at) as created_at_et
     from source
     
 )

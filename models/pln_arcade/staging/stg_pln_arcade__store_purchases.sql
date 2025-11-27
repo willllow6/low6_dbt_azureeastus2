@@ -10,8 +10,8 @@ source as (
 renamed as (
 
     select
-        storepurchaseid as store_purchase_id,
-        userid as user_id,
+        store_purchase_id,
+        user_id,
         store as store_id,
         case
             when store = 0 
@@ -19,16 +19,16 @@ renamed as (
             else 'Google'
         end as app_store,
         price,
-        productid as product_id,
-        purchaseid as purchase_id,
-        cast(createdat as date) as created_date,
-        cast(convert_timezone('UTC','America/New_York',createdat) as date) as created_date_et,
-        createdat as created_at,
-        convert_timezone('UTC','America/New_York',createdat) as created_at_et,
-        cast(purchasedate as date) as purchased_date,
-        cast(convert_timezone('UTC','America/New_York',purchasedate) as date) as purchased_date_et,
-        purchasedate as purchased_at,
-        convert_timezone('UTC','America/New_York',purchasedate) as purchased_at_et
+        product_id,
+        purchase_id,
+        cast(created_at as date) as created_date,
+        cast(convert_timezone('UTC','America/New_York',created_at) as date) as created_date_et,
+        created_at,
+        convert_timezone('UTC','America/New_York',created_at) as created_at_et,
+        cast(purchase_date as date) as purchased_date,
+        cast(convert_timezone('UTC','America/New_York',purchase_date) as date) as purchased_date_et,
+        purchase_date as purchased_at,
+        convert_timezone('UTC','America/New_York',purchase_date) as purchased_at_et
     from source
 )
 

@@ -9,28 +9,25 @@ sources:
     tables:
 
       - name: coin_transactions
-        identifier: cointransactions
+        identifier: coin_transactions
 
       - name: entries
         identifier: entries
 
       - name: game_prizes
-        identifier: gameprizes
+        identifier: game_prizes
 
       - name: game_providers
-        identifier: gameproviders
+        identifier: game_providers
          
       - name: marketplace_store_items
-        identifier: marketplacestoreitems
-
-      - name: rewards
-        identifier: rewards
+        identifier: marketplace_store_items
 
       - name: store_purchases
-        identifier: storepurchases
+        identifier: store_purchases
          
       - name: users
-        identifier: users
+        identifier: user
 
       - name: vouchers
         identifier: vouchers
