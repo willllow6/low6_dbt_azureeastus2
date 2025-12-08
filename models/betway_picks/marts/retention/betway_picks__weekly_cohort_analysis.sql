@@ -10,9 +10,10 @@ user_entry_weeks as (
 
     select
         user_id as user_id,
+        region,
         date_trunc('week', entry_date) as entry_week
     from entries
-    group by 1,2
+    group by 1,2,3
     
 ),
 
@@ -51,29 +52,32 @@ add_first_user_entry_weeks as (
 entry_week_active_users as (
 
     select
+        region,
         first_entry_week,
         entry_week,
         datediff('week',first_entry_week,entry_week) as weeks_from_first_entry,
         count(user_id) as active_users
     from add_first_user_entry_weeks
-    group by 1,2
+    group by 1,2,3
 
 ),
 
 first_week_active_users as (
 
     select
+        region,
         first_entry_week,
         count(user_id) as active_users
     from add_first_user_entry_weeks
     where entry_week = first_entry_week
-    group by first_entry_week
+    group by region, first_entry_week
     
 ),
 
 add_first_entry_week_active_users as (
 
     select
+        a.region,
         a.first_entry_week,
         a.entry_week,
         a.weeks_from_first_entry,
@@ -81,7 +85,8 @@ add_first_entry_week_active_users as (
         a.active_users
     from entry_week_active_users as a
         left join first_week_active_users as b
-            on a.first_entry_week = b.first_entry_week
+            on a.region = b.region
+            and a.first_entry_week = b.first_entry_week
             
 )
 

@@ -28,6 +28,12 @@ renamed as (
         country,
         state,
         '' as location,
+        case
+            when split_part(sso_user_id,'_',2) in ('37541','37542','37544','8663')
+                then 'Ontario'
+            else 'Canada'
+        end as region,
+        
         -- referral_code,
 
         ---------- numerics

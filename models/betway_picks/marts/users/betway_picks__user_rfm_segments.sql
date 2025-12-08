@@ -10,11 +10,11 @@ calculate_rfm_metrics as (
 
     select
         user_id,
+        region,
         max(entry_date_et) as last_entered_date,
         count(*) as user_entries_count
     from user_entries
-    group by 
-        1
+    group by 1,2
 
 ),
 
@@ -22,6 +22,7 @@ create_segments as (
 
     select
         user_id,
+        region,
         last_entered_date,
         user_entries_count,
         datediff('day', last_entered_date ,getdate()) as days_since_last_played,

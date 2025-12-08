@@ -9,6 +9,7 @@ user_rfm_segments as (
 rfm_segment_stats as (
     
     select
+        region,
         recency,
         frequency,
         segment,
@@ -16,7 +17,7 @@ rfm_segment_stats as (
         median(user_entries_count) as entries_median,
         median(days_since_last_played) as days_since_last_played_median
     from user_rfm_segments
-    group by 1,2,3
+    group by 1,2,3,4
 
 )
 
