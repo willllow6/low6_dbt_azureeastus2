@@ -22,7 +22,7 @@ yesterdays_winners as (
         end as first_or_second
     from contest_leaderboards
     where 
-        contest_start_date = CURRENT_DATE() - 1
+        contest_start_date_et = CURRENT_DATE() - 1
         and leaderboard_rank < 3
     order by region, leaderboard_position
 
