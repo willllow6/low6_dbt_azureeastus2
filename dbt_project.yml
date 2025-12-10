@@ -54,6 +54,7 @@ models:
     oilers_picks:
       +schema: oilers_picks
       +query_tag: oilers
+      +pre-hook: "{{ create_share('oilers_share',['RFA58902']) }}"
 
     bet99_picks:
       +schema: bet99_picks
