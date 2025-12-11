@@ -14,6 +14,36 @@ users as (
 
 ),
 
+picks as (
+
+    select *
+    from {{ ref('stg_bet365_overunder__picks') }}
+
+),
+
+entry_picks as (
+
+    select
+        entry_id,
+        sum(case when sport_name = 'NBA' then 1 else 0 end) as nba_picks,
+        sum(case when sport_name = 'NFL' then 1 else 0 end) as nfl_picks,
+        sum(case when sport_name = 'NHL' then 1 else 0 end) as nhl_picks,
+
+        case
+            when nba_picks > 0 and nfl_picks = 0 and nhl_picks = 0 then 'NBA only'
+            when nba_picks = 0 and nfl_picks > 0 and nhl_picks = 0 then 'NFL only'
+            when nba_picks = 0 and nfl_picks = 0 and nhl_picks > 0 then 'NHL only'
+            when nba_picks > 0 and nfl_picks > 0 and nhl_picks = 0 then 'NBA & NFL'
+            when nba_picks > 0 and nfl_picks = 0 and nhl_picks > 0 then 'NBA & NHL'
+            when nba_picks = 0 and nfl_picks > 0 and nhl_picks > 0 then 'NFL & NHL'
+            when nba_picks > 0 and nfl_picks > 0 and nhl_picks > 0 then 'NBA, NFL & NHL'
+            else 'No sport selected'
+        end as sport_combination
+        from picks
+    group by 1
+
+),
+
 ranked_entries as (
 
     select
@@ -52,12 +82,16 @@ joined as (
         users.country,
         users.state_province,
         users.segment_group,
+        entry_picks.sport_combination,
 
         ranked_entries.user_entry_number,
         ranked_entries.contest_date_et,
         ranked_entries.entered_picks,
         ranked_entries.scored_picks,
         ranked_entries.correct_picks,
+        entry_picks.nba_picks,
+        entry_picks.nfl_picks,
+        entry_picks.nhl_picks,
         ranked_entries.potential_prize_amount,
         ranked_entries.prize_amount,
         users.currency_code,
@@ -86,6 +120,8 @@ joined as (
         on ranked_entries.user_id = users.user_id
     left join first_wins
         on ranked_entries.entry_id = first_wins.entry_id
+    left join entry_picks
+        on ranked_entries.entry_id = entry_picks.entry_id
 
 )
 
