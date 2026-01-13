@@ -59,3 +59,11 @@ models:
     bet99_picks:
       +schema: bet99_picks
       +query_tag: bet99
+
+    fanstake_rivals:
+      +schema: fanstake_rivals
+      +query_tag: fanstake
+
+    elf_collectyourelf:
+      +schema: elf_collectyourelf
+      +query_tag: elf

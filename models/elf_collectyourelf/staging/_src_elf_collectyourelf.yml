@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+
+  - name: collectyourelf
+    description: elf collect your elf prod
+    database: low6_azureeastus2
+    schema: adfcollectyourelfprod
+    tags: ['elf']
+    tables:
+
+      - name: challenge
+      - name: challenge_product
+      - name: game_user
+      - name: product
+      - name: user_challenge_progress
+      - name: user_product_progress
