@@ -40,13 +40,14 @@ progress_stats as (
     select
         challenge_name,
         challenge_description,
+        challenge_completion_date_et,
         products,
         products_found,
         pct_complete,
         is_completed,
         count(*) as user_challenges
     from joined
-    group by 1,2,3,4,5,6
+    group by 1,2,3,4,5,6,7
 
 )
 
