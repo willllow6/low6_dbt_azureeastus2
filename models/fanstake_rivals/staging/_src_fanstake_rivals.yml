@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+
+  - name: fanstake_rivals
+    description: fanstake rivals prod db
+    database: low6_azureeastus2
+    schema: adffanstakerivalsprod
+    tags: ['fanstake']
+    tables:
+
+      - name: athletes
+      - name: fantasy_scores
+      - name: lineup_players
+      - name: teams
+      - name: user_matchups
+      - name: user_weekly_lineups
+      - name: users
+      - name: weekly_periods
+                    

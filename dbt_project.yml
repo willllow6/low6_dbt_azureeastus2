@@ -67,3 +67,12 @@ models:
     elf_collectyourelf:
       +schema: elf_collectyourelf
       +query_tag: elf
+
+    # staging:
+    #   +schema: staging
+    
+    # intermediate:
+    #   +schema: intermediate
+    
+    # marts:
+    #   +schema: marts
