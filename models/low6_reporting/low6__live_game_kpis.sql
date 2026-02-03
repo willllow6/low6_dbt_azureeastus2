@@ -22,7 +22,7 @@ bet365_overunder as (
 betway_picks as (
 
     select
-        '1206' as app_id,
+        '1203' as app_id,
         count(distinct user_id || '-' || pickem_id) as entries,
         count(distinct case when cast(created_at as date) = current_date() - 1 then user_id || '-' || pickem_id else null end) as yesterday_entries,
         count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id || '-' || pickem_id else null end) as last_7_days_entries,
@@ -34,6 +34,63 @@ betway_picks as (
         count(distinct pickem_id) as contests,
         max(cast(created_at as date)) as last_entry_date
     from  {{ source('betway_picks', 'user_selections') }}
+    group by 1
+
+),
+
+elf_collectyourelf as (
+
+    select
+        '1102' as app_id,
+        count(distinct user_id || '-' || challenge_id) as entries,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id || '-' || challenge_id else null end) as yesterday_entries,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id || '-' || challenge_id else null end) as last_7_days_entries,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id || '-' || challenge_id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id else null end) as last_28_days_entrants,
+        count(distinct challenge_id) as contests,
+        max(cast(created_at as date)) as last_entry_date
+    from  {{ source('collectyourelf','user_challenge_progress') }}
+    group by 1
+
+),
+
+fanstake_rivals as (
+
+    select
+        '1200' as app_id,
+        count(distinct id) as entries,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then id else null end) as yesterday_entries,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then id else null end) as last_7_days_entries,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id else null end) as last_28_days_entrants,
+        count(distinct weekly_period_id) as contests,
+        max(cast(created_at as date)) as last_entry_date
+    from  {{ source('fanstake_rivals', 'user_weekly_lineups') }}
+    group by 1
+
+),
+
+oilers_picks as (
+
+    select
+        'US51' as app_id,
+        count(distinct userid || '-' || pickemid) as entries,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid || '-' || pickemid else null end) as yesterday_entries,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid || '-' || pickemid else null end) as last_7_days_entries,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid || '-' || pickemid else null end) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct pickemid) as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('oilers_picks', 'userselections') }}
     group by 1
 
 ),
@@ -67,6 +124,21 @@ unioned as (
 
     select *
     from betway_picks
+
+    union all
+
+    select *
+    from elf_collectyourelf
+
+    union all
+
+    select *
+    from fanstake_rivals
+
+    union all
+
+    select *
+    from oilers_picks
 
     union all
 
