@@ -14,6 +14,7 @@ renamed as (
         team_id, -- foreign key to teams
         first_name,
         last_name,
+        first_name || ' ' || last_name as athlete_name,
         position,
         sport,
         headshot,
