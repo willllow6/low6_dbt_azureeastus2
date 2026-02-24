@@ -5,14 +5,14 @@ sources:
   - name: bet365_overunder
     description: bet365 overunder database
     database: low6_azureeastus2
-    schema: adfbet365overunderprod
+    schema: adfbet365overunderprodv2
     tables:
 
       - name: entries
         identifier: entries
 
       - name: picks
-        identifier: picks
+        identifier: picks_clean
 
       - name: users
         identifier: users

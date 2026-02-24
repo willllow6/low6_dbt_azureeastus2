@@ -53,19 +53,19 @@ ranked_entries as (
 
 ),
 
-first_wins as (
+-- first_wins as (
 
-    select
-        user_id,
-        entry_id,
-        entered_at
-    from ranked_entries
-    where prize_amount > 0
-    qualify row_number() over (
-                partition by user_id
-                order by entered_at
-            ) = 1
-),
+--     select
+--         user_id,
+--         entry_id,
+--         entered_at
+--     from ranked_entries
+--     where prize_amount > 0
+--     qualify row_number() over (
+--                 partition by user_id
+--                 order by entered_at
+--             ) = 1
+-- ),
 
 joined as (
 
@@ -97,11 +97,11 @@ joined as (
         users.currency_code,
 
         ranked_entries.is_winner,
-        case
-            when first_wins.entry_id is not null
-                then true
-            else false
-        end as is_first_win,
+        -- case
+        --     when first_wins.entry_id is not null
+        --         then true
+        --     else false
+        -- end as is_first_win,
 
         ranked_entries.entry_hour,
         ranked_entries.entry_hour_et,
@@ -118,8 +118,8 @@ joined as (
     from ranked_entries
     inner join users
         on ranked_entries.user_id = users.user_id
-    left join first_wins
-        on ranked_entries.entry_id = first_wins.entry_id
+    -- left join first_wins
+    --     on ranked_entries.entry_id = first_wins.entry_id
     left join entry_picks
         on ranked_entries.entry_id = entry_picks.entry_id
 
