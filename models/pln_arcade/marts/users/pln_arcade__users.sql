@@ -17,7 +17,7 @@ coin_transactions as (
 purchases as (
 
     select *
-    from {{ ref('stg_pln_arcade__store_purchases') }}
+    from {{ ref('pln_arcade__purchases') }}
 
 ),
 
@@ -58,13 +58,13 @@ joined as (
         case
             when total_gross_revenue is null then ''
             when total_gross_revenue <= 0 then ''
-            when total_gross_revenue < 5 then '<£5'
-            when total_gross_revenue < 10 then '£5-9.99'
-            when total_gross_revenue < 25 then '£10-24.99'
-            when total_gross_revenue < 50 then '£25-49.99'
-            when total_gross_revenue < 75 then '£50-74.99'
-            when total_gross_revenue < 100 then '£75-99.99'
-            else '£100+'
+            when total_gross_revenue < 5 then '<$5'
+            when total_gross_revenue < 10 then '$5-9.99'
+            when total_gross_revenue < 25 then '$10-24.99'
+            when total_gross_revenue < 50 then '$25-49.99'
+            when total_gross_revenue < 75 then '$50-74.99'
+            when total_gross_revenue < 100 then '$75-99.99'
+            else '$100+'
         end as gross_revenue_band,
         users.user_created_date,
         users.user_created_date_et,
