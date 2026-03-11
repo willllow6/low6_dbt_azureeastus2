@@ -68,6 +68,10 @@ models:
       +schema: elf_collectyourelf
       +query_tag: elf
 
+    saracen:
+      +schema: saracen
+      +query_tag: saracen
+
     # staging:
     #   +schema: staging
     

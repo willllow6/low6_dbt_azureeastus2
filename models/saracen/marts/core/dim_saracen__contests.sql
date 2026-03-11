@@ -1,0 +1,22 @@
+select 
+    contest_sk,
+    contest_name,
+    contest_status,
+    contest_opens_at,
+    contest_opens_at_et,
+    contest_starts_at,
+    contest_starts_at_et
+from {{ ref('stg_saracen_picks__contests') }}
+
+union all
+
+select
+    contest_sk,
+    contest_name,
+    contest_status,
+    contest_opens_at,
+    contest_opens_at_et,
+    contest_starts_at,
+    contest_starts_at_et
+from {{ ref('stg_saracen_bracket__contests') }}
+
