@@ -134,6 +134,44 @@ sac_kings as (
 
 ),
 
+saracen_picks as (
+
+    select
+        'spkm' as app_id,
+        count(distinct user_id || '-' || pickem_id) as entries,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id || '-' || pickem_id else null end) as yesterday_entries,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id || '-' || pickem_id else null end) as last_7_days_entries,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id || '-' || pickem_id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id else null end) as last_28_days_entrants,
+        count(distinct pickem_id) as contests,
+        max(cast(created_at as date)) as last_entry_date
+    from  {{ source('saracen_picks', 'user_selections') }}
+    group by 1
+
+),
+
+saracen_bracket as (
+
+    select
+        'sbkt' as app_id,
+        count(*) as entries,
+        count_if(cast(createdat as date) = current_date() - 1) as yesterday_entries,
+        count_if(createdat >= current_date() - 8 and createdat < current_date()) as last_7_days_entries,
+        count_if(createdat >= current_date() - 29 and createdat < current_date() ) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct competition) as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('saracen_bracket', 'userselections') }}
+    group by 1
+
+),
+
 unioned as (
 
     select *
@@ -168,6 +206,16 @@ unioned as (
 
     select *
     from sac_kings
+
+    union all 
+
+    select *
+    from saracen_picks
+
+    union all
+
+    select *
+    from saracen_bracket
 
 )
 
