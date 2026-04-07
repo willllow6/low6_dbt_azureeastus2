@@ -39,13 +39,43 @@ tiebreak_outcomes as (
 
 ),
 
+options as (
+
+    select
+        question_id,
+        option_id,
+        is_correct
+    from {{ ref('stg_betway_picks__options') }}
+
+),
+
+selection_options as (
+
+    select
+        selections.user_id,
+        selections.contest_id,
+        selections.points,
+        case when options.is_correct then 5 else 0 end as points_calculated,
+        greatest(selections.points, points_calculated) as points_greatest,
+        selections.tiebreaker_prediction,
+        selections.created_date,
+        selections.created_at,
+        selections.created_date_et,
+        selections.created_at_et
+    from user_selections as selections
+    left join options 
+        on selections.option_id = options.option_id
+        and selections.question_id = options.question_id
+
+),
+
 aggregate_selections_to_entries as (
 
     select
         user_id || '-' || contest_id as entry_id,
         user_id,
         contest_id,
-        sum(points) as points,
+        sum(points_greatest) as points,
         max(tiebreaker_prediction) as tiebreaker_prediction,
         min(created_date) as entry_date,
         day(min(created_date)) as entry_day,
@@ -57,7 +87,7 @@ aggregate_selections_to_entries as (
             partition by user_id
             order by entered_at_et
         ) as user_entry_number
-    from user_selections 
+    from selection_options
     group by 1,2,3
 
 ),
