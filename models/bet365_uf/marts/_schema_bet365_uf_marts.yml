@@ -1,0 +1,407 @@
+version: 2
+
+models:
+
+  # ── fct_ models ──────────────────────────────────────────────────────────────
+
+  - name: fct_bet365_uf__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: fct_bet365_uf__selections
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: fct_bet365_uf__coin_transactions
+    columns:
+      - name: coin_transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: fct_bet365_uf__app_store_purchases
+    columns:
+      - name: purchase_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: fct_bet365_uf__card_ownership_changes
+    columns:
+      - name: card_ownership_change_id
+        tests:
+          - unique
+          - not_null
+      - name: card_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  # ── dim_ models ───────────────────────────────────────────────────────────────
+
+  - name: dim_bet365_uf__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: dim_bet365_uf__contests
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: contest_status
+        tests:
+          - accepted_values:
+              values: ['scheduled', 'live', 'completed']
+
+  - name: dim_bet365_uf__scoreables
+    columns:
+      - name: scoreable_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: dim_bet365_uf__cards
+    columns:
+      - name: card_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  # ── mart_ models ─────────────────────────────────────────────────────────────
+
+  - name: mart_bet365_uf__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_bet365_uf__selections
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_bet365_uf__user_cards
+    columns:
+      - name: card_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: mart_bet365_uf__coin_transactions
+    columns:
+      - name: coin_transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_bet365_uf__app_store_purchases
+    columns:
+      - name: purchase_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_bet365_uf__card_ownership_changes
+    columns:
+      - name: card_ownership_change_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: mart_bet365_uf__user_packs
+    columns:
+      - name: pack_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: mart_bet365_uf__user_coin_balances
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: mart_bet365_uf__user_collections
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_bet365_uf__user_scoreable_ratings
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+
+  # ── agg_ standard contract models ────────────────────────────────────────────
+
+  - name: agg_bet365_uf__registration_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__user_activity_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__entry_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__contest_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__conversion_funnel_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__cohort_retention_weekly
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_bet365_uf__financial_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  # ── agg_ game-specific models ─────────────────────────────────────────────────
+
+  - name: agg_bet365_uf__entry_summary_daily
+    columns:
+      - name: entry_date
+        tests:
+          - not_null
+
+  - name: agg_bet365_uf__selection_summary_daily
+    columns:
+      - name: selected_date
+        tests:
+          - not_null
+
+  - name: agg_bet365_uf__game_week_entry_stats
+    columns:
+      - name: game_week_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_uf__coin_economy_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']

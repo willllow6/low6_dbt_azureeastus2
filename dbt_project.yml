@@ -72,6 +72,10 @@ models:
       +schema: saracen
       +query_tag: saracen
 
+    bet365_uf:
+      +schema: bet365_uf
+      +query_tag: bet365
+
     # staging:
     #   +schema: staging
     
@@ -80,3 +84,7 @@ models:
     
     # marts:
     #   +schema: marts
+
+vars:
+  local_timezone: 'America/New_York'
+  bet365_uf_start_date: '2026-03-26'

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/WillBreeden/low6_dbt_uaenorth//**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\WillBreeden\\low6_dbt_azureeastus2\\models\\bet365_uf"
+    ]
+  }
+}

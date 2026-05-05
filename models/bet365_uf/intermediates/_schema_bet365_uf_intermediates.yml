@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: int_bet365_uf__contests
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: contest_status
+        tests:
+          - accepted_values:
+              values: ['scheduled', 'live', 'completed']
+
+  - name: int_bet365_uf__entries_ranked
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']

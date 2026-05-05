@@ -1,0 +1,276 @@
+version: 2
+
+models:
+  - name: stg_bet365_uf__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_bet365_uf__tenants
+    columns:
+      - name: tenant_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__competitions
+    columns:
+      - name: competition_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__contests
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: contest_status
+        tests:
+          - accepted_values:
+              values: ['scheduled', 'live', 'completed']
+
+  - name: stg_bet365_uf__game_weeks
+    columns:
+      - name: stage_period_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_bet365_uf__selections
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_bet365_uf__scoreables
+    columns:
+      - name: scoreable_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__scoreable_competitions
+    columns:
+      - name: scoreable_competition_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__scoreable_fixture_stats
+    columns:
+      - name: scoreable_stats_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__fixtures
+    columns:
+      - name: fixture_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__cards
+    columns:
+      - name: card_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__packs
+    columns:
+      - name: pack_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__coin_transactions
+    columns:
+      - name: coin_transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_bet365_uf__card_ownership_changes
+    columns:
+      - name: card_ownership_change_id
+        tests:
+          - unique
+          - not_null
+      - name: card_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__app_store_items
+    columns:
+      - name: item_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__app_store_purchases
+    columns:
+      - name: purchase_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_bet365_uf__marketplace_card_listings
+    columns:
+      - name: card_listing_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__marketplace_pack_listings
+    columns:
+      - name: pack_listing_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__marketplace_events
+    columns:
+      - name: marketplace_event_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+
+  - name: stg_bet365_uf__tenant_competitions
+    columns:
+      - name: tenant_competition_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null

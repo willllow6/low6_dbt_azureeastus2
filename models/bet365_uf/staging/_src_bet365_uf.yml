@@ -1,0 +1,83 @@
+version: 2
+
+sources:
+
+  - name: bet365_uf
+    description: Bet365 Ultimate Fan Prod Database
+    database: low6_azureeastus2
+    schema: adfbet365uf
+    tags: ['bet365_uf']
+    loaded_at_field: createdat
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    tables:
+
+      - name: CARD_OWNERSHIP_HISTORY
+        identifier: CARDOWNERSHIPHISTORY
+
+      - name: CARDS
+        identifier: CARDS
+
+      - name: COIN_TRANSACTIONS
+        identifier: COINTRANSACTIONS
+        freshness:
+          warn_after: {count: 12, period: hour}
+
+      - name: COMPETITIONS
+        identifier: COMPETITIONS
+
+      - name: FIXTURES
+        identifier: FIXTURES
+
+      - name: LINEUPS
+        identifier: LINEUPS
+        freshness:
+          warn_after: {count: 12, period: hour}
+
+      - name: LINEUP_SLOTS
+        identifier: LINEUPSLOTS
+
+      - name: MARKETPLACE_CARDS
+        identifier: MARKETPLACECARDS
+
+      - name: MARKETPLACE_SCOREABLE_PACKS
+        identifier: MARKETPLACESCOREABLEPACKS
+
+      - name: MARKETPLACE_STORE_ITEMS
+        identifier: MARKETPLACESTOREITEMS
+
+      - name: MARKETPLACE_USER_ACTIVITY
+        identifier: MARKETPLACEUSERACTIVITY
+
+      - name: PACKS
+        identifier: PACKS
+
+      - name: REFERRALS
+        identifier: REFERRALS
+
+      - name: SCOREABLE_COMPETITIONS
+        identifier: SCOREABLECOMPETITIONS
+
+      - name: SCOREABLES
+        identifier: SCOREABLES
+
+      - name: SCOREABLE_STATS
+        identifier: SCOREABLESTATS
+
+      - name: STAGE_PERIODS
+        identifier: STAGEPERIODS
+
+      - name: STAGES
+        identifier: STAGES
+
+      - name: STORE_PURCHASES
+        identifier: STOREPURCHASES
+
+      - name: TENANTS
+        identifier: TENANTS
+
+      - name: USERS
+        identifier: USERS
+        freshness:
+          warn_after: {count: 24, period: hour}
