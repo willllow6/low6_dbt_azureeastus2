@@ -29,7 +29,7 @@ renamed as (
         'fantasy' as game_type,
 
         ---------- numerics
-        Price as purchase_price,
+        round(Price/100,2) as purchase_price,
 
         ---------- dates
         cast(PurchaseDate as date) as purchased_date,
