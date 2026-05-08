@@ -1,0 +1,147 @@
+version: 2
+
+models:
+
+  # -------------------------------------------------------
+  # Core — dimensions and facts
+  # -------------------------------------------------------
+
+  - name: dim_penn__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_penn__contests
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: fct_penn__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: fct_penn__payouts
+    columns:
+      - name: payout_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: fct_penn__selections
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  # -------------------------------------------------------
+  # Reporting marts
+  # -------------------------------------------------------
+
+  - name: mart_penn__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: mart_penn__daily_reveal_selections
+    columns:
+      - name: user_card_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: mart_penn__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_penn__payouts
+    columns:
+      - name: payout_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null

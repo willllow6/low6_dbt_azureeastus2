@@ -76,6 +76,11 @@ models:
       +schema: bet365_uf
       +query_tag: bet365
 
+    penn:
+      +schema: penn
+      +query_tag: penn
+      +pre-hook: "{{ create_share('penn_share',['CTA82874']) }}"
+
     # staging:
     #   +schema: staging
     
@@ -88,3 +93,4 @@ models:
 vars:
   local_timezone: 'America/New_York'
   bet365_uf_start_date: '2026-03-26'
+  penn_start_date: '2026-05-07'

@@ -1,0 +1,106 @@
+version: 2
+
+models:
+
+  - name: stg_penn__contests
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: stg_penn__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_penn__user_prize_payouts
+    columns:
+      - name: payout_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: stg_penn__daily_reveal_cards
+    columns:
+      - name: card_id
+        tests:
+          - unique
+          - not_null
+      - name: display_name
+        tests:
+          - not_null
+
+  - name: stg_penn__daily_reveal_days
+    columns:
+      - name: daily_reveal_day_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: stg_penn__daily_reveal_entries
+    columns:
+      - name: daily_reveal_entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: daily_reveal_day_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['daily_reveal']
+
+  - name: stg_penn__daily_reveal_user_cards
+    columns:
+      - name: user_card_id
+        tests:
+          - unique
+          - not_null
+      - name: daily_reveal_entry_id
+        tests:
+          - not_null
+      - name: card_id
+        tests:
+          - not_null

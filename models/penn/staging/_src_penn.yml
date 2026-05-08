@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+
+  - name: penn
+    description: Penn source data
+    database: low6_azureeastus2
+    schema: adfpenn
+    tags: ['penn']
+    tables:
+
+      - name: pickems
+        identifier: pickems
+        description: Contest definitions for Penn daily_reveal games
+
+      - name: users
+        identifier: users
+
+      - name: user_prize_payouts
+        identifier: user_prize_payouts
+
+      - name: daily_reveal_days
+        identifier: daily_reveal_days
+
+      - name: daily_reveal_entries
+        identifier: daily_reveal_entries
+
+      - name: daily_reveal_cards
+        identifier: daily_reveal_cards
+
+      - name: daily_reveal_user_cards
+        identifier: daily_reveal_user_cards
