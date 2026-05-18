@@ -95,44 +95,44 @@ fanstake_rivals as (
 
 ),
 
-oilers_picks as (
+-- oilers_picks as (
 
-    select
-        'US51' as app_id,
-        count(distinct userid || '-' || pickemid) as entries,
-        count(distinct case when cast(createdat as date) = current_date() - 1 then userid || '-' || pickemid else null end) as yesterday_entries,
-        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid || '-' || pickemid else null end) as last_7_days_entries,
-        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid || '-' || pickemid else null end) as last_28_days_entries,
-        count(distinct userid) as entrants,
-        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
-        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
-        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
-        count(distinct pickemid) as contests,
-        max(cast(createdat as date)) as last_entry_date
-    from  {{ source('oilers_picks', 'userselections') }}
-    group by 1
+--     select
+--         'US51' as app_id,
+--         count(distinct userid || '-' || pickemid) as entries,
+--         count(distinct case when cast(createdat as date) = current_date() - 1 then userid || '-' || pickemid else null end) as yesterday_entries,
+--         count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid || '-' || pickemid else null end) as last_7_days_entries,
+--         count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid || '-' || pickemid else null end) as last_28_days_entries,
+--         count(distinct userid) as entrants,
+--         count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+--         count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+--         count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+--         count(distinct pickemid) as contests,
+--         max(cast(createdat as date)) as last_entry_date
+--     from  {{ source('oilers_picks', 'userselections') }}
+--     group by 1
 
-),
+-- ),
 
-sac_kings as (
+-- sac_kings as (
 
-    select
-        'US64' as app_id,
-        count(distinct customerid || '-' || contestid) as entries,
-        count(distinct case when cast(creationdate as date) = current_date() - 1 then customerid || '-' || contestid else null end) as yesterday_entries,
-        count(distinct case when creationdate >= current_date() - 8 and creationdate < current_date() then customerid || '-' || contestid else null end) as last_7_days_entries,
-        count(distinct case when creationdate >= current_date() - 29 and creationdate < current_date() then customerid || '-' || contestid else null end) as last_28_days_entries,
-        count(distinct customerid) as entrants,
-        count(distinct case when cast(creationdate as date) = current_date() - 1 then customerid else null end) as yesterday_entrants,
-        count(distinct case when creationdate >= current_date() - 8 and creationdate < current_date() then customerid else null end) as last_7_days_entrants,
-        count(distinct case when creationdate >= current_date() - 29 and creationdate < current_date() then customerid else null end) as last_28_days_entrants,
-        count(distinct contestid) as contests,
-        max(cast(creationdate as date)) as last_entry_date
-    from {{ source('sackings_picks', 'cutsomerresponse') }}
-    where  creationdate >= '2025-10-20'
-    group by 1
+--     select
+--         'US64' as app_id,
+--         count(distinct customerid || '-' || contestid) as entries,
+--         count(distinct case when cast(creationdate as date) = current_date() - 1 then customerid || '-' || contestid else null end) as yesterday_entries,
+--         count(distinct case when creationdate >= current_date() - 8 and creationdate < current_date() then customerid || '-' || contestid else null end) as last_7_days_entries,
+--         count(distinct case when creationdate >= current_date() - 29 and creationdate < current_date() then customerid || '-' || contestid else null end) as last_28_days_entries,
+--         count(distinct customerid) as entrants,
+--         count(distinct case when cast(creationdate as date) = current_date() - 1 then customerid else null end) as yesterday_entrants,
+--         count(distinct case when creationdate >= current_date() - 8 and creationdate < current_date() then customerid else null end) as last_7_days_entrants,
+--         count(distinct case when creationdate >= current_date() - 29 and creationdate < current_date() then customerid else null end) as last_28_days_entrants,
+--         count(distinct contestid) as contests,
+--         max(cast(creationdate as date)) as last_entry_date
+--     from {{ source('sackings_picks', 'cutsomerresponse') }}
+--     where  creationdate >= '2025-10-20'
+--     group by 1
 
-),
+-- ),
 
 saracen_picks as (
 
@@ -197,15 +197,15 @@ unioned as (
     select *
     from fanstake_rivals
 
-    union all
+    -- union all
 
-    select *
-    from oilers_picks
+    -- select *
+    -- from oilers_picks
 
-    union all
+    -- union all
 
-    select *
-    from sac_kings
+    -- select *
+    -- from sac_kings
 
     union all 
 
