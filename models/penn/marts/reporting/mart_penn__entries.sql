@@ -26,25 +26,26 @@ joined as (
     select
         entries.entry_id,
         entries.user_id,
-        users.sso_user_id,
+        users.penn_user_id,
         entries.contest_id,
+        entries.tournament_id,
 
-        users.username,
-        users.registration_date_et,
-
-        contests.contest_title,
+        contests.tournament_name,
+        contests.contest_name,
         contests.game_type,
         contests.contest_status,
-        contests.contest_prize,
-        contests.contest_opens_at,
-        contests.contest_opens_at_et,
-        contests.contest_start_date,
+        contests.sequence as round_sequence,
+        entries.tenant_id,
+        contests.tenant_name,
         contests.contest_starts_at,
-        contests.contest_start_date_et,
         contests.contest_starts_at_et,
+        contests.contest_start_date_et,
 
-        entries.points,
-        entries.days_entered,
+        entries.user_tier,
+        entries.status as entry_status,
+        entries.prize_outcome_id,
+        entries.per_goal_amount,
+        entries.per_goal_currency,
 
         entries.user_entry_number,
 
@@ -55,8 +56,6 @@ joined as (
         end as user_entry_type,
 
         entries.entry_date,
-        entries.entry_day,
-        hour(entries.entered_at) as entry_hour,
         entries.entered_at,
         entries.entry_date_et,
         entries.entry_day_et,

@@ -2,8 +2,8 @@ version: 2
 
 models:
 
-  - name: int_penn__daily_reveal_entries
-    description: Aggregates daily_reveal_entries from day grain to contest grain (one row per user per contest), adding days_entered and canonical fields.
+  - name: int_penn__entries
+    description: Joins user_rounds to rounds and tournaments to resolve tenant_id; produces one row per user per round with canonical IDs.
     columns:
       - name: entry_id
         tests:
@@ -15,17 +15,17 @@ models:
       - name: contest_id
         tests:
           - not_null
-      - name: client_id
+      - name: tournament_id
         tests:
           - not_null
       - name: tenant_id
+        tests:
+          - not_null
+      - name: client_id
         tests:
           - not_null
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
-      - name: days_entered
-        tests:
-          - not_null
+              values: ['squads']

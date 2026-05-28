@@ -9,24 +9,40 @@ sources:
     tags: ['penn']
     tables:
 
-      - name: pickems
-        identifier: pickems
-        description: Contest definitions for Penn daily_reveal games
+      - name: tenants
+        identifier: tenants
 
       - name: users
         identifier: users
 
-      - name: user_prize_payouts
-        identifier: user_prize_payouts
+      - name: squads_contests
+        identifier: squads_contests
+        description: Tournaments — groups of rounds sharing a tenant and schedule
 
-      - name: daily_reveal_days
-        identifier: daily_reveal_days
+      - name: squads_rounds
+        identifier: squads_rounds
+        description: Rounds — the canonical contest unit a user enters
 
-      - name: daily_reveal_entries
-        identifier: daily_reveal_entries
+      - name: squads_user_contests
+        identifier: squads_user_contests
+        description: User registrations at tournament level
 
-      - name: daily_reveal_cards
-        identifier: daily_reveal_cards
+      - name: squads_user_rounds
+        identifier: squads_user_rounds
+        description: User entries at round level; one row per user per round
 
-      - name: daily_reveal_user_cards
-        identifier: daily_reveal_user_cards
+      - name: squads_user_slots
+        identifier: squads_user_slots
+        description: User slot selections; one row per day per user per round
+
+      - name: squads_round_reveal_days
+        identifier: squads_round_reveal_days
+        description: Reveal schedule per round day (registered for future use)
+
+      - name: squads_awards
+        identifier: squads_awards
+        description: Per-goal monetary awards linked to user_round_id
+
+      - name: soccer_players
+        identifier: soccer_players
+        description: Soccer player reference data

@@ -1,57 +1,68 @@
 with
 
-user_cards as (
+user_slots as (
 
     select *
-    from {{ ref('stg_penn__daily_reveal_user_cards') }}
+    from {{ ref('stg_penn__user_slots') }}
 
 ),
 
-entries as (
+user_rounds as (
 
     select
-        daily_reveal_entry_id,
-        daily_reveal_day_id,
+        user_round_id,
         user_id,
-        client_id,
-        tenant_id,
-        game_type
-    from {{ ref('stg_penn__daily_reveal_entries') }}
+        round_id
+    from {{ ref('stg_penn__user_rounds') }}
 
 ),
 
-days as (
+rounds as (
 
     select
-        daily_reveal_day_id,
-        contest_id
-    from {{ ref('stg_penn__daily_reveal_days') }}
+        round_id,
+        tournament_id
+    from {{ ref('stg_penn__rounds') }}
+
+),
+
+tournaments as (
+
+    select
+        tournament_id,
+        tenant_id
+    from {{ ref('stg_penn__tournaments') }}
 
 ),
 
 joined as (
 
     select
-        uc.user_card_id as selection_id,
-        uc.daily_reveal_entry_id as entry_id,
-        e.user_id,
-        d.contest_id,
-        e.client_id,
-        e.tenant_id,
-        e.game_type,
-        uc.card_id,
-        uc.rating,
-        uc.position,
-        uc.is_selected,
-        uc.selected_at,
-        convert_timezone('UTC', '{{ var("local_timezone") }}', uc.selected_at)::timestamp_ntz as selected_at_et,
-        uc.created_at,
-        cast(convert_timezone('UTC', '{{ var("local_timezone") }}', uc.created_at) as date) as created_date_et
-    from user_cards uc
-    inner join entries e
-        on uc.daily_reveal_entry_id = e.daily_reveal_entry_id
-    inner join days d
-        on e.daily_reveal_day_id = d.daily_reveal_day_id
+        s.user_slot_id as selection_id,
+        s.user_round_id as entry_id,
+        ur.user_id,
+        r.round_id as contest_id,
+        r.tournament_id,
+        t.tenant_id,
+        'penn' as client_id,
+        'squads' as game_type,
+        s.day_index,
+        s.status,
+        s.revealed_player_id,
+        s.revealed_rarity,
+        s.reveal_start,
+        s.reveal_end,
+        s.revealed_at,
+        convert_timezone('UTC', '{{ var("local_timezone") }}', s.revealed_at)::timestamp_ntz as revealed_at_et,
+        s.created_at,
+        cast(convert_timezone('UTC', '{{ var("local_timezone") }}', s.created_at) as date) as created_date_et
+    from user_slots s
+    inner join user_rounds ur
+        on s.user_round_id = ur.user_round_id
+    inner join rounds r
+        on ur.round_id = r.round_id
+    inner join tournaments t
+        on r.tournament_id = t.tournament_id
 
 )
 

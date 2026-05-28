@@ -4,14 +4,15 @@ users as (
 
     select *
     from {{ ref('stg_penn__users') }}
-    where sso_user_id is not null
+    where penn_user_id is not null
 
 )
 
 select
     user_id,
-    sso_user_id,
-    username,
+    penn_user_id,
+    tier,
+    platform,
     registration_date,
     cast(convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at) as date) as registration_date_et,
     registered_at,

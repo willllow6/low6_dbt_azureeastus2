@@ -1,7 +1,8 @@
 select
     user_id,
-    sso_user_id,
-    username,
+    penn_user_id,
+    tier,
+    platform,
     registration_date,
     registration_date_et,
     registered_at,

@@ -13,23 +13,30 @@ models:
           - unique
           - not_null
 
+  - name: dim_penn__tenants
+    columns:
+      - name: tenant_id
+        tests:
+          - unique
+          - not_null
+
   - name: dim_penn__contests
     columns:
       - name: contest_id
         tests:
           - unique
           - not_null
-      - name: client_id
+      - name: tenant_id
         tests:
           - not_null
-      - name: tenant_id
+      - name: tournament_id
         tests:
           - not_null
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
+              values: ['squads']
 
   - name: fct_penn__entries
     columns:
@@ -43,9 +50,6 @@ models:
       - name: contest_id
         tests:
           - not_null
-      - name: client_id
-        tests:
-          - not_null
       - name: tenant_id
         tests:
           - not_null
@@ -53,17 +57,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
-
-  - name: fct_penn__payouts
-    columns:
-      - name: payout_id
-        tests:
-          - unique
-          - not_null
-      - name: user_id
-        tests:
-          - not_null
+              values: ['squads']
 
   - name: fct_penn__selections
     columns:
@@ -71,23 +65,33 @@ models:
         tests:
           - unique
           - not_null
+      - name: entry_id
+        tests:
+          - not_null
       - name: user_id
         tests:
           - not_null
       - name: contest_id
         tests:
           - not_null
-      - name: client_id
-        tests:
-          - not_null
-      - name: tenant_id
-        tests:
-          - not_null
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
+              values: ['squads']
+
+  - name: fct_penn__awards
+    columns:
+      - name: award_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
 
   # -------------------------------------------------------
   # Reporting marts
@@ -109,11 +113,11 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
+              values: ['squads']
 
-  - name: mart_penn__daily_reveal_selections
+  - name: mart_penn__selections
     columns:
-      - name: user_card_id
+      - name: selection_id
         tests:
           - unique
           - not_null
@@ -127,21 +131,21 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
+              values: ['squads']
+
+  - name: mart_penn__awards
+    columns:
+      - name: award_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
 
   - name: mart_penn__users
     columns:
       - name: user_id
         tests:
           - unique
-          - not_null
-
-  - name: mart_penn__payouts
-    columns:
-      - name: payout_id
-        tests:
-          - unique
-          - not_null
-      - name: user_id
-        tests:
           - not_null

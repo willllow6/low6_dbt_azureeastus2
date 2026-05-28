@@ -2,14 +2,21 @@ version: 2
 
 models:
 
-  - name: stg_penn__contests
+  - name: stg_penn__tenants
     columns:
-      - name: contest_id
+      - name: tenant_id
         tests:
           - unique
           - not_null
       - name: client_id
         tests:
+          - not_null
+
+  - name: stg_penn__tournaments
+    columns:
+      - name: tournament_id
+        tests:
+          - unique
           - not_null
       - name: tenant_id
         tests:
@@ -18,7 +25,22 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['daily_reveal']
+              values: ['squads']
+
+  - name: stg_penn__rounds
+    columns:
+      - name: round_id
+        tests:
+          - unique
+          - not_null
+      - name: tournament_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
 
   - name: stg_penn__users
     columns:
@@ -27,80 +49,55 @@ models:
           - unique
           - not_null
 
-  - name: stg_penn__user_prize_payouts
+  - name: stg_penn__user_contests
     columns:
-      - name: payout_id
+      - name: user_contest_id
         tests:
           - unique
           - not_null
       - name: user_id
         tests:
           - not_null
-
-  - name: stg_penn__daily_reveal_cards
-    columns:
-      - name: card_id
-        tests:
-          - unique
-          - not_null
-      - name: display_name
+      - name: tournament_id
         tests:
           - not_null
 
-  - name: stg_penn__daily_reveal_days
+  - name: stg_penn__user_rounds
     columns:
-      - name: daily_reveal_day_id
-        tests:
-          - unique
-          - not_null
-      - name: contest_id
-        tests:
-          - not_null
-      - name: client_id
-        tests:
-          - not_null
-      - name: tenant_id
-        tests:
-          - not_null
-      - name: game_type
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['daily_reveal']
-
-  - name: stg_penn__daily_reveal_entries
-    columns:
-      - name: daily_reveal_entry_id
+      - name: user_round_id
         tests:
           - unique
           - not_null
       - name: user_id
         tests:
           - not_null
-      - name: daily_reveal_day_id
+      - name: round_id
         tests:
           - not_null
-      - name: client_id
-        tests:
-          - not_null
-      - name: tenant_id
-        tests:
-          - not_null
-      - name: game_type
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['daily_reveal']
 
-  - name: stg_penn__daily_reveal_user_cards
+  - name: stg_penn__user_slots
     columns:
-      - name: user_card_id
+      - name: user_slot_id
         tests:
           - unique
           - not_null
-      - name: daily_reveal_entry_id
+      - name: user_round_id
         tests:
           - not_null
-      - name: card_id
+
+  - name: stg_penn__players
+    columns:
+      - name: player_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_penn__awards
+    columns:
+      - name: award_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
         tests:
           - not_null
