@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: cfl_fantasy
+    description: CFL Fantasy source data
+    database: low6_azureeastus2
+    schema: adfcflfantasy
+    tags: ['cfl']
+    loaded_at_field: createdAt
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    tables:
+      - name: users
+      - name: leagues
+      - name: teams
+      - name: draft_picks
+      - name: drafts
+      - name: players
+      - name: rosters
+      - name: scores
+      - name: sport_teams
+      - name: matchups
+      - name: league_requests
+      - name: waivers
+      - name: trades
+      - name: league_transactions
+      - name: sports

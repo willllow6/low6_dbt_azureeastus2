@@ -1,0 +1,239 @@
+version: 2
+
+models:
+
+  # -----------------------------------------------------------------------
+  # Core — dimensions and facts (internal building blocks)
+  # -----------------------------------------------------------------------
+
+  - name: fct_cfl_fantasy__entries
+    description: One row per fantasy team (entry). Passthrough from int_cfl_fantasy__entries. Includes entry_number.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cfl_fantasy__users')
+              field: user_id
+      - name: contest_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cfl_fantasy__contests')
+              field: contest_id
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: dim_cfl_fantasy__users
+    description: One row per CFL fantasy platform user, enriched with entry activity counts.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: dim_cfl_fantasy__contests
+    description: One row per fantasy league (contest), enriched with team count and draft metadata.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: dim_cfl_fantasy__players
+    description: One row per CFL player available on the platform, enriched with real team details.
+    columns:
+      - name: player_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_cfl_fantasy__sport_teams
+    description: One row per real CFL franchise.
+    columns:
+      - name: sport_team_id
+        tests:
+          - unique
+          - not_null
+
+  # -----------------------------------------------------------------------
+  # Wide mart models — BI drill-through (row-level)
+  # -----------------------------------------------------------------------
+
+  - name: mart_cfl_fantasy__registrations
+    description: >
+      One row per registered user. Shows registration details alongside entry activity.
+      Use for user-level registration and activation analysis.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: registration_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['sso']
+
+  - name: mart_cfl_fantasy__leagues
+    description: >
+      One row per fantasy league. Shows full league configuration, team fill, and draft status.
+      Use for league-level drill-through and setup analysis.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_cfl_fantasy__teams
+    description: >
+      One row per fantasy team. Joins entry data with league, user, and scoring context.
+      Use for team-level drill-through including points totals.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: mart_cfl_fantasy__player_roster_stats
+    description: >
+      One row per CFL player who has appeared on at least one roster.
+      Shows how many teams and leagues each player has been rostered on.
+      Ordered by teams_rostered_on descending (most popular players first).
+    columns:
+      - name: player_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_cfl_fantasy__draft_pick_adp
+    description: >
+      One row per CFL player who has been drafted at least once.
+      Shows average draft position (ADP), best/worst pick number, and times drafted.
+      Ordered by ADP ascending (earliest average pick first).
+    columns:
+      - name: player_id
+        tests:
+          - unique
+          - not_null
+
+  # -----------------------------------------------------------------------
+  # Standard agg_ contract models — cross-game reporting interface
+  # -----------------------------------------------------------------------
+
+  - name: agg_cfl_fantasy__registration_metrics_daily
+    description: Daily registration counts by registration type. Standard contract model for low6_reporting.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_cfl_fantasy__growth_metrics_daily
+    description: >
+      Daily growth metrics across registrations, teams, and leagues. Backed by a date spine
+      starting at cfl_fantasy_start_date so every day has a row even with zero activity.
+      Registrations filtered to is_user = true. Teams split into user vs bot (auto-fill) counts.
+      Leagues split by size (4-team, 6-team).
+    columns:
+      - name: date_day
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_cfl_fantasy__entry_metrics_daily
+    description: Daily entry volume metrics — total entries, unique entrants, first-time entrants.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_cfl_fantasy__contest_metrics_daily
+    description: Daily contest (league) status counts — scheduled, live, completed. Grain is league creation date.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_cfl_fantasy__conversion_funnel_daily
+    description: >
+      Registration-cohort conversion funnel. Each row is an independent cohort snapshot for one
+      registration date. Tracks activation (≥1 entry ever) and repeat engagement (≥2 entries ever).
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: agg_cfl_fantasy__cohort_retention_weekly
+    description: >
+      Weekly cohort retention. cohort_week = Monday of the user's first-entry week.
+      weeks_since_cohort = 0 (cohort week, always 100%), 1, 2, … Users who have never entered
+      are excluded. Standard contract model for low6_reporting.
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']

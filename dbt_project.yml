@@ -81,6 +81,10 @@ models:
       +query_tag: penn
       +pre-hook: "{{ create_share('penn_share',['CTA82874']) }}"
 
+    cfl_fantasy:
+      +schema: cfl_fantasy
+      +query_tag: cfl
+
     # staging:
     #   +schema: staging
     
@@ -94,3 +98,4 @@ vars:
   local_timezone: 'America/New_York'
   bet365_uf_start_date: '2026-03-26'
   penn_start_date: '2026-05-07'
+  cfl_fantasy_start_date: '2026-05-22'

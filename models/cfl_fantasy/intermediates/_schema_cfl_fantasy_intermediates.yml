@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: int_cfl_fantasy__entries
+    description: >
+      One row per fantasy team (entry). Adds entry_number — the user's nth team created across all
+      CFL fantasy leagues (1 = first ever). Grain is unchanged from stg_cfl_fantasy__teams.
+    columns:
+      - name: entry_id
+        description: Primary key — unique fantasy team identifier.
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: entry_number
+        description: User's nth entry across all CFL fantasy leagues. 1 = first ever team created.
+        tests:
+          - not_null

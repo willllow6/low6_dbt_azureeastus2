@@ -1,0 +1,253 @@
+version: 2
+
+models:
+  - name: stg_cfl_fantasy__users
+    description: Staged users — one row per registered platform user. All CFL fantasy users are created via SSO.
+    columns:
+      - name: user_id
+        description: Primary key — unique platform user identifier.
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: registration_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['sso']
+      - name: registered_at
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__leagues
+    description: Staged leagues — one row per fantasy league (canonical contest entity).
+    columns:
+      - name: contest_id
+        description: Primary key — unique league identifier.
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: contest_name
+        tests:
+          - not_null
+      - name: contest_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'draft']
+
+  - name: stg_cfl_fantasy__teams
+    description: Staged teams — one row per fantasy team (canonical entry entity). Each team represents a user's entry in a league.
+    columns:
+      - name: entry_id
+        description: Primary key — unique fantasy team identifier.
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+      - name: entered_at
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__draft_picks
+    description: Staged draft picks — one row per player selection made during a draft.
+    columns:
+      - name: draft_pick_id
+        description: Primary key — unique draft pick identifier.
+        tests:
+          - unique
+          - not_null
+      - name: draft_id
+        tests:
+          - not_null
+      - name: player_id
+        tests:
+          - not_null
+      - name: team_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_cfl_fantasy__drafts
+    description: Staged drafts — one row per draft event, linked to a league.
+    columns:
+      - name: draft_id
+        description: Primary key — unique draft identifier.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_cfl_fantasy__players
+    description: Staged CFL players — one row per real-world CFL player available on the platform.
+    columns:
+      - name: player_id
+        description: Primary key — unique player identifier.
+        tests:
+          - unique
+          - not_null
+      - name: full_name
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__rosters
+    description: Staged rosters — one row per player slot on a fantasy team.
+    columns:
+      - name: roster_id
+        description: Primary key — unique roster slot identifier.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: player_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_cfl_fantasy__scores
+    description: Staged weekly scores — one row per team per fantasy week.
+    columns:
+      - name: score_id
+        description: Primary key — unique score record identifier.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_cfl_fantasy__sport_teams
+    description: Staged CFL sport teams — one row per real-world CFL franchise.
+    columns:
+      - name: sport_team_id
+        description: Primary key — unique sport team identifier.
+        tests:
+          - unique
+          - not_null
+      - name: team_name
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__matchups
+    description: Staged matchups — one row per weekly head-to-head matchup between two fantasy teams.
+    columns:
+      - name: matchup_id
+        description: Primary key — unique matchup identifier.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['fantasy']
+
+  - name: stg_cfl_fantasy__league_requests
+    description: Staged league requests — one row per user request to join a private league.
+    columns:
+      - name: league_request_id
+        description: Primary key — unique league request identifier.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__waivers
+    description: Staged waivers — one row per waiver wire claim submitted by a team.
+    columns:
+      - name: waiver_id
+        description: Primary key — unique waiver identifier.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: player_id
+        tests:
+          - not_null
+
+  - name: stg_cfl_fantasy__trades
+    description: Staged trades — one row per trade proposal between two fantasy teams.
+    columns:
+      - name: trade_id
+        description: Primary key — unique trade identifier.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null

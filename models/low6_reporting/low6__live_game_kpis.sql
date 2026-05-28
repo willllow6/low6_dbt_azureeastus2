@@ -172,6 +172,26 @@ saracen_bracket as (
 
 ),
 
+cfl_fantasy as (
+
+    select
+        'cflfan' as app_id,
+        count(distinct id) as entries,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then id else null end) as yesterday_entries,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then id else null end) as last_7_days_entries,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then id else null end) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct leagueid) as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('cfl_fantasy', 'teams') }}
+    where isAutoTeam = false
+    group by 1
+
+),
+
 unioned as (
 
     select *
@@ -216,6 +236,11 @@ unioned as (
 
     select *
     from saracen_bracket
+
+    union all
+    
+    select *
+    from cfl_fantasy
 
 )
 
