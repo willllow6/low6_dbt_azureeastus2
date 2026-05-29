@@ -29,5 +29,6 @@ select
     revealed_at_et,
     reveal_start,
     reveal_end,
-    created_at
+    created_at,
+    updated_at
 from {{ ref('mart_penn__selections') }}

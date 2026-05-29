@@ -149,3 +149,182 @@ models:
         tests:
           - unique
           - not_null
+
+  - name: mart_penn__user_activity_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  # -------------------------------------------------------
+  # Aggregations — standard contract models
+  # -------------------------------------------------------
+
+  - name: agg_penn__registration_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__user_activity_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__entry_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__contest_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__conversion_funnel_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__cohort_retention_weekly
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  # -------------------------------------------------------
+  # Aggregations — Penn-specific dashboard models
+  # -------------------------------------------------------
+
+  - name: agg_penn__growth_metrics_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__contest_summary
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']
+
+  - name: agg_penn__player_reveals_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['squads']

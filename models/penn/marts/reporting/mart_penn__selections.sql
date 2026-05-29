@@ -70,7 +70,8 @@ joined as (
         s.revealed_at_et,
         s.reveal_start,
         s.reveal_end,
-        s.created_at
+        s.created_at,
+        s.updated_at
     from selections s
     left join players p
         on s.revealed_player_id = p.player_id

@@ -13,8 +13,10 @@ select
     penn_user_id,
     tier,
     platform,
+    registration_type,
     registration_date,
     cast(convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at) as date) as registration_date_et,
     registered_at,
-    convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at)::timestamp_ntz as registered_at_et
+    convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at)::timestamp_ntz as registered_at_et,
+    updated_at
 from users

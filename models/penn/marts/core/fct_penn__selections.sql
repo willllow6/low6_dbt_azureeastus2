@@ -55,7 +55,8 @@ joined as (
         s.revealed_at,
         convert_timezone('UTC', '{{ var("local_timezone") }}', s.revealed_at)::timestamp_ntz as revealed_at_et,
         s.created_at,
-        cast(convert_timezone('UTC', '{{ var("local_timezone") }}', s.created_at) as date) as created_date_et
+        cast(convert_timezone('UTC', '{{ var("local_timezone") }}', s.created_at) as date) as created_date_et,
+        s.updated_at
     from user_slots s
     inner join user_rounds ur
         on s.user_round_id = ur.user_round_id
