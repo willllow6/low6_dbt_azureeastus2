@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+
+  - name: opap_spintowin
+    description: OPAP Spin to Win platform database (PostgreSQL via Drizzle ORM, replicated into Snowflake).
+    database: low6_azureeastus2
+    schema: adfopapspintowin
+    tags: ['opap']
+    tables:
+
+      - name: users
+        identifier: users
+        description: Local user account records. Created on first SSO login.
+
+      - name: contests
+        identifier: contests
+        description: Admin-created game events. One contest = one matchday play window.
+
+      - name: entries
+        identifier: entries
+        description: A user's permanent participation record in a contest, created on submission.
+
+      - name: picks
+        identifier: picks
+        description: The permanent, immutable record of a user's submitted selections for an entry. Scored when settlement arrives.
+
+      - name: prize_awards
+        identifier: prize_awards
+        description: Tracks the delivery of a prize to a specific user. One row per winning entry.
+
+      - name: prize_tiers
+        identifier: prize_tiers
+        description: Reward levels for a contest, keyed by correct_count x segment.
+
+      - name: reel_options
+        identifier: reel_options
+        description: A self-contained outcome record that an admin has enabled on a reel. This is what the RNG draws from.
+
+      - name: contest_reels
+        identifier: contest_reels
+        description: Defines the individual spinning elements within a contest. One row per reel per contest.
+
+      - name: contest_fixtures
+        identifier: contest_fixtures
+        description: Snapshotted fixture data for a contest. Created when admin selects fixtures during contest setup.

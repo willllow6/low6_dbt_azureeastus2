@@ -1,0 +1,126 @@
+version: 2
+
+models:
+
+  - name: stg_opap_spintowin__users
+    description: Cleaned user records from the OPAP platform. One row per registered user.
+    columns:
+      - name: user_id
+        description: Unique internal identifier for a user on the platform.
+        tests:
+          - unique
+          - not_null
+      - name: sso_user_id
+        description: Primary external SSO identifier from OPAP (external_user_id in source).
+
+  - name: stg_opap_spintowin__contests
+    description: Cleaned contest records. One row per game event (matchday play window).
+    columns:
+      - name: contest_id
+        description: Unique identifier for the contest.
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                       'daily_reveal', 'spin_to_win']
+
+  - name: stg_opap_spintowin__entries
+    description: Cleaned entry records. One row per user per contest.
+    columns:
+      - name: entry_id
+        description: Unique identifier for this entry.
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__picks
+    description: Cleaned pick records. One row per reel outcome chosen by a user within an entry.
+    columns:
+      - name: pick_id
+        description: Unique identifier for this pick.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: reel_option_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__prize_awards
+    description: Prize delivery records. One row per winning entry payout event.
+    columns:
+      - name: prize_award_id
+        description: Unique identifier for the prize award.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__prize_tiers
+    description: Prize tier configuration per contest. Keyed by correct_count x segment_ref.
+    columns:
+      - name: prize_tier_id
+        description: Unique identifier for the prize tier.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__reel_options
+    description: Available outcome options per reel. One row per enabled outcome on a reel.
+    columns:
+      - name: reel_option_id
+        description: Unique identifier for the reel option.
+        tests:
+          - unique
+          - not_null
+      - name: reel_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__contest_reels
+    description: Reel definitions per contest. One row per reel per contest.
+    columns:
+      - name: reel_id
+        description: Unique identifier for the contest reel.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: stg_opap_spintowin__contest_fixtures
+    description: Snapshotted fixture data for a contest. One row per fixture per contest.
+    columns:
+      - name: contest_fixture_id
+        description: Unique identifier for the contest fixture.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null

@@ -1,0 +1,252 @@
+version: 2
+
+models:
+
+  # -------------------------------------------------------
+  # Core — dimensions and facts
+  # -------------------------------------------------------
+
+  - name: dim_opap_spintowin__users
+    description: User dimension. One row per registered user on the OPAP platform.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_opap_spintowin__contests
+    description: Contest dimension. One row per game event (matchday play window).
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                       'daily_reveal', 'spin_to_win']
+
+  - name: fct_opap_spintowin__entries
+    description: Entry fact table. One row per user per contest.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                       'daily_reveal', 'spin_to_win']
+
+  - name: fct_opap_spintowin__selections
+    description: Selection fact table. One row per reel pick within an entry.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['spin_to_win']
+
+  - name: fct_opap_spintowin__payouts
+    description: Payout fact table. One row per prize award event.
+    columns:
+      - name: payout_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  # -------------------------------------------------------
+  # Reporting — wide marts
+  # -------------------------------------------------------
+
+  - name: mart_opap_spintowin__user_active_days
+    description: >
+      One row per user per day they were active (had at least one entry). Intended for
+      dashboard DAU calculations via count(distinct user_id) filtered by active_day.
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+      - name: active_day
+        tests:
+          - not_null
+
+  - name: mart_opap_spintowin__users
+    description: Wide user mart. Row-level user view for BI drill-through.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_opap_spintowin__entries
+    description: Wide entry mart. Joins entries to users and contests.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['spin_to_win']
+
+  - name: agg_opap_spintowin__contest_selections
+    description: >
+      Selection counts per contest × outcome. One row per contest × event × market ×
+      selection_value. Shows how many times each option was chosen, how many were
+      correct, and the selection_rate (total_selections / total_entries for that contest).
+    columns:
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: mart_opap_spintowin__selections
+    description: Wide selection mart. Joins selections to users.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: mart_opap_spintowin__payouts
+    description: Wide payout mart. Joins payouts to users.
+    columns:
+      - name: payout_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  # -------------------------------------------------------
+  # Aggregates — standard contract models
+  # -------------------------------------------------------
+
+  - name: agg_opap_spintowin__registration_metrics_daily
+    description: Daily registration metrics. All OPAP users are SSO; profile_completions and marketing_consents are always 0.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__user_activity_daily
+    description: Daily active user metrics.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__entry_metrics_daily
+    description: Daily entry volume and unique entrant metrics.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__contest_metrics_daily
+    description: Daily contest lifecycle metrics (scheduled, live, completed).
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__conversion_funnel_daily
+    description: >
+      Registration cohort conversion funnel. date_day = registration date of cohort.
+      activation_rate = users who made >= 1 entry ever / registered.
+      repeat_rate = users who made >= 2 entries ever / activated.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__cohort_retention_weekly
+    description: Weekly cohort retention. cohort_week = first-entry week. Excludes users who never entered.
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__selection_metrics_daily
+    description: Daily selection accuracy metrics per contest.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: agg_opap_spintowin__contest_performance_summary
+    description: >
+      Contest-level performance summary. One row per contest with entry counts,
+      winner counts, win rate, and payout totals.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_opap_spintowin__growth_metrics_daily
+    description: >
+      Daily growth metrics. Combines registrations and entry activity into a single
+      spine. One row per day with new_registrations, new_entrants, and total_entries.
+    columns:
+      - name: date_day
+        tests:
+          - not_null

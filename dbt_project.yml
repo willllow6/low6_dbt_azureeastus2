@@ -85,6 +85,10 @@ models:
       +schema: cfl_fantasy
       +query_tag: cfl
 
+    opap_spintowin:
+      +schema: opap_spintowin
+      +query_tag: opap
+
     # staging:
     #   +schema: staging
     
@@ -99,3 +103,5 @@ vars:
   bet365_uf_start_date: '2026-03-26'
   penn_start_date: '2026-05-07'
   cfl_fantasy_start_date: '2026-05-22'
+  opap_spintowin_start_date: '2026-06-05'
+  opap_spintowin_local_timezone: 'Europe/Athens'

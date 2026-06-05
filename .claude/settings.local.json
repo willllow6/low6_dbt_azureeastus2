@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/WillBreeden/low6_dbt_uaenorth//**)",
-      "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/draftkings/marts/**)"
+      "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/draftkings/marts/**)",
+      "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/caesars/marts/reporting/**)"
     ],
     "additionalDirectories": [
       "c:\\Users\\WillBreeden\\low6_dbt_azureeastus2\\models\\bet365_uf"
