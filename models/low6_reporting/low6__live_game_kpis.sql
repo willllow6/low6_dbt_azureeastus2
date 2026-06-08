@@ -192,6 +192,25 @@ cfl_fantasy as (
 
 ),
 
+opap_s2w as (
+
+    select
+        'opaps2w' as app_id,
+        count(distinct id) as entries,
+        count(distinct case when cast(submitted_at as date) = current_date() - 1 then id else null end) as yesterday_entries,
+        count(distinct case when submitted_at >= current_date() - 8 and submitted_at < current_date() then id else null end) as last_7_days_entries,
+        count(distinct case when submitted_at >= current_date() - 29 and submitted_at < current_date() then id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when cast(submitted_at as date) = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when submitted_at >= current_date() - 8 and submitted_at < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when submitted_at >= current_date() - 29 and submitted_at < current_date() then user_id else null end) as last_28_days_entrants,
+        count(distinct contest_id) as contests,
+        max(cast(submitted_at as date)) as last_entry_date
+    from  {{ source('opap_spintowin', 'entries') }}
+    group by 1
+
+),
+
 unioned as (
 
     select *
@@ -241,6 +260,11 @@ unioned as (
     
     select *
     from cfl_fantasy
+
+    union all
+
+    select *
+    from opap_s2w
 
 )
 
