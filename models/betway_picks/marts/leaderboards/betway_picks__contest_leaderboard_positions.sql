@@ -28,6 +28,7 @@ joined as (
         entries.username,
         entries.region,
         entries.contest_title,
+        entries.contest_competition,
         entries.contest_status,
         entries.contest_start_date,
         entries.contest_start_date_et,

@@ -19,6 +19,7 @@ renamed as (
         title_en as contest_title,
         pickem_status as contest_status,
         prize_text_en as contest_prize,
+        contest_type as contest_competition,
 
         ---------- numerics
 

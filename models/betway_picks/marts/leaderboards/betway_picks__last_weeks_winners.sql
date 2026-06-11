@@ -14,6 +14,7 @@ last_weeks_winners as (
         betway_SubscriberKey as SubscriberKey,
         betway_UserId as UserId,
         betway_CasinoId as CasinoId,
+        leaderboard_competition,
         'EN' as language,
         case
             when leaderboard_rank = 1
@@ -25,7 +26,7 @@ last_weeks_winners as (
     where 
         date_trunc('week', period_end) = dateadd(week,-1,date_trunc('week',CURRENT_DATE))
         and leaderboard_rank < 3
-    order by region, leaderboard_position
+    order by region, leaderboard_competition, leaderboard_position
 
 )
 

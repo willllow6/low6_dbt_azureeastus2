@@ -13,6 +13,7 @@ yesterdays_winners as (
         betway_SubscriberKey as SubscriberKey,
         betway_UserId as UserId,
         betway_CasinoId as CasinoId,
+        contest_competition,
         'EN' as language,
         case
             when leaderboard_rank = 1
@@ -24,7 +25,7 @@ yesterdays_winners as (
     where 
         contest_start_date_et = CURRENT_DATE() - 1
         and leaderboard_rank < 3
-    order by region, leaderboard_position
+    order by region, contest_competition, leaderboard_position
 
 )
 

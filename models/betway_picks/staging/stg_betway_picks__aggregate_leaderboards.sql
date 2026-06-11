@@ -21,6 +21,7 @@ renamed as (
         period_start,
         period_end,
         pickems_data as contest_data,
+        contest_type as leaderboard_competition,
 
         ---------- numerics
         total_points,

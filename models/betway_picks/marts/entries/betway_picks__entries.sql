@@ -108,6 +108,7 @@ join_tables as (
 
         contests.contest_title,
         contests.contest_status,
+        contests.contest_competition,
         contests.contest_prize,
         contests.contest_start_date,
         contests.contest_starts_at,
