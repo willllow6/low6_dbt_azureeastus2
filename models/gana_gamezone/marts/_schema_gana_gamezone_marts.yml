@@ -1,0 +1,281 @@
+version: 2
+
+models:
+
+  # --- Dimensions ---
+
+  - name: dim_gana_gamezone__users
+    description: User dimension enriched with full_name and has_email flag.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_gana_gamezone__countries
+    description: World cup team reference — country names, codes, and odds.
+    columns:
+      - name: country_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_gana_gamezone__group_contests
+    description: The World Cup group stage groups with member country lists.
+    columns:
+      - name: group_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_gana_gamezone__survivor_contests
+    description: Survivor daily match contests enriched with correct country name.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+
+  # --- Facts ---
+
+  - name: fct_gana_gamezone__registrations
+    description: One row per registered user. Registration date and type.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: registered_at
+        tests:
+          - not_null
+
+  - name: fct_gana_gamezone__predictor_entries
+    description: One row per predictor entry (one per user). Includes entry_number (always 1 per user).
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__users')
+              field: user_id
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+      - name: entered_at
+        tests:
+          - not_null
+
+  - name: fct_gana_gamezone__predictor_selections
+    description: One row per predictor selection — user × group × predicted position (1–4).
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_gana_gamezone__predictor_entries')
+              field: entry_id
+      - name: user_id
+        tests:
+          - not_null
+      - name: group_id
+        tests:
+          - not_null
+      - name: predicted_position
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4]
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+
+  - name: fct_gana_gamezone__survivor_entries
+    description: One row per user per survivor match day. Combines pick (selection) and result (score).
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__users')
+              field: user_id
+      - name: contest_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__survivor_contests')
+              field: contest_id
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+
+  # --- Marts ---
+
+  - name: mart_gana_gamezone__predictor_entries
+    description: Wide predictor entries mart joining entries with user profile data.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_gana_gamezone__predictor_selections
+    description: Wide predictor selections mart with group name and selected country name. Primary BI table for analysing group stage predictions.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_gana_gamezone__predictor_entry_metrics_daily
+    description: Daily predictor entry counts — total entries, unique entrants, first-time entrants.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+
+  - name: mart_gana_gamezone__survivor_entries
+    description: Wide survivor entries mart joining daily picks with user, contest, and country name data.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_gana_gamezone__survivor_entry_metrics_daily
+    description: Daily survivor pick counts, accuracy rate, and active user counts.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+
+  - name: mart_gana_gamezone__growth_metrics_daily
+    description: Cross-game daily growth — registrations, predictor entries, and survivor picks on a full date spine from gana_gamezone_start_date.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: mart_gana_gamezone__survivor_streaks
+    description: Latest streak state per user from survivor_scores. One row per user showing current_streak and all-time best_streak.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: current_streak
+        tests:
+          - not_null
+      - name: best_streak
+        tests:
+          - not_null
+
+  - name: mart_gana_gamezone__user_active_days
+    description: One row per user per active day. A day is active if the user made a predictor entry or a survivor selection on that date (Mexico timezone).
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+      - name: date_day
+        tests:
+          - not_null
+      - name: is_predictor_active
+        tests:
+          - not_null
+      - name: is_survivor_active
+        tests:
+          - not_null
+
+  - name: agg_gana_gamezone__predictor_selection_metrics
+    description: Per group × position × country — how many users selected each country and at what share of total entrants.
+    columns:
+      - name: group_id
+        tests:
+          - not_null
+      - name: predicted_position
+        tests:
+          - not_null
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+
+  - name: agg_gana_gamezone__survivor_selection_metrics_daily
+    description: Per day × contest × country — total picks, correct picks, and accuracy rate for each country selected on each survivor match day.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+
+  - name: agg_gana_gamezone__survivor_streak_metrics
+    description: Streak length distribution — for each streak length, how many users are currently active at that length and how many have ever reached it.
+    columns:
+      - name: streak_length
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_gana_gamezone__contest_performance_summary
+    description: Per contest performance for both games. Predictor rows are per group; survivor rows are per match day. accuracy_rate is null for predictor until results are available.
+    columns:
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor', 'survivor']
+      - name: total_entrants
+        tests:
+          - not_null

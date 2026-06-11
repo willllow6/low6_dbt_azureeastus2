@@ -89,6 +89,10 @@ models:
       +schema: opap_spintowin
       +query_tag: opap
 
+    gana_gamezone:
+      +schema: gana_gamezone
+      +query_tag: gana
+
     # staging:
     #   +schema: staging
     
@@ -105,3 +109,5 @@ vars:
   cfl_fantasy_start_date: '2026-05-22'
   opap_spintowin_start_date: '2026-06-05'
   opap_spintowin_local_timezone: 'Europe/Athens'
+  gana_gamezone_start_date: '2026-01-01'
+  gana_gamezone_local_timezone: 'America/Mexico_City'

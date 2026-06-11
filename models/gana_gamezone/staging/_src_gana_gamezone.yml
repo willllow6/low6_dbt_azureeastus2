@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+
+  - name: gana_gamezone
+    description: Gana gamezone source database — World Cup predictor and survivor games
+    database: low6_azureeastus2
+    schema: adfganagamezone
+    tags: ['gana']
+    tables:
+
+      - name: countries
+      - name: group_matches
+      - name: group_predictions
+      - name: survivor_matches
+      - name: survivor_predictions
+      - name: survivor_scores
+      - name: users

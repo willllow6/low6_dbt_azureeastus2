@@ -1,0 +1,57 @@
+version: 2
+
+models:
+
+  - name: int_gana_gamezone__predictor_selections
+    description: >
+      Predictor selections at selection grain. Derived by double LATERAL FLATTEN of
+      group_predictions.prediction — one row per user × group × predicted position (1–4).
+      Position 1 = predicted 1st place, 2 = 2nd, 3 = 3rd-place qualifier pick, 4 = 4th.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: group_id
+        tests:
+          - not_null
+      - name: predicted_position
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4]
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+
+  - name: int_gana_gamezone__survivor_entries
+    description: >
+      Survivor entries at entry grain — one row per user per match day.
+      Combines survivor_scores (result + streak) with survivor_selections (user's pick).
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']

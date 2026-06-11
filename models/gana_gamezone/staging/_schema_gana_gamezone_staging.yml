@@ -1,0 +1,120 @@
+version: 2
+
+models:
+
+  - name: stg_gana_gamezone__users
+    description: Cleaned user records. One row per registered user. Registration is via Clerk form.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: registration_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['form']
+
+  - name: stg_gana_gamezone__countries
+    description: World cup team reference data. One row per country.
+    columns:
+      - name: country_id
+        tests:
+          - unique
+          - not_null
+      - name: country_name
+        tests:
+          - not_null
+
+  - name: stg_gana_gamezone__group_contests
+    description: World Cup group stage groups. One row per group (A–E+). Used as reference for predictor selections.
+    columns:
+      - name: group_id
+        tests:
+          - unique
+          - not_null
+      - name: group_name
+        tests:
+          - not_null
+
+  - name: stg_gana_gamezone__group_predictions
+    description: Predictor entries at entry grain. One row per user. VARIANT prediction column is flattened downstream.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['predictor']
+
+  - name: stg_gana_gamezone__survivor_contests
+    description: Survivor daily match contests. One row per match day.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+      - name: day
+        tests:
+          - not_null
+      - name: contest_status
+        tests:
+          - not_null
+
+  - name: stg_gana_gamezone__survivor_selections
+    description: User daily picks for the survivor game. One row per user per match day. Source correct_answer column renamed to selected_country_id.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
+
+  - name: stg_gana_gamezone__survivor_scores
+    description: Rolling streak scores per user per match day. One row per user per contest.
+    columns:
+      - name: score_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['survivor']
