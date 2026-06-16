@@ -8,12 +8,8 @@ date_spine as (
 
 ),
 
-tenants as (
-    select tenant_id, tenant_name from {{ ref('stg_bet365_uf__tenants') }}
-),
-
 entries as (
-    select user_id, client_id, tenant_id, game_type, entered_at, entry_number
+    select user_id, client_id, game_type, entered_at, entry_number
     from {{ ref('fct_bet365_uf__entries') }}
 ),
 
@@ -43,11 +39,8 @@ spine as (
     select
         date_spine.date_day,
         'bet365' as client_id,
-        tenants.tenant_id,
-        tenants.tenant_name,
         'fantasy' as game_type
     from date_spine
-    cross join tenants
 
 ),
 
@@ -56,7 +49,6 @@ daily_entries as (
     select
         cast(convert_timezone('UTC', '{{ var("local_timezone") }}', entries.entered_at) as date) as date_day,
         entries.client_id,
-        entries.tenant_id,
         entries.game_type,
         count(distinct entries.user_id) as total_entrants,
         count(*) as total_entries,
@@ -65,7 +57,7 @@ daily_entries as (
     from entries
     inner join users
         on entries.user_id = users.user_id
-    group by 1, 2, 3, 4
+    group by 1, 2, 3
 
 ),
 
@@ -102,8 +94,6 @@ joined as (
     select
         spine.date_day,
         spine.client_id,
-        spine.tenant_id,
-        spine.tenant_name,
         spine.game_type,
         coalesce(dr.new_registrations, 0) as new_registrations,
         coalesce(dr.playable_users, 0) as playable_users,
@@ -120,7 +110,6 @@ joined as (
     left join daily_entries as de
         on spine.date_day = de.date_day
         and spine.client_id = de.client_id
-        and spine.tenant_id = de.tenant_id
         and spine.game_type = de.game_type
     left join daily_registrations as dr
         on spine.date_day = dr.date_day
@@ -136,8 +125,6 @@ joined as (
 select
     date_day,
     client_id,
-    tenant_id,
-    tenant_name,
     game_type,
     new_registrations,
     playable_users,

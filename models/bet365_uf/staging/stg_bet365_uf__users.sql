@@ -69,10 +69,10 @@ renamed as (
 
         IsTester as is_tester,
 
-        parse_json(ContactPermissions):optin1Accepted::boolean as has_agreed_privacy_policy,
-        parse_json(ContactPermissions):optin2Accepted::boolean as has_accepted_terms_and_conditions,
-        parse_json(ContactPermissions):optin3Accepted::boolean as has_confirmed_18_plus,
-        parse_json(ContactPermissions):optin4Accepted::boolean as has_consented_marketing,
+        parse_json(ContactPermissions):optin1Accepted:enabled::boolean as has_agreed_privacy_policy,
+        parse_json(ContactPermissions):optin2Accepted:enabled::boolean as has_accepted_terms_and_conditions,
+        parse_json(ContactPermissions):optin3Accepted:enabled::boolean as has_confirmed_18_plus,
+        parse_json(ContactPermissions):optin4Accepted:enabled::boolean as has_consented_marketing,
         IsProfileComplete as has_completed_profile,
 
         ---------- dates
