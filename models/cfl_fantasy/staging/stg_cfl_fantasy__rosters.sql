@@ -17,6 +17,9 @@ renamed as (
         'fantasy' as game_type,
         slotKey as slot_key,
 
+        ---------- numerics
+        week as fantasy_week,
+
         ---------- booleans
         bench as is_bench,
 

@@ -33,18 +33,20 @@ sport_teams as (
 roster_stats as (
     select
         player_id,
+        fantasy_week,
         count(*) as total_roster_spots,
         count(distinct entry_id) as teams_rostered_on,
         count(distinct contest_id) as leagues_present_in,
         sum(case when is_bench = false then 1 else 0 end) as starter_slots,
         sum(case when is_bench = true then 1 else 0 end) as bench_slots
     from human_rosters
-    group by 1
+    group by 1, 2
 ),
 
 enriched as (
     select
         rs.player_id,
+        rs.fantasy_week,
         p.full_name as player_name,
         p.first_name,
         p.last_name,
