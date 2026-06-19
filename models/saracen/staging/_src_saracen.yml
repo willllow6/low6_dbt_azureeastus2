@@ -36,3 +36,20 @@ sources:
       - name: teams
       - name: users
       - name: userselections
+
+  - name: saracen_bracket_nbafinals2026
+    description: saracen bracket NBA Finals 2026 archived schema
+    database: low6_azureeastus2
+    schema: adfsaracenbracket_nbafinals2026
+    tags: ['saracen']
+    tables:
+      - name: brackets
+      - name: conferences
+      - name: leagues
+      - name: leagueusers
+      - name: matches
+      - name: rounds
+      - name: selectionmatches
+      - name: teams
+      - name: users
+      - name: userselections

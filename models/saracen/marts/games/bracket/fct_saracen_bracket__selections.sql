@@ -9,8 +9,8 @@ select
     s.created_date,
     s.created_at,
     s.updated_at
-from {{ ref('stg_saracen_bracket__selections') }} as s 
-left join {{ ref('stg_saracen_bracket__teams') }} as t 
+from {{ ref('int_saracen_bracket__selections_unioned') }} as s
+left join {{ ref('int_saracen_bracket__teams_unioned') }} as t
     on s.selected_team_id = t.team_id
-left join {{ ref('stg_saracen_bracket__entries') }} as e 
+left join {{ ref('int_saracen_bracket__entries_unioned') }} as e
     on s.entry_id = e.entry_id

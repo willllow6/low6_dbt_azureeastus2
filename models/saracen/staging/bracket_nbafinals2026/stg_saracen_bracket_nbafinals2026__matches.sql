@@ -3,7 +3,7 @@ with
 source as (
 
     select *
-    from {{ source('saracen_bracket', 'matches') }}
+    from {{ source('saracen_bracket_nbafinals2026', 'matches') }}
 
 ),
 
@@ -20,7 +20,7 @@ renamed as (
         winnerteamid as winner_team_id,
 
         ---------- strings
-        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
+        'nba_finals_2026' as tournament_name,
         slot as match_slot,
         result,
         competition as contest_name,
@@ -38,7 +38,6 @@ renamed as (
         starttimeutc as match_starts_at
 
     from source
-
 
 )
 

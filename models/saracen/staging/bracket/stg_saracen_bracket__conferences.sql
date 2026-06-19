@@ -15,6 +15,7 @@ renamed as (
         conferenceid as conference_id,
 
         ---------- strings
+        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
         name as conference_name,
         competition as competition_name,
 

@@ -7,6 +7,27 @@ bracket_selections as (
 
 ),
 
+match_info as (
+
+    select match_id, tournament_name
+    from {{ ref('dim_saracen_bracket__matches') }}
+
+),
+
+joined as (
+
+    select
+        match_info.tournament_name as contest_name,
+        bracket_selections.conference_name,
+        bracket_selections.round_name,
+        bracket_selections.match_slot,
+        bracket_selections.selected_team_name
+    from bracket_selections
+    left join match_info
+        on bracket_selections.match_id = match_info.match_id
+
+),
+
 agg_bracket_selections as (
 
     select
@@ -16,8 +37,8 @@ agg_bracket_selections as (
         match_slot,
         selected_team_name,
         count(*) as selections
-    from bracket_selections
-    group by 1,2,3,4,5
+    from joined
+    group by 1, 2, 3, 4, 5
 
 )
 

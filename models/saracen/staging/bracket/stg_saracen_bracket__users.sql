@@ -18,6 +18,7 @@ renamed as (
         accountid as account_id,
 
         ---------- strings
+        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
         firstname as first_name,
         lastname as last_name,
         email,

@@ -1,2 +1,2 @@
 select *
-from {{ ref('stg_saracen_bracket__leagues') }}
+from {{ ref('int_saracen_bracket__leagues_unioned') }}

@@ -3,7 +3,7 @@ with
 source as (
 
     select *
-    from {{ source('saracen_bracket', 'brackets') }}
+    from {{ source('saracen_bracket_nbafinals2026', 'brackets') }}
 
 ),
 
@@ -16,9 +16,9 @@ renamed as (
         'BKT_' || competition as contest_sk,
 
         ---------- strings
-        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
+        'nba_finals_2026' as tournament_name,
         competition as contest_name,
-        case 
+        case
             when sysdate() < openselectionsutc or openselectionsutc is null
                 then 'DRAFT'
             when sysdate() >= openselectionsutc and sysdate() < closeselectionsutc
@@ -40,10 +40,9 @@ renamed as (
         openselectionsutc::timestamp_ntz as contest_opens_at,
         convert_timezone('UTC','America/New_York',openselectionsutc::timestamp_ntz) as contest_opens_at_et,
         closeselectionsutc::timestamp_ntz as contest_starts_at,
-        convert_timezone('UTC','America/New_York',closeselectionsutc::timestamp_ntz) as contest_starts_at_et 
+        convert_timezone('UTC','America/New_York',closeselectionsutc::timestamp_ntz) as contest_starts_at_et
 
     from source
-
 
 )
 

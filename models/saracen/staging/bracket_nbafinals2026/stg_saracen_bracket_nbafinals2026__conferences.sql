@@ -3,7 +3,7 @@ with
 source as (
 
     select *
-    from {{ source('saracen_bracket', 'rounds') }}
+    from {{ source('saracen_bracket_nbafinals2026', 'conferences') }}
 
 ),
 
@@ -12,15 +12,14 @@ renamed as (
     select
 
         ----------  ids
-        roundid as round_id,
+        conferenceid as conference_id,
 
         ---------- strings
-        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
-        name as round_name,
+        'nba_finals_2026' as tournament_name,
+        name as conference_name,
         competition as competition_name,
 
         ---------- numerics
-        point as round_points,
 
         ---------- booleans
 
@@ -31,7 +30,6 @@ renamed as (
         createdat as created_at
 
     from source
-
 
 )
 

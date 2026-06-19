@@ -3,14 +3,14 @@ with
 source as (
 
     select *
-    from {{ source('saracen_bracket', 'userselections') }}
+    from {{ source('saracen_bracket_nbafinals2026', 'userselections') }}
 
 ),
 
 users as (
 
     select *
-    from {{ source('saracen_bracket', 'users') }}
+    from {{ source('saracen_bracket_nbafinals2026', 'users') }}
 
 ),
 
@@ -27,7 +27,7 @@ renamed as (
 
         ---------- strings
         'bracket' as game_type,
-        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
+        'nba_finals_2026' as tournament_name,
         source.name as user_bracket_name,
         source.competition as competition_name,
 
@@ -51,9 +51,8 @@ renamed as (
         source.createdat::timestamp_ntz as created_at,
         convert_timezone('UTC','America/New_York',source.createdat::timestamp_ntz) as created_at_et
 
-
     from source
-    left join users 
+    left join users
         on source.userid = users.userid
 
 )

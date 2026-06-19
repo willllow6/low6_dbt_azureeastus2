@@ -3,8 +3,7 @@ with
 source as (
 
     select *
-    from {{ source('saracen_bracket', 'leagueusers') }}
-    -- where _fivetran_deleted = false
+    from {{ source('saracen_bracket_nbafinals2026', 'leagueusers') }}
 
 ),
 
@@ -18,7 +17,7 @@ renamed as (
         userid as user_id,
 
         ---------- strings
-        '{{ var("saracen_bracket_current_tournament") }}' as tournament_name,
+        'nba_finals_2026' as tournament_name,
 
         ---------- numerics
 
@@ -31,7 +30,6 @@ renamed as (
         createdat as league_joined_at
 
     from source
-
 
 )
 

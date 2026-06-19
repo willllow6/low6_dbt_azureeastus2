@@ -9,18 +9,20 @@ pickem_users as (
         created_date_et as pickem_created_date_et,
         created_at_et as pickem_created_at_et
     from {{ ref('stg_saracen_picks__users') }}
+    where 1 = 0 -- picks on dev; remove when connected to prod
 
 ),
 
 bracket_users as (
-    
-    select 
-        sso_user_id, 
+
+    select
+        sso_user_id,
         user_id as bracket_user_id,
         username as bracket_username,
         created_date_et as bracket_created_date_et,
         created_at_et as bracket_created_at_et
-    from {{ ref('stg_saracen_bracket__users') }}
+    from {{ ref('int_saracen_bracket__users_unioned') }}
+    qualify row_number() over (partition by sso_user_id order by created_at_et asc) = 1
 
 )
 

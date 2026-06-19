@@ -14,6 +14,7 @@ pickem_entries as (
         entered_at,
         entered_at_et
     from {{ ref('int_saracen_picks__selections_to_entries') }}  as e
+    where 1 = 0 -- picks on dev; remove when connected to prod
 
 ),
 
@@ -31,7 +32,7 @@ bracket_entries as (
         created_date_et as entry_date_et,
         created_at as entered_at,
         created_at_et as entered_at_et
-    from {{ ref('stg_saracen_bracket__entries') }} 
+    from {{ ref('int_saracen_bracket__entries_unioned') }} 
 
 )
 

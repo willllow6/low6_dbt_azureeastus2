@@ -1,2 +1,2 @@
 select *
-from {{ ref('stg_saracen_bracket__users') }}
+from {{ ref('int_saracen_bracket__users_unioned') }}

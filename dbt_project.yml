@@ -111,3 +111,4 @@ vars:
   opap_spintowin_local_timezone: 'Europe/Athens'
   gana_gamezone_start_date: '2026-01-01'
   gana_gamezone_local_timezone: 'America/Mexico_City'
+  saracen_bracket_current_tournament: 'world_cup_2026'
