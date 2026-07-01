@@ -72,6 +72,10 @@ models:
       +schema: saracen
       +query_tag: saracen
 
+    bet99_bracket:
+      +schema: bet99_bracket
+      +query_tag: bet99
+
     bet365_uf:
       +schema: bet365_uf
       +query_tag: bet365
@@ -112,3 +116,5 @@ vars:
   gana_gamezone_start_date: '2026-01-01'
   gana_gamezone_local_timezone: 'America/Mexico_City'
   saracen_bracket_current_tournament: 'world_cup_2026'
+  bet99_bracket_current_tournament: 'world_cup_2026'
+  bet99_bracket_start_date: '2026-01-01'

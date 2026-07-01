@@ -156,7 +156,7 @@ saracen_picks as (
 saracen_bracket as (
 
     select
-        'sbkt' as app_id,
+        'sbktwc' as app_id,
         count(*) as entries,
         count_if(cast(createdat as date) = current_date() - 1) as yesterday_entries,
         count_if(createdat >= current_date() - 8 and createdat < current_date()) as last_7_days_entries,
@@ -249,6 +249,25 @@ gana_survivor as (
 
 ),
 
+bet99_bracket as (
+
+    select
+        'b99bkt' as app_id,
+        count(distinct userselectionid) as entries,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userselectionid else null end) as yesterday_entries,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userselectionid else null end) as last_7_days_entries,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userselectionid else null end) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        1 as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('bet99_bracket', 'userselections') }}
+    group by 1
+
+),
+
 unioned as (
 
     select *
@@ -313,6 +332,11 @@ unioned as (
 
     select *
     from gana_survivor
+
+    union all
+    
+    select *
+    from bet99_bracket
 
 )
 

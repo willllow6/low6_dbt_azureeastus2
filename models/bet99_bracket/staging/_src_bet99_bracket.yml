@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+
+  - name: bet99_bracket
+    description: bet99 bracket db
+    database: low6_azureeastus2
+    schema: adfbet99bracket
+    tags: ['bet99']
+    tables:
+      - name: brackets
+      - name: conferences
+      - name: leagues
+      - name: leagueusers
+      - name: matches
+      - name: rounds
+      - name: selectionmatches
+      - name: teams
+      - name: users
+      - name: userselections
