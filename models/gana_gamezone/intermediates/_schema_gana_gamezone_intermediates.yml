@@ -35,6 +35,49 @@ models:
           - accepted_values:
               values: ['predictor']
 
+  - name: int_gana_gamezone__bracket_selections
+    description: >
+      Bracket selections at selection grain — one row per user per match.
+      Deduplicates to latest pick per (user_id, match_id) using QUALIFY.
+      Joins to bracket_matches to derive is_correct (null until match is decided).
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: match_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
+
+  - name: int_gana_gamezone__bracket_entries
+    description: >
+      Bracket entries at entry grain — one row per user (the whole tournament is one entry).
+      Aggregates int_gana_gamezone__bracket_selections. entry_id = user_id || '-gana_bracket'.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
+
   - name: int_gana_gamezone__survivor_entries
     description: >
       Survivor entries at entry grain — one row per user per match day.

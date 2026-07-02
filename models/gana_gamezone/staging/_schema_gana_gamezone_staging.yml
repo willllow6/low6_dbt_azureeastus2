@@ -100,6 +100,45 @@ models:
           - accepted_values:
               values: ['survivor']
 
+  - name: stg_gana_gamezone__bracket_matches
+    description: Bracket tournament match reference data. One row per match. countries VARIANT holds two competing team ids.
+    columns:
+      - name: match_id
+        tests:
+          - unique
+          - not_null
+      - name: round
+        tests:
+          - not_null
+      - name: bracket_position
+        tests:
+          - not_null
+
+  - name: stg_gana_gamezone__bracket_selections
+    description: User predictions for bracket matches. One row per user per match (source grain). Source winner column renamed to selected_country_id.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: match_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
+
   - name: stg_gana_gamezone__survivor_scores
     description: Rolling streak scores per user per match day. One row per user per contest.
     columns:

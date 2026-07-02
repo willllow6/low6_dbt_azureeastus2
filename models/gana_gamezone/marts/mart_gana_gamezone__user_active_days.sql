@@ -19,11 +19,22 @@ survivor_activity as (
 
 ),
 
+bracket_activity as (
+
+    select
+        user_id,
+        cast(convert_timezone('UTC', '{{ var("gana_gamezone_local_timezone") }}', selected_at) as date)    as date_day
+    from {{ ref('fct_gana_gamezone__bracket_selections') }}
+
+),
+
 all_activity as (
 
     select user_id, date_day from predictor_activity
     union
     select user_id, date_day from survivor_activity
+    union
+    select user_id, date_day from bracket_activity
 
 ),
 
@@ -44,7 +55,8 @@ joined as (
         'Gana'                                  as tenant_name,
         a.date_day,
         p.user_id is not null                   as is_predictor_active,
-        s.user_id is not null                   as is_survivor_active
+        s.user_id is not null                   as is_survivor_active,
+        b.user_id is not null                   as is_bracket_active
     from all_activity as a
     left join users as u
         on a.user_id = u.user_id
@@ -52,6 +64,8 @@ joined as (
         on a.user_id = p.user_id and a.date_day = p.date_day
     left join survivor_activity as s
         on a.user_id = s.user_id and a.date_day = s.date_day
+    left join bracket_activity as b
+        on a.user_id = b.user_id and a.date_day = b.date_day
 
 )
 

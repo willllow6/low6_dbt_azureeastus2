@@ -28,6 +28,14 @@ models:
           - unique
           - not_null
 
+  - name: dim_gana_gamezone__bracket_matches
+    description: Bracket tournament match reference data enriched with competing team names and correct country name.
+    columns:
+      - name: match_id
+        tests:
+          - unique
+          - not_null
+
   - name: dim_gana_gamezone__survivor_contests
     description: Survivor daily match contests enriched with correct country name.
     columns:
@@ -112,6 +120,53 @@ models:
           - accepted_values:
               values: ['predictor']
 
+  - name: fct_gana_gamezone__bracket_selections
+    description: One row per user per bracket match (selection grain). Deduplicated to latest pick. Includes is_correct (null until match decided).
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__users')
+              field: user_id
+      - name: match_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__bracket_matches')
+              field: match_id
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
+
+  - name: fct_gana_gamezone__bracket_entries
+    description: One row per user (entry grain) — the whole bracket tournament is one entry per user.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_gana_gamezone__users')
+              field: user_id
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
+
   - name: fct_gana_gamezone__survivor_entries
     description: One row per user per survivor match day. Combines pick (selection) and result (score).
     columns:
@@ -166,6 +221,22 @@ models:
           - not_null
           - accepted_values:
               values: ['predictor']
+
+  - name: mart_gana_gamezone__bracket_entries
+    description: Wide bracket entries mart — one row per user. Joins entry with user profile data.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_gana_gamezone__bracket_selections
+    description: Wide bracket selections mart — one row per user per match. Joins to match dim, user, and selected country name.
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
 
   - name: mart_gana_gamezone__survivor_entries
     description: Wide survivor entries mart joining daily picks with user, contest, and country name data.
@@ -223,6 +294,24 @@ models:
       - name: is_survivor_active
         tests:
           - not_null
+      - name: is_bracket_active
+        tests:
+          - not_null
+
+  - name: agg_gana_gamezone__bracket_selection_metrics
+    description: Per bracket match × country picked — total picks, correct picks, and accuracy rate.
+    columns:
+      - name: match_id
+        tests:
+          - not_null
+      - name: selected_country_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bracket']
 
   - name: agg_gana_gamezone__predictor_selection_metrics
     description: Per group × position × country — how many users selected each country and at what share of total entrants.
@@ -275,7 +364,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor', 'survivor']
+              values: ['predictor', 'survivor', 'bracket']
       - name: total_entrants
         tests:
           - not_null

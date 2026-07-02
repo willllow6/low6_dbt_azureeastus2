@@ -45,6 +45,17 @@ survivor_picks as (
 
 ),
 
+bracket_entries as (
+
+    select
+        cast(convert_timezone('UTC', '{{ var("gana_gamezone_local_timezone") }}', entered_at) as date)   as date_day,
+        count(entry_id)                             as bracket_entries,
+        count(distinct user_id)                     as bracket_unique_entrants
+    from {{ ref('fct_gana_gamezone__bracket_entries') }}
+    group by 1
+
+),
+
 joined as (
 
     select
@@ -54,7 +65,9 @@ joined as (
         coalesce(pe.predictor_entries, 0)           as predictor_entries,
         coalesce(pe.predictor_unique_entrants, 0)   as predictor_unique_entrants,
         coalesce(sp.survivor_picks, 0)              as survivor_picks,
-        coalesce(sp.survivor_unique_pickers, 0)     as survivor_unique_pickers
+        coalesce(sp.survivor_unique_pickers, 0)     as survivor_unique_pickers,
+        coalesce(be.bracket_entries, 0)             as bracket_entries,
+        coalesce(be.bracket_unique_entrants, 0)     as bracket_unique_entrants
     from date_spine as d
     left join registrations as r
         on d.date_day = r.date_day
@@ -62,6 +75,8 @@ joined as (
         on d.date_day = pe.date_day
     left join survivor_picks as sp
         on d.date_day = sp.date_day
+    left join bracket_entries as be
+        on d.date_day = be.date_day
 
 )
 

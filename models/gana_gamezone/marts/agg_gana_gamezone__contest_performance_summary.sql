@@ -40,8 +40,32 @@ survivor as (
     where selected_country_id is not null
     group by 1, 2, 3, 4, 5, 6
 
+),
+
+-- Bracket: one row for the whole tournament
+bracket as (
+
+    select
+        client_id,
+        tenant_id,
+        tenant_name,
+        game_type,
+        'gana_bracket'                                                                                      as contest_id,
+        'World Cup Bracket'                                                                                 as contest_name,
+        cast(convert_timezone('UTC', '{{ var("gana_gamezone_local_timezone") }}', min(selected_at)) as date) as contest_date,
+        count(distinct user_id)                                                                             as total_entrants,
+        null::integer                                                                                       as correct_entrants,
+        div0(
+            sum(case when is_correct then 1 else 0 end),
+            sum(case when is_correct is not null then 1 else 0 end)
+        )                                                                                                   as accuracy_rate
+    from {{ ref('mart_gana_gamezone__bracket_selections') }}
+    group by 1, 2, 3, 4
+
 )
 
 select * from predictor
 union all
 select * from survivor
+union all
+select * from bracket
