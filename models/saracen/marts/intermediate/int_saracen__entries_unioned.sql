@@ -14,7 +14,7 @@ pickem_entries as (
         entered_at,
         entered_at_et
     from {{ ref('int_saracen_picks__selections_to_entries') }}  as e
-    where 1 = 0 -- picks on dev; remove when connected to prod
+    -- where 1 = 0 -- picks on dev; remove when connected to prod
 
 ),
 
