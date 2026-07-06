@@ -34,35 +34,48 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   low6_dbt_azureeastus2:
     # Config indicated by + and applies to all files under models/example/
+
+    _archive:
+
+      pln_arcade:
+        +schema: pln_arcade
+        +query_tag: pln
+        +enabled: false
+      
+      sackings_picks:
+        +schema: sackings_picks
+        +query_tag: sackings
+        +enabled: false
+      
+      oilers_picks:
+        +schema: oilers_picks
+        +query_tag: oilers
+        +pre-hook: "{{ create_share('oilers_share',['RFA58902']) }}"
+        +enabled: false
+      
+      fanstake_rivals:
+        +schema: fanstake_rivals
+        +query_tag: fanstake
+        +enabled: false
+
+      penn:
+        +schema: penn
+        +query_tag: penn
+        +pre-hook: "{{ create_share('penn_share',['CTA82874']) }}"
+        +enabled: false
+
     bet365_overunder:
       +schema: bet365_overunder
       +query_tag: bet365
-
-    pln_arcade:
-      +schema: pln_arcade
-      +query_tag: pln
 
     betway_picks:
       +schema: betway_picks
       +query_tag: betway
       +pre-hook: "{{ create_share('betway_share',['EHA76962']) }}"
 
-    sackings_picks:
-      +schema: sackings_picks
-      +query_tag: sackings
-
-    oilers_picks:
-      +schema: oilers_picks
-      +query_tag: oilers
-      +pre-hook: "{{ create_share('oilers_share',['RFA58902']) }}"
-
     bet99_picks:
       +schema: bet99_picks
       +query_tag: bet99
-
-    fanstake_rivals:
-      +schema: fanstake_rivals
-      +query_tag: fanstake
 
     elf_collectyourelf:
       +schema: elf_collectyourelf
@@ -79,11 +92,6 @@ models:
     bet365_uf:
       +schema: bet365_uf
       +query_tag: bet365
-
-    penn:
-      +schema: penn
-      +query_tag: penn
-      +pre-hook: "{{ create_share('penn_share',['CTA82874']) }}"
 
     cfl_fantasy:
       +schema: cfl_fantasy
