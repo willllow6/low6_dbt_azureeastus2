@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+
+  - name: archive
+    description: Archived game and retention metrics
+    database: low6_azureeastus2
+    schema: analytics_archive
+    tags: ['archive']
+    tables:
+
+      - name: game_cohort_retention_weekly
+      - name: game_metrics_daily

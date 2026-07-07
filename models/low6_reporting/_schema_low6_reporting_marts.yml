@@ -1,0 +1,74 @@
+version: 2
+
+models:
+
+  - name: agg_low6__game_metrics_daily
+    description: >
+      Cross-game daily metrics grain of (date_day, game_id, game_type, tenant_name).
+      Covers all active game domains except elf_collectyourelf (no entries/contest
+      concept). saracen and gana_gamezone each contribute multiple game_ids because
+      a single domain produces more than one game_type. gana_gamezone's
+      registrations are replicated identically across its 3 game_ids (gana_predictor,
+      gana_survivor, gana_bracket) since registration is platform-level, not
+      per-game — summing registrations across game_id will triple-count gana.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: game_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - pickem
+                - bracket
+                - fantasy
+                - streak
+                - spin_to_win
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - date_day
+            - game_id
+            - game_type
+            - tenant_name
+
+  - name: agg_low6__cohort_retention_weekly
+    description: >
+      Cross-game weekly cohort retention grain of (game_id, game_type, tenant_name,
+      cohort_week, activity_week). Reuses agg_{domain}__cohort_retention_weekly
+      directly for cfl_fantasy, bet365_uf, and opap_spintowin; built inline from
+      entries for the other domains.
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+      - name: game_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - pickem
+                - bracket
+                - fantasy
+                - streak
+                - spin_to_win
+
+  - name: agg_low6__all_game_metrics_daily
+    description: >
+      Union of agg_low6__game_metrics_daily with any archive table in
+      ANALYTICS_ARCHIVE. Currently a pure passthrough view — no archive exists yet.
+
+  - name: agg_low6__all_cohort_retention_weekly
+    description: >
+      Union of agg_low6__cohort_retention_weekly with any archive table in
+      ANALYTICS_ARCHIVE. Currently a pure passthrough view — no archive exists yet.
