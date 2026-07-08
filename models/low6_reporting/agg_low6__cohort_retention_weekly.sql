@@ -12,6 +12,9 @@
 -- where a reused model carries a hardcoded single-tenant value (e.g. opap's
 -- 'OPAP') — see agg_low6__game_metrics_daily.sql for the same convention.
 -- saracen and gana_gamezone split the same way as in agg_low6__game_metrics_daily.
+-- elf_blast/elf_ski and newscorp_matchup/newscorp_trivia are built inline here,
+-- following the same single-tenant treatment and new game_type values as
+-- agg_low6__game_metrics_daily.sql.
 
 with
 
@@ -508,6 +511,223 @@ game_cohort_gana_bracket as (
 ),
 
 --------------------------------------------------------------------------------
+-- elf_blast / elf_ski (candy_crush / endless_runner)
+-- Same single-tenant treatment and game_type values as agg_low6__game_metrics_daily.
+--------------------------------------------------------------------------------
+
+elf_blast_entries as (
+    select user_id, entry_date_et as entry_date
+    from {{ ref('INT_ELF_BLAST__ENTRIES') }}
+),
+
+elf_blast_cohort_weeks as (
+    select user_id, date_trunc('week', min(entry_date))::date as cohort_week
+    from elf_blast_entries group by 1
+),
+
+elf_blast_cohort_sizes as (
+    select cohort_week, count(distinct user_id) as cohort_size
+    from elf_blast_cohort_weeks group by 1
+),
+
+elf_blast_user_cohort_activity as (
+    select
+        cw.cohort_week,
+        date_trunc('week', e.entry_date)::date as activity_week,
+        e.user_id
+    from elf_blast_entries e
+    inner join elf_blast_cohort_weeks cw on e.user_id = cw.user_id
+),
+
+elf_blast_retention as (
+    select
+        uca.cohort_week,
+        uca.activity_week,
+        datediff('week', uca.cohort_week, uca.activity_week) as weeks_since_cohort,
+        cs.cohort_size,
+        count(distinct uca.user_id) as retained_users,
+        round(count(distinct uca.user_id) / cs.cohort_size::float, 4) as retention_rate
+    from elf_blast_user_cohort_activity uca
+    inner join elf_blast_cohort_sizes cs on uca.cohort_week = cs.cohort_week
+    group by 1, 2, 3, 4
+),
+
+game_cohort_elf_blast as (
+    select
+        cohort_week, activity_week,
+        'elf_blast' as game_id,
+        'ELF Blast' as game_name,
+        'candy_crush' as game_type,
+        'elf' as client_id,
+        'elf_blast' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from elf_blast_retention
+),
+
+elf_ski_entries as (
+    select user_id, entry_date_et as entry_date
+    from {{ ref('INT_ELF_SKI__ENTRIES') }}
+),
+
+elf_ski_cohort_weeks as (
+    select user_id, date_trunc('week', min(entry_date))::date as cohort_week
+    from elf_ski_entries group by 1
+),
+
+elf_ski_cohort_sizes as (
+    select cohort_week, count(distinct user_id) as cohort_size
+    from elf_ski_cohort_weeks group by 1
+),
+
+elf_ski_user_cohort_activity as (
+    select
+        cw.cohort_week,
+        date_trunc('week', e.entry_date)::date as activity_week,
+        e.user_id
+    from elf_ski_entries e
+    inner join elf_ski_cohort_weeks cw on e.user_id = cw.user_id
+),
+
+elf_ski_retention as (
+    select
+        uca.cohort_week,
+        uca.activity_week,
+        datediff('week', uca.cohort_week, uca.activity_week) as weeks_since_cohort,
+        cs.cohort_size,
+        count(distinct uca.user_id) as retained_users,
+        round(count(distinct uca.user_id) / cs.cohort_size::float, 4) as retention_rate
+    from elf_ski_user_cohort_activity uca
+    inner join elf_ski_cohort_sizes cs on uca.cohort_week = cs.cohort_week
+    group by 1, 2, 3, 4
+),
+
+game_cohort_elf_ski as (
+    select
+        cohort_week, activity_week,
+        'elf_ski' as game_id,
+        'ELF Ski' as game_name,
+        'endless_runner' as game_type,
+        'elf' as client_id,
+        'elf_blast' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from elf_ski_retention
+),
+
+--------------------------------------------------------------------------------
+-- newscorp_matchup (connections)
+--------------------------------------------------------------------------------
+
+nc_matchup_entries as (
+    select user_id, game_attempt_date_aet as entry_date
+    from {{ ref('nc_matchup__game_attempts') }}
+),
+
+nc_matchup_cohort_weeks as (
+    select user_id, date_trunc('week', min(entry_date))::date as cohort_week
+    from nc_matchup_entries group by 1
+),
+
+nc_matchup_cohort_sizes as (
+    select cohort_week, count(distinct user_id) as cohort_size
+    from nc_matchup_cohort_weeks group by 1
+),
+
+nc_matchup_user_cohort_activity as (
+    select
+        cw.cohort_week,
+        date_trunc('week', e.entry_date)::date as activity_week,
+        e.user_id
+    from nc_matchup_entries e
+    inner join nc_matchup_cohort_weeks cw on e.user_id = cw.user_id
+),
+
+nc_matchup_retention as (
+    select
+        uca.cohort_week,
+        uca.activity_week,
+        datediff('week', uca.cohort_week, uca.activity_week) as weeks_since_cohort,
+        cs.cohort_size,
+        count(distinct uca.user_id) as retained_users,
+        round(count(distinct uca.user_id) / cs.cohort_size::float, 4) as retention_rate
+    from nc_matchup_user_cohort_activity uca
+    inner join nc_matchup_cohort_sizes cs on uca.cohort_week = cs.cohort_week
+    group by 1, 2, 3, 4
+),
+
+game_cohort_newscorp_matchup as (
+    select
+        cohort_week, activity_week,
+        'newscorp_matchup' as game_id,
+        'NewsCorp Matchup' as game_name,
+        'connections' as game_type,
+        'newscorp' as client_id,
+        'newscorp_matchup' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from nc_matchup_retention
+),
+
+--------------------------------------------------------------------------------
+-- newscorp_trivia (trivia)
+--------------------------------------------------------------------------------
+
+nc_trivia_entries as (
+    select user_id, entered_date_aet as entry_date
+    from {{ ref('nc_trivia__user_entries') }}
+),
+
+nc_trivia_cohort_weeks as (
+    select user_id, date_trunc('week', min(entry_date))::date as cohort_week
+    from nc_trivia_entries group by 1
+),
+
+nc_trivia_cohort_sizes as (
+    select cohort_week, count(distinct user_id) as cohort_size
+    from nc_trivia_cohort_weeks group by 1
+),
+
+nc_trivia_user_cohort_activity as (
+    select
+        cw.cohort_week,
+        date_trunc('week', e.entry_date)::date as activity_week,
+        e.user_id
+    from nc_trivia_entries e
+    inner join nc_trivia_cohort_weeks cw on e.user_id = cw.user_id
+),
+
+nc_trivia_retention as (
+    select
+        uca.cohort_week,
+        uca.activity_week,
+        datediff('week', uca.cohort_week, uca.activity_week) as weeks_since_cohort,
+        cs.cohort_size,
+        count(distinct uca.user_id) as retained_users,
+        round(count(distinct uca.user_id) / cs.cohort_size::float, 4) as retention_rate
+    from nc_trivia_user_cohort_activity uca
+    inner join nc_trivia_cohort_sizes cs on uca.cohort_week = cs.cohort_week
+    group by 1, 2, 3, 4
+),
+
+game_cohort_newscorp_trivia as (
+    select
+        cohort_week, activity_week,
+        'newscorp_trivia' as game_id,
+        'NewsCorp Trivia' as game_name,
+        'trivia' as game_type,
+        'newscorp' as client_id,
+        'newscorp_trivia' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from nc_trivia_retention
+),
+
+--------------------------------------------------------------------------------
 -- Reused domain-level cohort models (already spec-conformant)
 --------------------------------------------------------------------------------
 
@@ -576,3 +796,11 @@ union all
 select * from game_cohort_bet365_uf
 union all
 select * from game_cohort_opap_spintowin
+union all
+select * from game_cohort_elf_blast
+union all
+select * from game_cohort_elf_ski
+union all
+select * from game_cohort_newscorp_matchup
+union all
+select * from game_cohort_newscorp_trivia

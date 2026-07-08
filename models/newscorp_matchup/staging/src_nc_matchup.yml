@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+
+  - name: newscorp_matchup
+    description: Newscorp Matchup
+    database: low6_azureeastus2
+    schema: adfncmatchupprod
+    tags: ['newscorp']
+    tables:
+      - name: categories
+        identifier: categories
+
+      - name: games
+        identifier: games
+
+      - name: languages
+        identifier: language
+
+      - name: past_games
+        identifier: pastgames
+
+      - name: puzzle_items
+        identifier: puzzleitems
+
+      - name: user_attempts
+        identifier: userattempts
+
+      - name: users
+        identifier: users

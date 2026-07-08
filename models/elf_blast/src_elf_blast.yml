@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+
+  - name: ELF_BLAST
+    description: elf blast adf database
+    database: low6_azureeastus2
+    schema: adfelfblastprod
+    tags: ['elf']
+    tables:
+      - name: GAME_LEVEL
+        identifier: GAMELEVEL
+
+      - name: GAME_PLAYED_ENTRIES
+        identifier: GAMEPLAYEDENTRIES
+
+      - name: LEVEL_PLAYER
+        identifier: LEVELPLAYER
+
+      - name: PLAYER_LEVEL_SCORE
+        identifier: PLAYERLEVELSCORE
+
+      - name: LOGIN_STREAK_HISTORY
+        identifier: LOGINSTREAKHISTORY
+
+      - name: LOG_LOGIN_STREAK
+        identifier: LOGLOGINSTREAK
+
+      - name: USERS
+        identifier: USERS
+
+      - name: EFPGM_ENTRIES
+        identifier: EFPGMENTRIES
+
+      # - name: USER_EVENT_LOGS
+      #   identifier: USEREVENTLOGS

@@ -1,0 +1,10 @@
+version: 2
+
+models:
+
+  - name: nc_trivia__user_selections
+    columns:
+      - name: "(user_id || '-' || contest_id || '-' || question_id)"
+        tests:
+          - unique
+          - not_null

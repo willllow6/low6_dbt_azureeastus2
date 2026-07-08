@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+
+  - name: nc_trivia
+    description: newscorp trivia prod db
+    database: low6_azureeastus2
+    schema: adfnctriviaprod
+    tags: ['newscorp']
+    tables:
+      - name: contests
+        identifier: contests
+
+      - name: league_members
+        identifier: leaguemembers
+
+      - name: leagues
+        identifier: leagues
+
+      - name: options
+        identifier: options
+
+      - name: questions
+        identifier: questions
+
+      - name: users
+        identifier: users
+
+      - name: user_selections
+        identifier: userselections 

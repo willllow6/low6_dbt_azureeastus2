@@ -3,10 +3,15 @@
     "allow": [
       "Read(//c/Users/WillBreeden/low6_dbt_uaenorth//**)",
       "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/draftkings/marts/**)",
-      "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/caesars/marts/reporting/**)"
+      "Read(//c/Users/WillBreeden/low6_dbt_awsuseast1/models/caesars/marts/reporting/**)",
+      "mcp__dbt__show",
+      "Read(//c/Users/WillBreeden/.claude/**)",
+      "mcp__dbt__compile",
+      "mcp__dbt__build"
     ],
     "additionalDirectories": [
-      "c:\\Users\\WillBreeden\\low6_dbt_azureeastus2\\models\\bet365_uf"
+      "c:\\Users\\WillBreeden\\low6_dbt_azureeastus2\\models\\bet365_uf",
+      "C:\\Users\\WillBreeden\\.claude"
     ]
   }
 }

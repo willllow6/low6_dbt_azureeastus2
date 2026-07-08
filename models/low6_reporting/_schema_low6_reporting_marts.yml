@@ -6,11 +6,13 @@ models:
     description: >
       Cross-game daily metrics grain of (date_day, game_id, game_type, tenant_name).
       Covers all active game domains except elf_collectyourelf (no entries/contest
-      concept). saracen and gana_gamezone each contribute multiple game_ids because
-      a single domain produces more than one game_type. gana_gamezone's
-      registrations are replicated identically across its 3 game_ids (gana_predictor,
-      gana_survivor, gana_bracket) since registration is platform-level, not
-      per-game — summing registrations across game_id will triple-count gana.
+      concept). saracen, gana_gamezone, and elf_blast each contribute multiple
+      game_ids because a single domain produces more than one game_type/sub-game.
+      gana_gamezone's registrations are replicated identically across its 3
+      game_ids (gana_predictor, gana_survivor, gana_bracket), and elf_blast's are
+      replicated across its 2 game_ids (elf_blast, elf_ski), since registration is
+      platform-level, not per-game — summing registrations across game_id will
+      overcount for these domains.
     columns:
       - name: date_day
         tests:
@@ -28,6 +30,10 @@ models:
                 - fantasy
                 - streak
                 - spin_to_win
+                - candy_crush
+                - endless_runner
+                - connections
+                - trivia
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -62,6 +68,10 @@ models:
                 - fantasy
                 - streak
                 - spin_to_win
+                - candy_crush
+                - endless_runner
+                - connections
+                - trivia
 
   - name: agg_low6__all_game_metrics_daily
     description: >

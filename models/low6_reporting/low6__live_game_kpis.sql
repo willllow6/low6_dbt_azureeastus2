@@ -268,6 +268,83 @@ bet99_bracket as (
 
 ),
 
+elf_blast as (
+
+    select
+        'US49' as app_id,
+        count(session_id) as entries,
+        count(case when session_date_utc = current_date() - 1 then session_id else null end) as yesterday_entries,
+        count(case when session_date_utc >= current_date() - 8 and session_date_utc < current_date() then session_id else null end) as last_7_days_entries,
+        count(case when session_date_utc >= current_date() - 29 and session_date_utc < current_date() then session_id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when session_date_utc = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when session_date_utc >= current_date() - 8 and session_date_utc < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when session_date_utc >= current_date() - 29 and session_date_utc < current_date() then user_id else null end) as last_28_days_entrants,
+        1 as contests,
+        max(session_date_utc) as last_entry_date
+    from  {{ ref('INT_ELF_BLAST__SESSIONS') }}
+    group by 1
+
+),
+
+elf_ski as (
+
+    select
+        'US54' as app_id,
+        count(session_id) as entries,
+        count(case when session_date_utc = current_date() - 1 then session_id else null end) as yesterday_entries,
+        count(case when session_date_utc >= current_date() - 8 and session_date_utc < current_date() then session_id else null end) as last_7_days_entries,
+        count(case when session_date_utc >= current_date() - 29 and session_date_utc < current_date() then session_id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when session_date_utc = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when session_date_utc >= current_date() - 8 and session_date_utc < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when session_date_utc >= current_date() - 29 and session_date_utc < current_date() then user_id else null end) as last_28_days_entrants,
+        1 as contests,
+        max(session_date_utc) as last_entry_date
+    from  {{ ref('INT_ELF_SKI__SESSIONS') }}
+    group by 1
+
+),
+
+nc_trivia as (
+
+    select
+        'US60' as app_id,
+        count(distinct userid || '-' || contestid) as entries,
+        count(distinct case when cast(startedat as date) = current_date() - 1 then userid || '-' || contestid else null end) as yesterday_entries,
+        count(distinct case when startedat >= current_date() - 8 and startedat < current_date() then userid || '-' || contestid else null end) as last_7_days_entries,
+        count(distinct case when startedat >= current_date() - 29 and startedat < current_date() then userid || '-' || contestid else null end) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(startedat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when startedat >= current_date() - 8 and startedat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when startedat >= current_date() - 29 and startedat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct contestid) as contests,
+        max(cast(startedat as date)) as last_entry_date
+    from {{ source('nc_trivia', 'user_selections') }}
+    group by 1
+
+),
+
+nc_matchup as (
+
+    select
+        '1206' as app_id,
+        count(distinct id) as entries,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then id else null end) as yesterday_entries,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then id else null end) as last_7_days_entries,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then id else null end) as last_28_days_entries,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct gameid) as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('newscorp_matchup', 'user_attempts') }}
+    group by 1
+
+),
+
+
 unioned as (
 
     select *
@@ -337,6 +414,26 @@ unioned as (
     
     select *
     from bet99_bracket
+
+    union all
+    
+    select *
+    from elf_blast
+
+    union all
+    
+    select *
+    from elf_ski
+
+    union all
+    
+    select *
+    from nc_trivia
+
+    union all
+    
+    select *
+    from nc_matchup
 
 )
 

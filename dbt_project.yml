@@ -77,6 +77,10 @@ models:
       +schema: bet99_picks
       +query_tag: bet99
 
+    elf_blast:
+      +schema: elf_blast
+      +query_tag: elf
+
     elf_collectyourelf:
       +schema: elf_collectyourelf
       +query_tag: elf
@@ -104,6 +108,14 @@ models:
     gana_gamezone:
       +schema: gana_gamezone
       +query_tag: gana
+
+    newscorp_trivia:
+        +schema: newscorp_trivia
+        +query_tag: newscorp_trivia
+
+    newscorp_matchup:
+        +schema: newscorp_matchup
+        +query_tag: newscorp_matchup
 
     low6_reporting:
       +schema: low6_reporting

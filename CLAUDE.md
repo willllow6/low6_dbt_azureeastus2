@@ -32,6 +32,9 @@ Active domains (from `dbt_project.yml`, no `+enabled: false`):
 | cfl_fantasy | CFL | fantasy |
 | opap_spintowin | OPAP | spin_to_win |
 | gana_gamezone | Gana | pickem (predictor), streak (survivor), bracket (bracket) |
+| elf_blast | ELF | candy_crush (elf_blast), endless_runner (elf_ski) — genuinely multi-tenant in source (country-code tenants) but treated as single-tenant in `low6_reporting` for now |
+| newscorp_matchup | NewsCorp | connections |
+| newscorp_trivia | NewsCorp | trivia |
 
 Archived domains (`+enabled: false`, under `models/_archive/`):
 

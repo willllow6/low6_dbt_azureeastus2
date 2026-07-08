@@ -11,6 +11,11 @@
 -- entries fact). elf_collectyourelf is out of scope (no entries/contest concept).
 -- bet365_uf is treated as single-tenant here even though it has real tenant_id
 -- data in source — dim_bet365_uf__tenants doesn't exist yet, that's a follow-up.
+-- elf_blast is likewise genuinely multi-tenant in source (country-code tenants)
+-- but treated as single-tenant here per user decision, same follow-up pattern.
+-- elf_blast/elf_ski (candy_crush/endless_runner) and newscorp_matchup/
+-- newscorp_trivia (connections/trivia) add 4 new game_type enum values with no
+-- existing canonical fit — see ~/.claude/CLAUDE.md's game_type enum table.
 
 with
 
@@ -1134,6 +1139,367 @@ game_gana_bracket as (
     left join gana_bracket_mau m on s.date_day = m.date_day
     left join gana_regs r on s.date_day = r.date_day
     left join gana_bracket_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
+-- elf_blast / elf_ski (candy_crush / endless_runner, single-tenant)
+-- elf_blast is genuinely multi-tenant in source (tenant = us/uk/eu/ca/...) but
+-- is deliberately treated as single-tenant here per user decision — tenant
+-- breakout is a follow-up, same treatment bet365_uf got. Both sub-games share
+-- one USERS table (STG_ELF_BLAST__USERS), so registrations are replicated
+-- identically across elf_blast/elf_ski game_ids — summing registrations across
+-- game_id will double-count, same caveat as the gana_gamezone split.
+-- game_type values 'candy_crush' and 'endless_runner' are new additions to the
+-- canonical enum (no existing value fit an arcade level/streak game), per user
+-- decision — same precedent as opap_spintowin's 'spin_to_win'.
+--------------------------------------------------------------------------------
+
+elf_regs_raw as (
+    select user_created_date_et as date_day
+    from {{ ref('STG_ELF_BLAST__USERS') }}
+),
+
+elf_regs as (
+    select date_day, count(*) as registrations
+    from elf_regs_raw group by 1
+),
+
+elf_blast_ents_raw as (
+    select user_id, entry_date_et as date_day
+    from {{ ref('INT_ELF_BLAST__ENTRIES') }}
+),
+
+elf_blast_bounds as (
+    select min(date_day) as min_date from elf_blast_ents_raw
+),
+
+elf_blast_spine as (
+    select dateadd(day, seq4(), (select min_date from elf_blast_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+elf_blast_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from elf_blast_ents_raw group by 1
+),
+
+elf_blast_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from elf_blast_spine s
+    left join elf_blast_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+elf_blast_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from elf_blast_spine s
+    left join elf_blast_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+elf_blast_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from elf_blast_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_elf_blast as (
+    select
+        s.date_day,
+        'elf_blast' as game_id,
+        'ELF Blast' as game_name,
+        'candy_crush' as game_type,
+        'elf' as client_id,
+        'elf_blast' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from elf_blast_spine s
+    left join elf_blast_daily d on s.date_day = d.date_day
+    left join elf_blast_wau w on s.date_day = w.date_day
+    left join elf_blast_mau m on s.date_day = m.date_day
+    left join elf_regs r on s.date_day = r.date_day
+    left join elf_blast_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+elf_ski_ents_raw as (
+    select user_id, entry_date_et as date_day
+    from {{ ref('INT_ELF_SKI__ENTRIES') }}
+),
+
+elf_ski_bounds as (
+    select min(date_day) as min_date from elf_ski_ents_raw
+),
+
+elf_ski_spine as (
+    select dateadd(day, seq4(), (select min_date from elf_ski_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+elf_ski_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from elf_ski_ents_raw group by 1
+),
+
+elf_ski_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from elf_ski_spine s
+    left join elf_ski_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+elf_ski_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from elf_ski_spine s
+    left join elf_ski_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+elf_ski_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from elf_ski_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_elf_ski as (
+    select
+        s.date_day,
+        'elf_ski' as game_id,
+        'ELF Ski' as game_name,
+        'endless_runner' as game_type,
+        'elf' as client_id,
+        'elf_blast' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from elf_ski_spine s
+    left join elf_ski_daily d on s.date_day = d.date_day
+    left join elf_ski_wau w on s.date_day = w.date_day
+    left join elf_ski_mau m on s.date_day = m.date_day
+    left join elf_regs r on s.date_day = r.date_day
+    left join elf_ski_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
+-- newscorp_matchup (connections, single-tenant)
+-- All timestamps use the domain's own Australia/Sydney (AET) conversion,
+-- computed in its staging/mart layer, consistent with the domain's existing
+-- convention (no project-level local_timezone var used, same as gana_gamezone
+-- and opap_spintowin having their own per-domain timezone vars).
+-- game_type 'connections' is a new addition to the canonical enum (puzzle/
+-- matching mechanic, distinct from trivia) per user decision.
+--------------------------------------------------------------------------------
+
+nc_matchup_ents_raw as (
+    select user_id, game_attempt_date_aet as date_day
+    from {{ ref('nc_matchup__game_attempts') }}
+),
+
+nc_matchup_regs_raw as (
+    select user_created_date_aet as date_day
+    from {{ ref('stg_nc_matchup__users') }}
+),
+
+nc_matchup_bounds as (
+    select min(date_day) as min_date from nc_matchup_ents_raw
+),
+
+nc_matchup_spine as (
+    select dateadd(day, seq4(), (select min_date from nc_matchup_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+nc_matchup_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from nc_matchup_ents_raw group by 1
+),
+
+nc_matchup_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from nc_matchup_spine s
+    left join nc_matchup_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+nc_matchup_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from nc_matchup_spine s
+    left join nc_matchup_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+nc_matchup_regs as (
+    select date_day, count(*) as registrations
+    from nc_matchup_regs_raw group by 1
+),
+
+nc_matchup_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from nc_matchup_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_newscorp_matchup as (
+    select
+        s.date_day,
+        'newscorp_matchup' as game_id,
+        'NewsCorp Matchup' as game_name,
+        'connections' as game_type,
+        'newscorp' as client_id,
+        'newscorp_matchup' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from nc_matchup_spine s
+    left join nc_matchup_daily d on s.date_day = d.date_day
+    left join nc_matchup_wau w on s.date_day = w.date_day
+    left join nc_matchup_mau m on s.date_day = m.date_day
+    left join nc_matchup_regs r on s.date_day = r.date_day
+    left join nc_matchup_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
+-- newscorp_trivia (trivia, single-tenant)
+-- leagues in this domain are user-created friend groups (confirmed via
+-- dbt show — 35 leagues, names like "Green Dragons", "Trivia Plebs"), not
+-- tenant partitions, so tenant_name is null. stg_nc_trivia__users has no
+-- pre-computed AET date, so registration date is converted inline here.
+--------------------------------------------------------------------------------
+
+nc_trivia_ents_raw as (
+    select user_id, entered_date_aet as date_day
+    from {{ ref('nc_trivia__user_entries') }}
+),
+
+nc_trivia_regs_raw as (
+    select cast(convert_timezone('UTC', 'Australia/Sydney', created_at) as date) as date_day
+    from {{ ref('stg_nc_trivia__users') }}
+),
+
+nc_trivia_bounds as (
+    select min(date_day) as min_date from nc_trivia_ents_raw
+),
+
+nc_trivia_spine as (
+    select dateadd(day, seq4(), (select min_date from nc_trivia_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+nc_trivia_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from nc_trivia_ents_raw group by 1
+),
+
+nc_trivia_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from nc_trivia_spine s
+    left join nc_trivia_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+nc_trivia_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from nc_trivia_spine s
+    left join nc_trivia_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+nc_trivia_regs as (
+    select date_day, count(*) as registrations
+    from nc_trivia_regs_raw group by 1
+),
+
+nc_trivia_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from nc_trivia_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_newscorp_trivia as (
+    select
+        s.date_day,
+        'newscorp_trivia' as game_id,
+        'NewsCorp Trivia' as game_name,
+        'trivia' as game_type,
+        'newscorp' as client_id,
+        'newscorp_trivia' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from nc_trivia_spine s
+    left join nc_trivia_daily d on s.date_day = d.date_day
+    left join nc_trivia_wau w on s.date_day = w.date_day
+    left join nc_trivia_mau m on s.date_day = m.date_day
+    left join nc_trivia_regs r on s.date_day = r.date_day
+    left join nc_trivia_first_entries_daily fe on s.date_day = fe.date_day
 )
 
 select * from game_bet365_overunder
@@ -1159,3 +1525,11 @@ union all
 select * from game_gana_survivor
 union all
 select * from game_gana_bracket
+union all
+select * from game_elf_blast
+union all
+select * from game_elf_ski
+union all
+select * from game_newscorp_matchup
+union all
+select * from game_newscorp_trivia
