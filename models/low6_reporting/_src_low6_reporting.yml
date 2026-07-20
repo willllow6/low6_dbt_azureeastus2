@@ -11,3 +11,28 @@ sources:
 
       - name: game_cohort_retention_weekly
       - name: game_metrics_daily
+      - name: gcrw_awseuwest1
+      - name: gcrw_awsuseast1
+      - name: gcrw_awsuseast2
+      - name: gcrw_awsapsoutheast2
+      - name: gmd_awseuwest1
+      - name: gmd_awsuseast1
+      - name: gmd_awsuseast2
+      - name: gmd_awsapsoutheast2
+
+
+  - name: reporting
+    description: Live game and retention metrics from other snowflake accounts
+    database: low6_azureeastus2
+    schema: analytics_low6_reporting
+    tags: ['reporting']
+    tables:
+
+      - name: gcrw_awseuwest1
+      - name: gcrw_awsuseast1
+      - name: gcrw_azureuksouth
+      - name: gcrw_azureuaenorth
+      - name: gmd_awseuwest1
+      - name: gmd_awsuseast1
+      - name: gmd_azureuksouth
+      - name: gmd_azureuaenorth
