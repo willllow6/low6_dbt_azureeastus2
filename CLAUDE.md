@@ -35,6 +35,7 @@ Active domains (from `dbt_project.yml`, no `+enabled: false`):
 | elf_blast | ELF | candy_crush (elf_blast), endless_runner (elf_ski) — genuinely multi-tenant in source (country-code tenants) but treated as single-tenant in `low6_reporting` for now |
 | newscorp_matchup | NewsCorp | connections |
 | newscorp_trivia | NewsCorp | trivia |
+| olybet_casino | Olybet | instant_win — no users source table; registrations/cohorts are a first-entry-date proxy |
 
 Archived domains (`+enabled: false`, under `models/_archive/`):
 

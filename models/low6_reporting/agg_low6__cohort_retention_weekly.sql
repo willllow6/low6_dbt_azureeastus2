@@ -6,7 +6,10 @@
 
 -- Reuses agg_{domain}__cohort_retention_weekly directly where one already
 -- exists and matches the standard contract (cfl_fantasy, bet365_uf,
--- opap_spintowin). Builds the rest inline from entries per the standard
+-- opap_spintowin, olybet_casino). olybet_casino's cohort_week is a proxy —
+-- first-entry week, not a true registration cohort, since the domain has no
+-- users source table (see agg_olybet_casino__cohort_retention_weekly).
+-- Builds the rest inline from entries per the standard
 -- entries -> cohort_weeks -> cohort_sizes -> user_cohort_activity -> retention
 -- pattern. tenant_name is forced to null everywhere for consistency, even
 -- where a reused model carries a hardcoded single-tenant value (e.g. opap's
@@ -771,6 +774,20 @@ game_cohort_opap_spintowin as (
         cast(null as varchar) as tenant_name,
         weeks_since_cohort, cohort_size, retained_users, retention_rate
     from {{ ref('agg_opap_spintowin__cohort_retention_weekly') }}
+),
+
+game_cohort_olybet_casino as (
+    select
+        cohort_week, activity_week,
+        'olybet_casino' as game_id,
+        'OlyBet Casino' as game_name,
+        'instant_win' as game_type,
+        client_id,
+        'olybet_casino' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from {{ ref('agg_olybet_casino__cohort_retention_weekly') }}
 )
 
 select * from game_cohort_bet365_overunder
@@ -796,6 +813,8 @@ union all
 select * from game_cohort_bet365_uf
 union all
 select * from game_cohort_opap_spintowin
+union all
+select * from game_cohort_olybet_casino
 union all
 select * from game_cohort_elf_blast
 union all

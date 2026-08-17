@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+
+  - name: olybet_casino
+    description: Olybet casino platform database. Multiple games, each running time-boxed competitions with instant-win prize tickets.
+    database: low6_azureeastus2
+    schema: adfolybetcasino
+    tags: ['olybet']
+    tables:
+
+      - name: game
+        identifier: game
+        description: A distinct casino game offered on the platform. Defines prize scheme and tier/ticket bounds; competitions are instances of a game.
+
+      - name: competition
+        identifier: competition
+        description: A time-boxed competition instance for a game. Users hold tickets within a competition that get played against prize tiers.
+
+      - name: competition_entry
+        identifier: competition_entry
+        description: A user's participation record in a competition, created on entry. Only source of user identity for this domain.
+
+      - name: competition_prize
+        identifier: competition_prize
+        description: Prize tier configuration for a competition — quantity and win_chance per tier, keyed to the prize catalog.
+
+      - name: competition_ticket
+        identifier: competition_ticket
+        description: An individual ticket play within an entry. prize_id is populated when the ticket wins.
+
+      - name: prize
+        identifier: prize
+        description: The prize catalog — name, type, value, and expiry for prizes awarded across competitions.

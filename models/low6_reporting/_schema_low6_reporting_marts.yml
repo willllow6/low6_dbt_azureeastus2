@@ -12,7 +12,9 @@ models:
       game_ids (gana_predictor, gana_survivor, gana_bracket), and elf_blast's are
       replicated across its 2 game_ids (elf_blast, elf_ski), since registration is
       platform-level, not per-game — summing registrations across game_id will
-      overcount for these domains.
+      overcount for these domains. olybet_casino's registrations are a
+      first-entry-date proxy, not true sign-up dates, since that domain has no
+      users source table.
     columns:
       - name: date_day
         tests:
@@ -24,30 +26,33 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - pickem
-                - bracket
-                - fantasy
-                - streak
-                - spin_to_win
-                - candy_crush
-                - endless_runner
-                - connections
-                - trivia
+              arguments:
+                values:
+                  - pickem
+                  - bracket
+                  - fantasy
+                  - streak
+                  - spin_to_win
+                  - candy_crush
+                  - endless_runner
+                  - connections
+                  - trivia
+                  - instant_win
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - date_day
-            - game_id
-            - game_type
-            - tenant_name
+          arguments:
+            combination_of_columns:
+              - date_day
+              - game_id
+              - game_type
+              - tenant_name
 
   - name: agg_low6__cohort_retention_weekly
     description: >
       Cross-game weekly cohort retention grain of (game_id, game_type, tenant_name,
       cohort_week, activity_week). Reuses agg_{domain}__cohort_retention_weekly
-      directly for cfl_fantasy, bet365_uf, and opap_spintowin; built inline from
-      entries for the other domains.
+      directly for cfl_fantasy, bet365_uf, opap_spintowin, and olybet_casino;
+      built inline from entries for the other domains.
     columns:
       - name: cohort_week
         tests:
@@ -62,16 +67,18 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - pickem
-                - bracket
-                - fantasy
-                - streak
-                - spin_to_win
-                - candy_crush
-                - endless_runner
-                - connections
-                - trivia
+              arguments:
+                values:
+                  - pickem
+                  - bracket
+                  - fantasy
+                  - streak
+                  - spin_to_win
+                  - candy_crush
+                  - endless_runner
+                  - connections
+                  - trivia
+                  - instant_win
 
   - name: agg_low6__all_game_metrics_daily
     description: >

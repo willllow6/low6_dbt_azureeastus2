@@ -1,0 +1,218 @@
+version: 2
+
+models:
+
+  # -------------------------------------------------------
+  # Core — dimensions and facts
+  # -------------------------------------------------------
+
+  - name: dim_olybet_casino__users
+    description: >
+      User dimension. One row per distinct user_id seen in competition_entry.
+      registered_at is a PROXY (first entry timestamp) — no users source
+      table exists for this domain.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_olybet_casino__contests
+    description: Contest dimension. One row per competition, with game_name carried through as a descriptive attribute (game is not modeled as a tenant for this domain).
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['instant_win']
+
+  - name: dim_olybet_casino__prizes
+    description: Prize dimension. One row per prize definition in the catalog.
+    columns:
+      - name: prize_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_olybet_casino__entries
+    description: Entry fact table. One row per user per competition.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_olybet_casino__users')
+                field: user_id
+      - name: contest_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_olybet_casino__contests')
+                field: contest_id
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['instant_win']
+
+  - name: fct_olybet_casino__tickets
+    description: Ticket fact table. One row per ticket play. entry_id/user_id/prize_id may be null (unassigned or unplayed tickets).
+    columns:
+      - name: ticket_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('fct_olybet_casino__entries')
+                field: entry_id
+              config:
+                where: "entry_id is not null"
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['instant_win']
+
+  # -------------------------------------------------------
+  # Reporting — wide marts
+  # -------------------------------------------------------
+
+  - name: mart_olybet_casino__users
+    description: Wide user mart. Row-level user view for BI drill-through.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_olybet_casino__entries
+    description: Wide entry mart. Joins entries to users.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+
+  - name: mart_olybet_casino__tickets
+    description: Wide ticket mart. Joins tickets to prizes and users.
+    columns:
+      - name: ticket_id
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_olybet_casino__user_active_days
+    description: >
+      One row per user per day they were active (had at least one entry).
+      Intended for dashboard DAU calculations via count(distinct user_id)
+      filtered by active_day.
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+      - name: active_day
+        tests:
+          - not_null
+
+  # -------------------------------------------------------
+  # Aggregates — standard contract models
+  # -------------------------------------------------------
+
+  - name: agg_olybet_casino__registration_metrics_daily
+    description: >
+      Daily registration metrics. date_day and new_registrations are proxied
+      from each user's first entry — this domain has no true registration
+      event. registration_type is always null.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_olybet_casino__user_activity_daily
+    description: Daily active user metrics.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_olybet_casino__entry_metrics_daily
+    description: Daily entry volume and unique entrant metrics.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_olybet_casino__contest_metrics_daily
+    description: >
+      Daily contest lifecycle metrics (scheduled, live, completed), derived
+      from is_active/contest_starts_at/contest_ends_at since the source
+      status enum is undocumented.
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+
+  - name: agg_olybet_casino__cohort_retention_weekly
+    description: >
+      Weekly cohort retention. cohort_week = first-entry week (proxy for
+      registration cohort, same limitation as registration_metrics_daily).
+      Excludes users who never entered. Conformant with the low6_reporting
+      standard contract for direct reuse.
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+
+  - name: agg_olybet_casino__contest_performance_summary
+    description: >
+      Contest-level performance summary. One row per contest with entry
+      counts, winner counts, win rate, ticket play counts, and total prize
+      value awarded. total_free_bets/total_free_bet_value are the subset of
+      won tickets where prize_type = 'FreeBet'.
+    columns:
+      - name: contest_id
+        tests:
+          - unique
+          - not_null
+
+  - name: agg_olybet_casino__growth_metrics_daily
+    description: >
+      Daily growth metrics. Combines proxy registrations, entry activity, and
+      won-ticket payout totals into a single date-spine-driven grain.
+      total_free_bets/total_free_bet_value are the subset of payouts where
+      prize_type = 'FreeBet'.
+    columns:
+      - name: date_day
+        tests:
+          - not_null

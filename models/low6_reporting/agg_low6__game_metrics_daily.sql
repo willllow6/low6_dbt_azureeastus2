@@ -16,6 +16,9 @@
 -- elf_blast/elf_ski (candy_crush/endless_runner) and newscorp_matchup/
 -- newscorp_trivia (connections/trivia) add 4 new game_type enum values with no
 -- existing canonical fit — see ~/.claude/CLAUDE.md's game_type enum table.
+-- olybet_casino adds 'instant_win' the same way, and its registrations are a
+-- first-entry-date proxy (no users source table exists for that domain) —
+-- see the olybet_casino CTE block below for detail.
 
 with
 
@@ -889,6 +892,102 @@ game_opap_spintowin as (
 ),
 
 --------------------------------------------------------------------------------
+-- olybet_casino (instant_win, single-tenant)
+-- game_type='instant_win' is a new addition to the canonical enum (no prior
+-- domain used it). registrations here are a PROXY — each user's first entry
+-- date, not a true sign-up date — because the source has no users table
+-- (see dim_olybet_casino__users). 'game' in source is a distinct casino
+-- game/product, deliberately treated as a mart attribute rather than a
+-- tenant per user decision, so tenant_name is null here same as every other
+-- single-tenant domain.
+--------------------------------------------------------------------------------
+
+olybet_casino_ents_raw as (
+    select user_id, entry_date_et as date_day
+    from {{ ref('fct_olybet_casino__entries') }}
+),
+
+olybet_casino_regs_raw as (
+    select registration_date_et as date_day
+    from {{ ref('dim_olybet_casino__users') }}
+),
+
+olybet_casino_bounds as (
+    select min(date_day) as min_date from olybet_casino_ents_raw
+),
+
+olybet_casino_spine as (
+    select dateadd(day, seq4(), (select min_date from olybet_casino_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+olybet_casino_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from olybet_casino_ents_raw group by 1
+),
+
+olybet_casino_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from olybet_casino_spine s
+    left join olybet_casino_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+olybet_casino_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from olybet_casino_spine s
+    left join olybet_casino_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+olybet_casino_regs as (
+    select date_day, count(*) as registrations
+    from olybet_casino_regs_raw group by 1
+),
+
+olybet_casino_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from olybet_casino_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_olybet_casino as (
+    select
+        s.date_day,
+        'olybet_casino' as game_id,
+        'OlyBet Casino' as game_name,
+        'instant_win' as game_type,
+        'olybet' as client_id,
+        'olybet_casino' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from olybet_casino_spine s
+    left join olybet_casino_daily d on s.date_day = d.date_day
+    left join olybet_casino_wau w on s.date_day = w.date_day
+    left join olybet_casino_mau m on s.date_day = m.date_day
+    left join olybet_casino_regs r on s.date_day = r.date_day
+    left join olybet_casino_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
 -- gana_predictor / gana_survivor / gana_bracket (pickem / streak / bracket)
 -- Registration is platform-level (one shared fct_gana_gamezone__registrations
 -- table, game_type=null on the registration event itself per project memory) —
@@ -1519,6 +1618,8 @@ union all
 select * from game_cfl_fantasy
 union all
 select * from game_opap_spintowin
+union all
+select * from game_olybet_casino
 union all
 select * from game_gana_predictor
 union all

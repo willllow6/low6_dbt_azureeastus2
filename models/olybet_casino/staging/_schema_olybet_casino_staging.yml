@@ -1,0 +1,120 @@
+version: 2
+
+models:
+
+  - name: stg_olybet_casino__games
+    description: Cleaned game records. One row per distinct casino game offered on the platform. Carried through as a descriptive mart attribute, not a tenant.
+    columns:
+      - name: game_id
+        description: Unique identifier for the game.
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_olybet_casino__competitions
+    description: Cleaned competition records. One row per time-boxed competition instance.
+    columns:
+      - name: contest_id
+        description: Unique identifier for the competition.
+        tests:
+          - unique
+          - not_null
+      - name: game_id
+        description: FK to the game this competition belongs to.
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_olybet_casino__games')
+                field: game_id
+              config:
+                where: "game_id is not null"
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['pickem', 'over_under', 'bingo', 'bracket', 'fantasy', 'streak',
+                         'squads', 'daily_quiz', 'live_quiz', 'prize_competition',
+                         'instant_win', 'daily_reveal', 'spin_to_win', 'candy_crush',
+                         'endless_runner', 'connections', 'trivia']
+
+  - name: stg_olybet_casino__competition_entries
+    description: Cleaned entry records. One row per user per competition. Also the sole source of user identity for this domain (no dedicated users table exists in source).
+    columns:
+      - name: entry_id
+        description: Unique identifier for this entry.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+
+  - name: stg_olybet_casino__competition_prizes
+    description: Prize tier configuration per competition — quantity and win_chance per tier. Thin config data, not exposed as its own dimension.
+    columns:
+      - name: competition_prize_id
+        description: Unique identifier for the prize tier row.
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: prize_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_olybet_casino__prizes')
+                field: prize_id
+              config:
+                where: "prize_id is not null"
+
+  - name: stg_olybet_casino__competition_tickets
+    description: >
+      Individual ticket plays. One row per ticket; competition_prize_id is
+      populated when the ticket wins. contest_id, entry_id, and
+      competition_prize_id are all nullable in source (unassigned/unplayed
+      tickets are valid rows). competition_prize_id references
+      competition_prize.id (the tier won), NOT prize.id directly — confirmed
+      against source data.
+    columns:
+      - name: ticket_id
+        description: Unique identifier for the ticket.
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_olybet_casino__competition_entries')
+                field: entry_id
+              config:
+                where: "entry_id is not null"
+      - name: competition_prize_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_olybet_casino__competition_prizes')
+                field: competition_prize_id
+              config:
+                where: "competition_prize_id is not null"
+
+  - name: stg_olybet_casino__prizes
+    description: Prize catalog. One row per prize definition (name, type, value, expiry).
+    columns:
+      - name: prize_id
+        description: Unique identifier for the prize.
+        tests:
+          - unique
+          - not_null
