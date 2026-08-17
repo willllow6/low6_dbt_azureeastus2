@@ -1,0 +1,73 @@
+version: 2
+
+models:
+
+  - name: int_olybet_casino__users
+    description: >
+      Proxy user grain: one row per distinct user_id seen in competition_entry,
+      with registered_at approximated as the user's first entry timestamp.
+      No users source table exists for this domain — this is NOT a true
+      registration event, just the earliest activity observed.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: registered_at
+        tests:
+          - not_null
+
+  - name: int_olybet_casino__entries
+    description: >
+      Entry-grain model enriched with competition details, game name, and
+      ticket-play aggregates. One row per user per competition. is_winner is
+      derived from whether any of the entry's tickets have a non-null prize_id.
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['pickem', 'over_under', 'bingo', 'bracket', 'fantasy', 'streak',
+                         'squads', 'daily_quiz', 'live_quiz', 'prize_competition',
+                         'instant_win', 'daily_reveal', 'spin_to_win', 'candy_crush',
+                         'endless_runner', 'connections', 'trivia']
+      - name: user_entry_number
+        tests:
+          - not_null
+
+  - name: int_olybet_casino__tickets
+    description: >
+      Ticket-play grain model enriched with entry (user_id), competition, and
+      prize catalog details. One row per ticket play. Not routed through the
+      pickem-style selection pattern — instant_win is not a pick-based game.
+    columns:
+      - name: ticket_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['instant_win']

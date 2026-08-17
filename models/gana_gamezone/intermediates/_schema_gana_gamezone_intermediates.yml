@@ -25,7 +25,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: [1, 2, 3, 4]
+              arguments:
+                values: [1, 2, 3, 4]
       - name: selected_country_id
         tests:
           - not_null
@@ -33,7 +34,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
 
   - name: int_gana_gamezone__bracket_selections
     description: >
@@ -55,7 +57,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: int_gana_gamezone__bracket_entries
     description: >
@@ -76,7 +79,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: int_gana_gamezone__survivor_entries
     description: >
@@ -97,4 +101,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']

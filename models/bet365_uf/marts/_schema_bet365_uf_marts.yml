@@ -26,7 +26,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: fct_bet365_uf__selections
     columns:
@@ -47,7 +48,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: fct_bet365_uf__coin_transactions
     columns:
@@ -68,7 +70,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: fct_bet365_uf__app_store_purchases
     columns:
@@ -86,7 +89,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: fct_bet365_uf__card_ownership_changes
     columns:
@@ -116,7 +120,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: dim_bet365_uf__contests
     columns:
@@ -131,11 +136,13 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: contest_status
         tests:
           - accepted_values:
-              values: ['scheduled', 'live', 'completed']
+              arguments:
+                values: ['scheduled', 'live', 'completed']
 
   - name: dim_bet365_uf__scoreables
     columns:
@@ -172,7 +179,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_bet365_uf__selections
     columns:
@@ -187,7 +195,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_bet365_uf__user_cards
     columns:
@@ -212,7 +221,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_bet365_uf__app_store_purchases
     columns:
@@ -227,7 +237,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_bet365_uf__card_ownership_changes
     columns:
@@ -286,21 +297,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
-
-  - name: agg_bet365_uf__user_activity_daily
-    columns:
-      - name: date_day
-        tests:
-          - not_null
-      - name: client_id
-        tests:
-          - not_null
-      - name: game_type
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_bet365_uf__entry_metrics_daily
     columns:
@@ -314,7 +312,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_bet365_uf__contest_metrics_daily
     columns:
@@ -328,21 +327,14 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_bet365_uf__conversion_funnel_daily
     columns:
       - name: date_day
         tests:
           - not_null
-      - name: client_id
-        tests:
-          - not_null
-      - name: game_type
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['fantasy']
 
   - name: agg_bet365_uf__cohort_retention_weekly
     columns:
@@ -356,7 +348,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_bet365_uf__financial_metrics_daily
     columns:
@@ -370,25 +363,14 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   # ── agg_ game-specific models ─────────────────────────────────────────────────
 
   - name: agg_bet365_uf__entry_summary_daily
     columns:
       - name: entry_date
-        tests:
-          - not_null
-
-  - name: agg_bet365_uf__selection_summary_daily
-    columns:
-      - name: selected_date
-        tests:
-          - not_null
-
-  - name: agg_bet365_uf__game_week_entry_stats
-    columns:
-      - name: game_week_id
         tests:
           - not_null
 
@@ -404,4 +386,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']

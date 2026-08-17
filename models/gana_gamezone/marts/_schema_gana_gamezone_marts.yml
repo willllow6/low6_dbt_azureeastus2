@@ -47,7 +47,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
 
   # --- Facts ---
 
@@ -76,13 +77,15 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__users')
-              field: user_id
+              arguments:
+                to: ref('dim_gana_gamezone__users')
+                field: user_id
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
       - name: entered_at
         tests:
           - not_null
@@ -98,8 +101,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('fct_gana_gamezone__predictor_entries')
-              field: entry_id
+              arguments:
+                to: ref('fct_gana_gamezone__predictor_entries')
+                field: entry_id
       - name: user_id
         tests:
           - not_null
@@ -110,7 +114,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: [1, 2, 3, 4]
+              arguments:
+                values: [1, 2, 3, 4]
       - name: selected_country_id
         tests:
           - not_null
@@ -118,7 +123,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
 
   - name: fct_gana_gamezone__bracket_selections
     description: One row per user per bracket match (selection grain). Deduplicated to latest pick. Includes is_correct (null until match decided).
@@ -131,19 +137,22 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__users')
-              field: user_id
+              arguments:
+                to: ref('dim_gana_gamezone__users')
+                field: user_id
       - name: match_id
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__bracket_matches')
-              field: match_id
+              arguments:
+                to: ref('dim_gana_gamezone__bracket_matches')
+                field: match_id
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: fct_gana_gamezone__bracket_entries
     description: One row per user (entry grain) — the whole bracket tournament is one entry per user.
@@ -156,8 +165,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__users')
-              field: user_id
+              arguments:
+                to: ref('dim_gana_gamezone__users')
+                field: user_id
       - name: contest_id
         tests:
           - not_null
@@ -165,7 +175,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: fct_gana_gamezone__survivor_entries
     description: One row per user per survivor match day. Combines pick (selection) and result (score).
@@ -178,19 +189,22 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__users')
-              field: user_id
+              arguments:
+                to: ref('dim_gana_gamezone__users')
+                field: user_id
       - name: contest_id
         tests:
           - not_null
           - relationships:
-              to: ref('dim_gana_gamezone__survivor_contests')
-              field: contest_id
+              arguments:
+                to: ref('dim_gana_gamezone__survivor_contests')
+                field: contest_id
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
 
   # --- Marts ---
 
@@ -220,7 +234,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
 
   - name: mart_gana_gamezone__bracket_entries
     description: Wide bracket entries mart — one row per user. Joins entry with user profile data.
@@ -256,7 +271,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
 
   - name: mart_gana_gamezone__growth_metrics_daily
     description: Cross-game daily growth — registrations, predictor entries, and survivor picks on a full date spine from gana_gamezone_start_date.
@@ -311,7 +327,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: agg_gana_gamezone__predictor_selection_metrics
     description: Per group × position × country — how many users selected each country and at what share of total entrants.
@@ -329,7 +346,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
 
   - name: agg_gana_gamezone__survivor_selection_metrics_daily
     description: Per day × contest × country — total picks, correct picks, and accuracy rate for each country selected on each survivor match day.
@@ -344,7 +362,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
 
   - name: agg_gana_gamezone__survivor_streak_metrics
     description: Streak length distribution — for each streak length, how many users are currently active at that length and how many have ever reached it.
@@ -364,7 +383,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor', 'survivor', 'bracket']
+              arguments:
+                values: ['predictor', 'survivor', 'bracket']
       - name: total_entrants
         tests:
           - not_null

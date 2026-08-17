@@ -25,9 +25,10 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
-                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
-                       'daily_reveal', 'spin_to_win']
+              arguments:
+                values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                         'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                         'daily_reveal', 'spin_to_win']
 
   - name: fct_opap_spintowin__entries
     description: Entry fact table. One row per user per contest.
@@ -52,9 +53,10 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
-                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
-                       'daily_reveal', 'spin_to_win']
+              arguments:
+                values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                         'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                         'daily_reveal', 'spin_to_win']
 
   - name: fct_opap_spintowin__selections
     description: Selection fact table. One row per reel pick within an entry.
@@ -76,7 +78,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['spin_to_win']
+              arguments:
+                values: ['spin_to_win']
 
   - name: fct_opap_spintowin__payouts
     description: Payout fact table. One row per prize award event.
@@ -133,7 +136,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['spin_to_win']
+              arguments:
+                values: ['spin_to_win']
 
   - name: agg_opap_spintowin__contest_selections
     description: >

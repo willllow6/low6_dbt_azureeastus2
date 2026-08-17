@@ -21,7 +21,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: entry_number
         description: User's nth entry across all CFL fantasy leagues. 1 = first ever team created.
         tests:

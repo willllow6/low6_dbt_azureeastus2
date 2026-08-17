@@ -14,7 +14,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_bet365_uf__tenants
     columns:
@@ -49,11 +50,13 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: contest_status
         tests:
           - accepted_values:
-              values: ['scheduled', 'live', 'completed']
+              arguments:
+                values: ['scheduled', 'live', 'completed']
 
   - name: stg_bet365_uf__game_weeks
     columns:
@@ -87,7 +90,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_bet365_uf__selections
     columns:
@@ -111,7 +115,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_bet365_uf__scoreables
     columns:
@@ -192,7 +197,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_bet365_uf__card_ownership_changes
     columns:
@@ -233,7 +239,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_bet365_uf__marketplace_card_listings
     columns:
@@ -265,12 +272,3 @@ models:
         tests:
           - not_null
 
-  - name: stg_bet365_uf__tenant_competitions
-    columns:
-      - name: tenant_competition_id
-        tests:
-          - unique
-          - not_null
-      - name: client_id
-        tests:
-          - not_null

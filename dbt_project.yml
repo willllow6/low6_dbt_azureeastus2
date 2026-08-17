@@ -117,6 +117,10 @@ models:
         +schema: newscorp_matchup
         +query_tag: newscorp_matchup
 
+    olybet_casino:
+      +schema: olybet_casino
+      +query_tag: olybet
+
     low6_reporting:
       +schema: low6_reporting
       +query_tag: low6_reporting
@@ -151,3 +155,5 @@ vars:
   saracen_bracket_current_tournament: 'world_cup_2026'
   bet99_bracket_current_tournament: 'world_cup_2026'
   bet99_bracket_start_date: '2026-01-01'
+  olybet_casino_start_date: '2026-06-19'
+  olybet_casino_local_timezone: 'UTC'

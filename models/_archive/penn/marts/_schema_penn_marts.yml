@@ -36,7 +36,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: fct_penn__entries
     columns:
@@ -57,7 +58,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: fct_penn__selections
     columns:
@@ -78,7 +80,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: fct_penn__awards
     columns:
@@ -113,7 +116,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: mart_penn__selections
     columns:
@@ -131,7 +135,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: mart_penn__awards
     columns:
@@ -162,7 +167,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   # -------------------------------------------------------
   # Aggregations — standard contract models
@@ -183,7 +189,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__user_activity_daily
     columns:
@@ -200,7 +207,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__entry_metrics_daily
     columns:
@@ -217,7 +225,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__contest_metrics_daily
     columns:
@@ -234,7 +243,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__conversion_funnel_daily
     columns:
@@ -251,7 +261,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__cohort_retention_weekly
     columns:
@@ -271,7 +282,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   # -------------------------------------------------------
   # Aggregations — Penn-specific dashboard models
@@ -292,7 +304,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__contest_summary
     columns:
@@ -310,7 +323,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: agg_penn__player_reveals_daily
     columns:
@@ -327,4 +341,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']

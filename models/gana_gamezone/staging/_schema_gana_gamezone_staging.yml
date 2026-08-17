@@ -16,7 +16,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['form']
+              arguments:
+                values: ['form']
 
   - name: stg_gana_gamezone__countries
     description: World cup team reference data. One row per country.
@@ -57,7 +58,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['predictor']
+              arguments:
+                values: ['predictor']
 
   - name: stg_gana_gamezone__survivor_contests
     description: Survivor daily match contests. One row per match day.
@@ -70,7 +72,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
       - name: day
         tests:
           - not_null
@@ -98,7 +101,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']
 
   - name: stg_gana_gamezone__bracket_matches
     description: Bracket tournament match reference data. One row per match. countries VARIANT holds two competing team ids.
@@ -137,7 +141,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['bracket']
+              arguments:
+                values: ['bracket']
 
   - name: stg_gana_gamezone__survivor_scores
     description: Rolling streak scores per user per match day. One row per user per contest.
@@ -156,4 +161,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['survivor']
+              arguments:
+                values: ['survivor']

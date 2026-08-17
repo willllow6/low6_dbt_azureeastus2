@@ -17,19 +17,22 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_cfl_fantasy__users')
-              field: user_id
+              arguments:
+                to: ref('dim_cfl_fantasy__users')
+                field: user_id
       - name: contest_id
         tests:
           - not_null
           - relationships:
-              to: ref('dim_cfl_fantasy__contests')
-              field: contest_id
+              arguments:
+                to: ref('dim_cfl_fantasy__contests')
+                field: contest_id
       - name: game_type
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: dim_cfl_fantasy__users
     description: One row per CFL fantasy platform user, enriched with entry activity counts.
@@ -42,7 +45,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: dim_cfl_fantasy__contests
     description: One row per fantasy league (contest), enriched with team count and draft metadata.
@@ -55,7 +59,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: dim_cfl_fantasy__players
     description: One row per CFL player available on the platform, enriched with real team details.
@@ -90,12 +95,14 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: registration_type
         tests:
           - not_null
           - accepted_values:
-              values: ['sso']
+              arguments:
+                values: ['sso']
 
   - name: mart_cfl_fantasy__leagues
     description: >
@@ -110,7 +117,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_cfl_fantasy__teams
     description: >
@@ -125,7 +133,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: mart_cfl_fantasy__player_roster_stats
     description: >
@@ -163,7 +172,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_cfl_fantasy__growth_metrics_daily
     description: >
@@ -180,7 +190,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_cfl_fantasy__entry_metrics_daily
     description: Daily entry volume metrics — total entries, unique entrants, first-time entrants.
@@ -192,7 +203,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_cfl_fantasy__contest_metrics_daily
     description: Daily contest (league) status counts — scheduled, live, completed. Grain is league creation date.
@@ -204,7 +216,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_cfl_fantasy__conversion_funnel_daily
     description: >
@@ -218,7 +231,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: agg_cfl_fantasy__cohort_retention_weekly
     description: >
@@ -236,4 +250,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']

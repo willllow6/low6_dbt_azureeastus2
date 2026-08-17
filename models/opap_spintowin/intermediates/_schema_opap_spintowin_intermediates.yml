@@ -28,9 +28,10 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
-                       'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
-                       'daily_reveal', 'spin_to_win']
+              arguments:
+                values: ['pickem', 'bingo', 'bracket', 'fantasy', 'streak', 'squads',
+                         'daily_quiz', 'live_quiz', 'prize_competition', 'instant_win',
+                         'daily_reveal', 'spin_to_win']
       - name: user_entry_number
         tests:
           - not_null
@@ -58,7 +59,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['spin_to_win']
+              arguments:
+                values: ['spin_to_win']
 
   - name: int_opap_spintowin__payouts
     description: >

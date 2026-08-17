@@ -19,12 +19,14 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: registration_type
         tests:
           - not_null
           - accepted_values:
-              values: ['sso']
+              arguments:
+                values: ['sso']
       - name: registered_at
         tests:
           - not_null
@@ -47,7 +49,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: contest_name
         tests:
           - not_null
@@ -55,7 +58,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['active', 'draft']
+              arguments:
+                values: ['active', 'draft']
 
   - name: stg_cfl_fantasy__teams
     description: Staged teams — one row per fantasy team (canonical entry entity). Each team represents a user's entry in a league.
@@ -81,7 +85,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: entered_at
         tests:
           - not_null
@@ -107,7 +112,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_cfl_fantasy__drafts
     description: Staged drafts — one row per draft event, linked to a league.
@@ -124,7 +130,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_cfl_fantasy__players
     description: Staged CFL players — one row per real-world CFL player available on the platform.
@@ -159,7 +166,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_cfl_fantasy__scores
     description: Staged weekly scores — one row per team per fantasy week.
@@ -179,7 +187,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_cfl_fantasy__sport_teams
     description: Staged CFL sport teams — one row per real-world CFL franchise.
@@ -208,7 +217,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
 
   - name: stg_cfl_fantasy__league_requests
     description: Staged league requests — one row per user request to join a private league.

@@ -14,11 +14,13 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']
       - name: contest_status
         tests:
           - accepted_values:
-              values: ['scheduled', 'live', 'completed']
+              arguments:
+                values: ['scheduled', 'live', 'completed']
 
   - name: int_bet365_uf__entries_ranked
     columns:
@@ -42,4 +44,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['fantasy']
+              arguments:
+                values: ['fantasy']

@@ -25,7 +25,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: stg_penn__rounds
     columns:
@@ -40,7 +41,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['squads']
+              arguments:
+                values: ['squads']
 
   - name: stg_penn__users
     columns:
