@@ -249,24 +249,24 @@ gana_survivor as (
 
 ),
 
-bet99_bracket as (
+-- bet99_bracket as (
 
-    select
-        'b99bkt' as app_id,
-        count(distinct userselectionid) as entries,
-        count(distinct case when cast(createdat as date) = current_date() - 1 then userselectionid else null end) as yesterday_entries,
-        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userselectionid else null end) as last_7_days_entries,
-        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userselectionid else null end) as last_28_days_entries,
-        count(distinct userid) as entrants,
-        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
-        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
-        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
-        1 as contests,
-        max(cast(createdat as date)) as last_entry_date
-    from  {{ source('bet99_bracket', 'userselections') }}
-    group by 1
+--     select
+--         'b99bkt' as app_id,
+--         count(distinct userselectionid) as entries,
+--         count(distinct case when cast(createdat as date) = current_date() - 1 then userselectionid else null end) as yesterday_entries,
+--         count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userselectionid else null end) as last_7_days_entries,
+--         count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userselectionid else null end) as last_28_days_entries,
+--         count(distinct userid) as entrants,
+--         count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+--         count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+--         count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+--         1 as contests,
+--         max(cast(createdat as date)) as last_entry_date
+--     from  {{ source('bet99_bracket', 'userselections') }}
+--     group by 1
 
-),
+-- ),
 
 elf_blast as (
 
@@ -344,6 +344,58 @@ nc_matchup as (
 
 ),
 
+b365fan_entries as (
+
+    select
+        'b365fan' as app_id,
+        count(lineupid) as entries,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then lineupid else null end) as yesterday_entries,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then lineupid else null end) as last_7_days_entries,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then lineupid else null end) as last_28_days_entries,
+        -- count(distinct userid) as entrants,
+        -- count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        -- count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        -- count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants,
+        count(distinct stageid) as contests,
+        max(cast(createdat as date)) as last_entry_date
+    from  {{ source('bet365_uf', 'LINEUPS') }}
+    group by 1
+
+),
+
+b365fan_actives as (
+
+    select
+        'US63' as app_id,
+        count(distinct userid) as entrants,
+        count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
+        count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
+        count(distinct case when createdat >= current_date() - 29 and createdat < current_date() then userid else null end) as last_28_days_entrants
+    from  {{ source('bet365_uf', 'COIN_TRANSACTIONS') }}
+    where transactiontype in ('4','5','7','8','9','12','15','16','17','19','21','22','23')
+        
+),
+
+b365fan as(
+
+    select
+        b365fan_entries.app_id,
+        b365fan_entries.entries,
+        b365fan_entries.yesterday_entries,
+        b365fan_entries.last_7_days_entries,
+        b365fan_entries.last_28_days_entries,
+        b365fan_actives.entrants,
+        b365fan_actives.yesterday_entrants,
+        b365fan_actives.last_7_days_entrants,
+        b365fan_actives.last_28_days_entrants,
+        b365fan_entries.contests,
+        b365fan_entries.last_entry_date
+    from b365fan_entries
+    inner join b365fan_actives
+        on b365fan_entries.app_id = b365fan_actives.app_id
+        
+),
+
 
 unioned as (
 
@@ -380,15 +432,15 @@ unioned as (
     -- select *
     -- from sac_kings
 
-    union all 
+    -- union all 
 
-    select *
-    from saracen_picks
+    -- select *
+    -- from saracen_picks
 
-    union all
+    -- union all
 
-    select *
-    from saracen_bracket
+    -- select *
+    -- from saracen_bracket
 
     union all
     
@@ -410,10 +462,10 @@ unioned as (
     select *
     from gana_survivor
 
-    union all
+    -- union all
     
-    select *
-    from bet99_bracket
+    -- select *
+    -- from bet99_bracket
 
     union all
     
@@ -434,6 +486,11 @@ unioned as (
     
     select *
     from nc_matchup
+
+    union all
+
+    select *
+    from b365fan
 
 )
 
