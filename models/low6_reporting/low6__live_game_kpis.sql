@@ -396,6 +396,23 @@ b365fan as(
         
 ),
 
+olybet_casino as (
+
+    select
+        'olycas' as app_id,
+        count(distinct id) as entries,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then id else null end) as yesterday_entries,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then id else null end) as last_7_days_entries,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then id else null end) as last_28_days_entries,
+        count(distinct user_id) as entrants,
+        count(distinct case when cast(created_at as date) = current_date() - 1 then user_id else null end) as yesterday_entrants,
+        count(distinct case when created_at >= current_date() - 8 and created_at < current_date() then user_id else null end) as last_7_days_entrants,
+        count(distinct case when created_at >= current_date() - 29 and created_at < current_date() then user_id else null end) as last_28_days_entrants,
+        count(distinct competition_id) as contests,
+        max(cast(created_at as date)) as last_entry_date
+    from {{ source('olybet_casino', 'competition_entry') }}
+
+),
 
 unioned as (
 
@@ -491,6 +508,11 @@ unioned as (
 
     select *
     from b365fan
+
+    union all
+
+    select *
+    from olybet_casino
 
 )
 
