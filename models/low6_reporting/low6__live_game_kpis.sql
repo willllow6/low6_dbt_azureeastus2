@@ -366,7 +366,7 @@ b365fan_entries as (
 b365fan_actives as (
 
     select
-        'US63' as app_id,
+        'b365fan' as app_id,
         count(distinct userid) as entrants,
         count(distinct case when cast(createdat as date) = current_date() - 1 then userid else null end) as yesterday_entrants,
         count(distinct case when createdat >= current_date() - 8 and createdat < current_date() then userid else null end) as last_7_days_entrants,
