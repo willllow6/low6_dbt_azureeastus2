@@ -8,7 +8,7 @@ low6_dbt_azureeastus2:
       role: compute_role
       warehouse: compute_wh
       database: low6_azureeastus2
-      schema: dbt_wbreeden
+      schema: "{{ env_var('DBT_SCHEMA') }}"
       threads: 8
     prod:
       type: snowflake
