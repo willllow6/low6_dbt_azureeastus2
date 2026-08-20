@@ -1,4 +1,8 @@
 
+with 
+
+
+unioned as (
 
 select *
 from {{ ref('agg_low6__game_metrics_daily') }}
@@ -42,3 +46,10 @@ union all
 
 select *
 from {{ source('reporting','gmd_azureuaenorth') }}
+
+)
+
+select
+    {{ dbt_utils.generate_surrogate_key(['client_id','game_id','game_name','tenant_name','source_database']) }} as game_client_key,
+    *
+from unioned

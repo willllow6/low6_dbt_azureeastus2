@@ -1,0 +1,188 @@
+GAME_CLIENT_KEY,CLIENT_ID,GAME_ID,GAME_NAME,GAME_TYPE,TENANT_NAME,SOURCE_DATABASE,STATUS
+cd9ff373ce9db3217baa5bc97369fb3f,7days_performance,seven_days_alien_dash,Alien Dash,instant_win,7 Days Performance,low6_azureuksouth,live
+5bf9b3a100aa0a8b9c4fc2322c0008f7,7days_performance,seven_days_alien_dash,Alien Dash,instant_win,UKCC,low6_azureuksouth,live
+d02a16ecbb09c90049c7e37c69922171,7days_performance,seven_days_coin_drop,Coin Drop,instant_win,7 Days Performance,low6_azureuksouth,live
+2e0d89d6fa61c29f18ba9ea401e7ac9d,7days_performance,seven_days_coin_drop,Coin Drop,instant_win,UKCC,low6_azureuksouth,live
+4f8b0bd84941a4fba983c197cd83f769,7days_performance,seven_days_coin_drop_football,Coin Drop Football,instant_win,7 Days Performance,low6_azureuksouth,live
+bfbe18ca68614744ba7e5bfca3561933,7days_performance,seven_days_coin_drop_football,Coin Drop Football,instant_win,UKCC,low6_azureuksouth,live
+5267236b9481e9db91a6f17bb3d009dc,7days_performance,seven_days_drop_zone,Drop Zone,instant_win,7 Days Performance,low6_azureuksouth,live
+c0867f472ebf04372a83b690365b900b,7days_performance,seven_days_drop_zone,Drop Zone,instant_win,UKCC,low6_azureuksouth,live
+a50263cd8d4410f797b91ddf5374a414,7days_performance,seven_days_pirate_quest,Pirate Quest,instant_win,7 Days Performance,low6_azureuksouth,live
+fc62a061c58805583d956aa87a5af740,7days_performance,seven_days_pirate_quest,Pirate Quest,instant_win,UKCC,low6_azureuksouth,live
+f73b6a996d0a30de485cf913403f0a04,action,action_bingo,Action Network Golf Squares,bingo,,low6_us,archived
+a17867fc26032f1e8ec6d9a2fe83664c,action,action_picks,Better Collective NBA Finals Pickem,pickem,,low6_us,archived
+b1045a6d03a7d0cbb06d5bcd067d834f,atp,atp_picks,ATP Rankings Predictor,pickem,,low6_us,archived
+5e8751658c7357b8b454885ef446fe72,ballislife,ballislife_bracket,Ballislife Bracket,bracket,,low6_us,archived
+f001ad95d79bf2eabae27e908f2cdd64,bbc,bbc_squares,BBC Squares,bingo,,low6,archived
+d88f95b8478ad7586aa3ec54eeb96842,bet365,bet365_overunder,Bet365 Over/Under,pickem,,low6_azureeastus2,live
+695b8bbea7887664ed766e772b6f3e22,bet365,bet365_uf,Bet365 Ultimate Fan,fantasy,,low6_azureeastus2,live
+94e1190e2895714248fb879f6d2f5404,bet99,bet99,Bet99 Free2Play,pickem,,low6_us,archived
+8141d6a3ad1e29f6658313aa600306c1,bet99,bet99_bracket,Bet99 Bracket,bracket,,low6_azureeastus2,archived
+51f37cf70ceddd8aa196df4262041606,bet99,bet99_picks,Bet99 Picks,pickem,,low6_azureeastus2,live
+cf7e0272e0e372a0071979b90b0ecd59,betfan,betfan_picks,Betfan Picks,pickem,,low6,archived
+620face17d6838683fd83b7406d47480,betrivers,betrivers,BetRivers Free2Play,pickem,,low6_us,archived
+e648eaab99640aab5f9a1e91840fa08a,betrivers,betrivers_bracket,BetRivers Bracket Challenge,bracket,,low6_us,archived
+311bcc251fb3fb03fa13d21b987ee69a,betrivers,betrivers_bracket_tennis,BetRivers Tennis Bracket Challenge,bracket,,low6_us,archived
+610dad838c50892fade68745715dddd0,betrivers,betrivers_brackets,BetRivers Bracket Challenge 2024,bracket,,low6_us,archived
+758099f4507b43c42dfc4b6f5f588f80,betsson,betsson_uf,Betsson UF,fantasy,,low6,live
+1949d48260a2df97ea073922ce6f4ceb,betway,betway_picks,Betway Picks,pickem,,low6_azureeastus2,live
+2d5a9ba764ff618931fb400bd07658ed,caesars,caesars,Caesars Spin to Win,spin_to_win,Caesars,low6_awsuseast1,archived
+0cf166bf4f7c7fde3e8ef5b3dcfa991c,caesars,caesars,William Hill Spin to Win,spin_to_win,William Hill,low6_awsuseast1,archived
+6ee2d0d40f27439992c275332303c44f,cfl,cfl_fantasy,CFL Fantasy,fantasy,,low6_azureeastus2,live
+080c4985729b2064d542288e2a986a3f,choctaw,choctaw_bingo,Choctaw T-Box,bingo,,low6_us,archived
+592660da4b5a89f455547d185b1e1105,clutchbet,clutchbet_bingo,Clutchbet Big Game Bingo,bingo,,low6_us,archived
+3a9ffda516b28523805af16d5d40715e,clutchbet,clutchbet_bracket,Clutchbet Bracket Challenge,bracket,,low6_us,archived
+f7db8a0820f064b8f73b5999bcd4309f,clutchbet,clutchbet_picks,Clutchbet Picks,pickem,,low6_us,archived
+a765cb7943c5e56c689849936a625b9f,clutchbet,clutchbet_predictor,Clutchbet Pro Football Standings Predictor,pickem,,low6_us,archived
+02b37643311f818bb8acbf2de3d5464c,draftkings,draftkings,Draftkings Daily Reveal,daily_reveal,Draftkings,low6_awsuseast1,live
+9f61a2f5a4c89eabae1ec971c05596c5,draftkings,draftkings,Draftkings Pickem,pickem,Draftkings,low6_awsuseast1,live
+0a3b1e17f639730734865059f9503b04,draftkings,draftkings,Draftkings Squares,squares,Draftkings,low6_awsuseast1,live
+27017e7a747034e861d25df1d48930bb,draftkings,draftkings,Skypicks Pickem,pickem,Skypicks,low6_awsuseast1,live
+58b8c27660457067b397a0f5fb0fc3c4,du,du_picks,DU Picks,pickem,,low6_uaenorth,archived
+40bcca37774bd719a352b2e9791f2835,du,du_squares,DU Squares,bingo,,low6_uaenorth,archived
+35e6a64c95af6f762da4c6ea93815884,elf,elf_blast,ELF Blast,candy_crush,,low6_azureeastus2,live
+261d650db704ba91b5c1085c85a01b7d,elf,elf_ski,ELF Ski,endless_runner,,low6_azureeastus2,live
+a636af400a8be76a48ee4fbd411f2c05,engagecraft,engagecraft_fantasy,EngageCraft Fantasy,fantasy,,low6_azureuksouth,live
+2f93700719070587922ce18a28c6552e,ewings,ewings_uf_aus,Flier,fantasy,,low6_uaenorth,live
+0acfc4057911e486b433deda78313ee8,ffh,ffh_uf,FFH Ultimate Fan,fantasy,,low6,archived
+c04dae69a1487e34a8da2ee6fa96d53b,gaming1,gaming1,Gaming1,pickem,Circus Daily,low6_azureuksouth,live
+60da23bc0612ae61e89c1f43d9f6f820,gana,gana_bracket,Gana Bracket,bracket,,low6_azureeastus2,archived
+bd5076b4c1d8fe4708dbddf2da9e8f2d,gana,gana_predictor,Gana Predictor,pickem,,low6_azureeastus2,live
+9785bfd049618e1040578c6e6d190d28,gana,gana_survivor,Gana Survivor,streak,,low6_azureeastus2,live
+be9f25a9fbfe9080a71019219f74aeb7,gsoc,gsoc_picks,GSOC Picks,pickem,,low6_us,archived
+f05873640c77fdb5c9ffaec186f3bdfc,iff,iff_bingo,IFF Bingo,bingo,,low6,archived
+7acb5b3c2b3d1c64116dc81b57c97744,iff,iff_picks,IFF Picks,pickem,,low6,archived
+5fd4bf9c48679a9c896afd4b363b119b,itv,itv_spinoff,ITV Spin Off,daily_quiz,,low6_azureuksouth,archived
+717ebb19bd781e97a38ce53289b81229,itv,itv_spinoff_live,ITV Spin Off Live,live_quiz,,low6_azureuksouth,archived
+f676e747a0829552f289c19a6ebdb641,lavercup,lavercup,Laver Cup,pickem,,low6,archived
+aecdc1900dafb60dc6f97f2ef6f47ff0,lavercup,lavercup_picks,Laver Cup Picks,pickem,,low6_us,archived
+0db4d44a9170fbd63f6e6892e1601f56,learfield,learfield,Aggie Predictions,pickem,,low6_us,archived
+9b22ac3c4267f26f53c00a23e4a013c4,learfield,learfield,Beardown Games,pickem,,low6_us,archived
+422f60c9edaea6e6405766199eb56ed2,learfield,learfield,Cyclones Pick Em,pickem,,low6_us,archived
+5126cf77a82d067088908c8249b70fee,learfield,learfield,Doghouse Predictor ,pickem,,low6_us,archived
+06062723fcb391797c74fd298603f9c3,learfield,learfield,Florida Gators,pickem,,low6_us,archived
+ebdd6d95296cb8e320838c1750e28561,learfield,learfield,Hailstate Pick Em,pickem,,low6_us,archived
+7859412d115c0e5d70eec613c65e2673,learfield,learfield,Hilltop Predictions,pickem,,low6_us,archived
+446c89e47cf1ea1974aaf9c75855fa78,learfield,learfield,Hokies Pick Em,pickem,,low6_us,archived
+41ab2cf0887829257f98bf6eee0d06d3,learfield,learfield,Mizzou Challenge,pickem,,low6_us,archived
+93b97974c8825121a3c0fcefe246160e,learfield,learfield,Mustang Challenge,pickem,,low6_us,archived
+db6a8a0cec21dfca81b3f1b0ed92998a,learfield,learfield,Oklahoma State Challenge,pickem,,low6_us,archived
+a40576c7ec7235b6294d3a071122e268,learfield,learfield,OU Challenge,pickem,,low6_us,archived
+e84e7bfd4fcedeee4dd7dc4f9fd744a9,learfield,learfield,Panther Pick Em,pickem,,low6_us,archived
+163a2d0cd806f1ee2971ae9b153f516c,learfield,learfield,Purple and Gold Pick Em,pickem,,low6_us,archived
+d88fd86cf99f1aa9f30af4931bf13d71,learfield,learfield,Rebels Challenge,pickem,,low6_us,archived
+f97c31b25cd486a269e8b1892a016e2b,learfield,learfield,Sic Em Pick Em,pickem,,low6_us,archived
+1a1c0d5cad6ca779802bc92f547de0ef,learfield,learfield,Tar Heels Challenge,pickem,,low6_us,archived
+4cd4f5ab96965b5f0962f2318d2fc6a3,learfield,learfield,The Herd Challenge,pickem,,low6_us,archived
+430c78d16bc6b94545f09505a3472988,learfield,learfield,Wolfpack Predictions,pickem,,low6_us,archived
+953280121681ef314a3906f020ddcf76,learfield,learfield,Wolverine Challenge,pickem,,low6_us,archived
+2c1ab3d00accb3be065bff8f5125843f,newscorp,newscorp_matchup,NewsCorp Matchup,connections,,low6_azureeastus2,live
+4df6e8e2536fddbbc08ca7ac25cec572,newscorp,newscorp_trivia,NewsCorp Trivia,trivia,,low6_azureeastus2,live
+f2f8cb661f5f4dcd83b7044a4d31681a,nhl,nhl_all_star_fan_vote,NHL All Star Fan Vote,vote,,low6_us,archived
+4e9221d1d6c7feadbceef744ce1a6b41,nhl,nhl_bingo,NHL Bingo,bingo,,low6_awsuseast1,archived
+375e2e0984897385984316587eb5b137,nhl,nhl_bingo,NHL Bingo,bingo,,low6_us,archived
+c5dc050374b888ccb3d385cec70a2f5e,nhl,nhl_bracket,NHL Bracket Challenge,bracket,,low6_awsuseast1,archived
+10b95e4fe8823451aefcec82c38d1043,nhl,nhl_bracket,NHL Bracket Challenge,bracket,,low6_us,archived
+e28e4b0947fd03ec6281b3dadb2c4a10,nhl,nhl_fantasy_stars,NHL Fantasy Stars,fantasy,,low6_awsuseast1,live
+5b7189afe4cf1347a9f65ff60b821702,nhl,nhl_gamezone,NHL Gamezone,gamezone,,low6_awsuseast1,archived
+cdf792d9ee2fc097c33a7fb981a7b23a,nhl,nhl_goal_chase,NHL Goal Chase,pickem,,low6_awsuseast1,archived
+f350c1bec30c9506de9866f8953bb092,nhl,nhl_lines,NHL Lines,connections,,low6_awsuseast1,archived
+c5c13a20c715be2f1b8418a380d60277,nhl,nhl_pepsi_goalie,NHL Pepsi Goalie Challenge,pickem,,low6_us,archived
+00a7463485640180a0bc6788fcbf2b7c,nhl,nhl_preplay_canada,NHL Preplay Canada,pickem,,low6_awsuseast1,archived
+cda622d6961fd2c1d8a562fae6eb7d25,nhl,nhl_preplay_canada,NHL Preplay Canada,pickem,,low6_us,archived
+cf829286cdbfb5c2b058f071ae114e36,nhl,nhl_preplay_us,NHL Preplay US,pickem,,low6_us,archived
+8641d409a07900824b1eb595d92c5dd6,nhl,nhl_quarter_century_vote,NHL Quarter Century Team Fan Vote,vote,,low6_us,archived
+dd23ca78c31fc7824ea31365365129e3,nhl,nhl_statsstreak,NHL Stats Streak,streak,,low6_awsuseast1,archived
+dee45d537046f3302167708903dc5871,nova,nova,Bengals Picks,pickem,,low6_us,archived
+920d28dd57be1623f7977e517a9628b2,nova,nova,Han Pickem,pickem,,low6_us,archived
+e9e300d83a64699ac3daaafe1b1492df,nova,nova,LA Chargers Picks,pickem,,low6_us,archived
+47951037000826ab7db073eadf2fa5d4,nova,nova,Pistons Picks,pickem,,low6_us,archived
+148e441e082199b554031f4bc29aa942,nova,nova,White Sox Pick to Click,pickem,,low6_us,archived
+8f79ceb246105a10549f3f90de79150a,nova,nova_eu,De Kraker,pickem,De Kraker,low6,archived
+9c19fb8d9955a23b7a304a16cacb2b42,nova,nova_eu,FC Groningen,pickem,FC Groningen,low6,archived
+b38fe7dcd4ad511f824deac31f13928f,nova,nova_eu,Score4,pickem,Score4,low6,archived
+544478c85b7934d88fcc0b444d6924e8,nova,nova_eu,TOTO,pickem,TOTO,low6,archived
+de4081e1a45c3139c46ac5223d602587,nova,nova_uk,AFTV Picks,pickem,AFTV Picks,low6,archived
+eafffa839e50411a1731f82ffac5f129,nova,nova_uk,Ayr U Picks,pickem,Ayr U Picks,low6,archived
+34e4a3d259286c42d706455193a9c77e,nova,nova_uk,BAFC Picks,pickem,BAFC Picks,low6,archived
+0bc0fa674a64d9859c064d8dbc3be8d2,nova,nova_uk,Blues Picks,pickem,Blues Picks,low6,archived
+6819ff1e9fa7bcd1d4ab4a09cb410219,nova,nova_uk,Boro Picks,pickem,Boro Picks,low6,archived
+f9781a1a54fe807d6d0bd95cec4b9e45,nova,nova_uk,BPIHT Picks,pickem,BPIHT Picks,low6,archived
+e671cde57ac3d1d3453845abf48aa049,nova,nova_uk,BSB S Picks,pickem,BSB S Picks,low6,archived
+88df364c977f77f993c8a7acf0d31766,nova,nova_uk,CFC Picks,pickem,CFC Picks,low6,archived
+af869c36d9c2874b94409de2715e55e0,nova,nova_uk,DUFC Picks,pickem,DUFC Picks,low6,archived
+0f6644459e66eee4b982c384142d1363,nova,nova_uk,Dundee,pickem,Dundee,low6,archived
+afbeee9cd15510dac437ccdffea67921,nova,nova_uk,European Tour Picks,pickem,European Tour Picks,low6,archived
+ce12842bc526e693a0d1455fbdb7a047,nova,nova_uk,ExilesPicks,pickem,ExilesPicks,low6,archived
+19c550ca6a733034e33d7981f1f0af80,nova,nova_uk,Fights Picks Web,pickem,Fights Picks Web,low6,archived
+593ad52927dd3030a3f0e99e14d72760,nova,nova_uk,FightsPicks,pickem,FightsPicks,low6,archived
+573fd57be54f336e1eb37b703eb1d998,nova,nova_uk,GBFCSelects,pickem,GBFCSelects,low6,archived
+b211e239e0a48ce5d20145a472508e0b,nova,nova_uk,Han Pick'em,pickem,Han Pick'em,low6,archived
+69e9921bcdda2ced3244ca33cb885d23,nova,nova_uk,Hibs Picks,pickem,Hibs Picks,low6,archived
+e29853b58ba802ca0b4fe27ee2abf625,nova,nova_uk,Kick Off Vs,pickem,Kick Off Vs,low6,archived
+68275b10736e012627d31a27408c8443,nova,nova_uk,Linnets Bet,pickem,Linnets Bet,low6,archived
+53d7c15431da18ed8e2339e3904b6ba5,nova,nova_uk,Low6,pickem,Low6,low6,archived
+99ddeb7c25c1a68fb1fd34a6e76c3297,nova,nova_uk,OldhamPicks,pickem,OldhamPicks,low6,archived
+6d9f23160574769374cf827f33e668e6,nova,nova_uk,OozingPicks,pickem,OozingPicks,low6,archived
+de0b7f40a3b560c4998148cdd01cf8b6,nova,nova_uk,OUFC Picks,pickem,OUFC Picks,low6,archived
+0f5f8ba05e13db76d56578aac93f747f,nova,nova_uk,Pars Picks,pickem,Pars Picks,low6,archived
+79f3cad9434f74f5214d691a99f01954,nova,nova_uk,PDC Picks,pickem,PDC Picks,low6,archived
+a1160287b9d166ff0104dfd9dd42d837,nova,nova_uk,Posh Prds,pickem,Posh Prds,low6,archived
+1f64a0a2f1ff30c281d571e553f3808b,nova,nova_uk,RedmenPicks,pickem,RedmenPicks,low6,archived
+b95654cf9661255278e28fa4f7b2aa45,nova,nova_uk,RFC Picks,pickem,RFC Picks,low6,archived
+549e80d3f2b0072c4342e8249792465e,nova,nova_uk,Rvrs Select,pickem,Rvrs Select,low6,archived
+5ccdcd7aac4663d7ec9b5054a0a43140,nova,nova_uk,SAFC Picks,pickem,SAFC Picks,low6,archived
+95dbea9595c7edd51a57b251327e3479,nova,nova_uk,Steelmen,pickem,Steelmen,low6,archived
+03d4e947f0a474fca4b7b53af76f1b4c,nova,nova_uk,TigersPicks,pickem,TigersPicks,low6,archived
+647b8bddb865b8ac6dd4e8c1b342329a,nova,nova_uk,ToffeePicks,pickem,ToffeePicks,low6,archived
+f003e99c31b347053dc52f7b30f6d5c9,nova,nova_uk,TOTO,pickem,TOTO,low6,archived
+bbbabc1401e985e1f4439de946b0122b,nova,nova_uk,TUS Picks,pickem,TUS Picks,low6,archived
+35745fb564d0e7bbdf88e217762945f2,nova,nova_uk,UFC Picks,pickem,UFC Picks,low6,archived
+1cdab3e53d662d4fbf381aee8b35bb48,nova,nova_uk,Us Picks,pickem,Us Picks,low6,archived
+ba23a32b69362e52a57917a883480dbe,nova,nova_uk,Weds Picks,pickem,Weds Picks,low6,archived
+9dd074af026ab44ac1a32cdc8f822182,nova,nova_uk,Weekly7,pickem,Weekly7,low6,archived
+bad0d05425195babfe141359fd7e9194,nova,nova_uk,Wyc Picks,pickem,Wyc Picks,low6,archived
+aced41ba6100307c0f4504985145e3a0,novibet,novibet_copa_predictor_bracket,Novibet Copa Predictor Bracket,bracket,,low6,archived
+cab9ea77e3c36e2cc5d45c7d0a9701ae,oddschecker,oddschecker_bingo,Oddschecker Bingo,bingo,,low6,archived
+e6307ebbe773fbdfd73f757183a4478a,oddschecker,oddschecker_predictor,Oddschecker Predictor,pickem,,low6,archived
+a47bf470f40ad6bf3377961115c12193,oddschecker,oddschecker_spintowin,Oddschecker Spin to Win,instant_win,,low6_azureuksouth,live
+7f560e09081ebfb0a1926491c6c926b8,olybet,olybet_casino,OlyBet Casino,instant_win,,low6_azureeastus2,live
+81cea7e72a0f26c70c72186b27bfd3ea,opap,opap_picks,OPAP Picks,pickem,,low6,live
+46e48e071774fb92d79bbe7a743a4ae5,opap,opap_spintowin,OPAP Spin to Win,spin_to_win,,low6_azureeastus2,live
+773ed807dcc80d64622da954d8b9bf71,opta,opta_bracket_mm,Opta Bracket MM,bracket,,low6,archived
+c0033bc98595366fe1a9d7af0dac7a58,opta,opta_games_hub,Opta Games Hub,pickem,,low6_us,archived
+4b3ab80e27f43a64e81f1eeed1179648,opta,opta_games_hub_euros,Opta Games Hub Euros,pickem,,low6_us,archived
+3d9ccdb2a13b3c950fe16983c1034278,opta,opta_predictor_bracket_euros,Opta Predictor Bracket Euros,bracket,,low6_us,archived
+4f2289454936fcce6d87d33925573cbd,opta,opta_streak,Opta Streak,streak,,low6,archived
+1001adf92d93e46fa2e6eed8150f7332,opta,opta_streak,Opta Streak,streak,,low6_us,archived
+e646b948b88e83e70d01cff1c5ccf701,pga,pga,PGA Picks,pickem,,low6_us,archived
+dd9966be5dffea88ffeea477b4bcaea3,pivot,pivot_bracket,Pivot Bracket,bracket,,low6_azureuksouth,archived
+f8de3b3d322f5b1f632247ec3c712ef7,powerleague,powerleague_picks,Powerleague Picks,pickem,,low6_us,archived
+3e3bfe697cee7886997d34328dc6a15f,prizekings,prizekings_comps_raffle,Raffle,prize_competition,South Africa,low6_azureuksouth,archived
+19332d403253931606ad83a00aeed4a8,prizekings,prizekings_comps_raffle,Raffle,prize_competition,United Kingdom,low6_azureuksouth,archived
+164fed28c38354f143c8d3f466052685,prizekings,prizekings_comps_spot_the_ball,Spot the Ball,prize_competition,South Africa,low6_azureuksouth,live
+ee9ab02512fdb88d1247e9063e22e94d,rivalry,rivalry,Rivalry NBA,pickem,,LOW6_AUS,archived
+f88d2b8f0d5e28aa00694d93a1db2e2b,rivalry,rivalry,Rivalry Pickem,pickem,,low6_us,archived
+bc117e082551732c7ca964ecaa9dc540,rivalry,rivalry_uf_nba_br,Rivalry NBA UF,fantasy,,low6_us,archived
+38472cdcad4e8599e349d0149f805f77,saracen,saracen_bracket,Saracen Bracket,bracket,,low6_azureeastus2,archived
+6618df42ffd040003830faca67934001,saracen,saracen_pickem,Saracen Pickem,pickem,,low6_azureeastus2,archived
+13bddd75f2d1f7a453d13cce70e256ce,sbio,sbio,SBIO,pickem,,low6,archived
+efc95ffcc0ba62623845563b2eebceb2,sbio,sbio_squads,SBIO Squads,squads,,low6,archived
+924bbbe885a96ddf323bb1036ca75917,sportbible,sportbible_picks,Sport Bible Picks,pickem,,low6,archived
+7d02fd0f5400bd02e267fc492d307918,sports_interaction,sportsint_bracket,Sports Interaction Bracket,bracket,,low6_us,archived
+c5b2112f390db6d4bbcfa9641a4424a7,sports_interaction,sportsint_danglepicks,Sports Interaction Dangle Picks,pickem,,low6_us,archived
+72bec9d26214599ec7cdd1e6b30190e0,sports_interaction,sportsint_nhlbracket,Sports Interaction NHL Bracket,bracket,,low6_us,archived
+904a52b5fce25d5387cedce75a3f2db2,sports_interaction,sportsint_picks,Sports Interaction Picks,pickem,,low6_us,archived
+8112d11314125234baab027043b0eb78,sportsbet,sportsbet,Sportsbet World Cup,pickem,,LOW6_AUS,archived
+5e1a2c49dca9eadeb58dce7a26387e8a,superbet,superbet,Superbet Ultimate Fan,fantasy,,low6,archived
+ef495a88df9383d775778ff195ed1db2,tipman,tipman_pickem,Tipman Pickem,pickem,,low6_azureuksouth,live
+47ca2f3eb0cd325c2c3a0d7739004ff7,uf_epl2122,uf_epl2122,UF EPL 21/22,fantasy,,low6,archived
+72d31f049c65670afa229d17d1834139,uf_epl2324,uf_epl2324,Premier League,fantasy,Premier League,low6,archived
+9ffdb05ea513b3a7f75b22f13bf36f52,uf_epl2324_denmark,uf_epl2324_denmark,Premier League,fantasy,Premier League,low6,archived
+a3da062b6b57be5e4db91e0c7dfa3bf3,uf_euro2020,uf_euro2020,UF Euro 2020,fantasy,,low6,archived
+30948eb1810fc06627b51ef37ee171d6,uf_euro2024,uf_euro2024,Premier League,fantasy,Premier League,low6,archived
+8f944d7886d38b80c7db0527f513a295,uf_euro2024_denmark,uf_euro2024_denmark,Premier League,fantasy,Premier League,low6,archived
+0453c2ef1f973e8b3bd497b370aad06d,uf3,uf3,UF3,fantasy,,low6,archived
+0370a5a59ec22cc57fe68574ebf9423f,wendys,wendys_survivor,Wendy's Daily Faceoff Survivor,streak,,low6_us,archived
+18a23b4fef09becc3a05b54e26e4f210,wta,wta_picks,WTA Picks,pickem,,low6_us,archived
+08e876c1fb300a71846a5300dc764b76,wta,wta_streaks,WTA Streaks,streak,,low6_us,archived
