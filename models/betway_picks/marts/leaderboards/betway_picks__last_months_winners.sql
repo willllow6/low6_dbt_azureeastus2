@@ -1,14 +1,14 @@
 with
 
-weekly_leaderboards as (
+monthly_leaderboards as (
 
     select *
     from {{ ref('betway_picks__aggregate_leaderboard_positions') }}
-    where period_type = 'week'
+    where period_type = 'month'
 
 ),
 
-last_weeks_winners as (
+last_months_winners as (
 
     select
         betway_SubscriberKey as SubscriberKey,
@@ -22,12 +22,12 @@ last_weeks_winners as (
             when leaderboard_rank = 2
                 then 'Second'
         end as first_or_second
-    from weekly_leaderboards
+    from monthly_leaderboards
     where 
-        date_trunc('week', period_end) = dateadd(week,-1,date_trunc('week',sysdate()))
+        date_trunc('month', period_end) = dateadd(month,-1,date_trunc('month',sysdate()))
         and leaderboard_rank < 3
     order by region, leaderboard_competition, leaderboard_position
 
 )
 
-select * from last_weeks_winners
+select * from last_months_winners
