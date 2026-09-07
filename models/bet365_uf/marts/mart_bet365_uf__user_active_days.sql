@@ -11,7 +11,9 @@ users as (
 
     select
         user_id,
-        is_tester
+        is_tester,
+        user_country_clean,
+        device_type
     from {{ ref('stg_bet365_uf__users') }}
 
 ),
@@ -22,7 +24,9 @@ joined as (
         uad.user_id,
         uad.active_date,
         uad.user_active_day_number,
-        u.is_tester
+        u.is_tester,
+        u.user_country_clean,
+        u.device_type
     from user_active_days as uad
     left join users as u
         on uad.user_id = u.user_id

@@ -12,6 +12,8 @@ conversion_cohorts as (
 
     select
         cast(convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at) as date) as date_day,
+        user_country_clean,
+        device_type,
         count(*) as registration_count,
         count_if(is_playable) as playable_user_count,
         count_if(has_completed_profile) as completed_profile_count,
@@ -23,7 +25,7 @@ conversion_cohorts as (
         sum(purchases) as purchase_count,
         sum(gross_revenue) as gross_revenue
     from users
-    group by 1
+    group by 1, 2, 3
 
 )
 

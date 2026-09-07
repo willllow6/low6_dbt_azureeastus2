@@ -16,11 +16,13 @@ agg_purchases as (
         item_description,
         coins_amount,
         cast(convert_timezone('UTC', '{{ var("local_timezone") }}', purchased_at) as date) as purchased_date,
+        user_country_clean,
+        device_type,
         count(*) as purchases,
         sum(case when user_purchase_number = 1 then 1 else 0 end) as first_purchases,
         sum(purchase_price) as gross_revenue
     from purchases
-    group by 1, 2, 3, 4, 5
+    group by 1, 2, 3, 4, 5, 6, 7
 
 )
 

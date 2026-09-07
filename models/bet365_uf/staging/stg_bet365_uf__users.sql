@@ -21,6 +21,59 @@ renamed as (
         FirstName as first_name,
         LastName as last_name,
         parse_json(Address):state::text as user_state,
+        parse_json(Address):country::text as user_country,
+        CASE
+            WHEN TRIM(USER_COUNTRY) = '' OR USER_COUNTRY IS NULL THEN 'Unknown'
+
+            -- Canada: exact matches / common misspellings
+            WHEN LOWER(TRIM(USER_COUNTRY)) IN (
+                'canada', 'canada.', 'cana', 'canad', 'cananda', 'cannada'
+            ) THEN 'Canada'
+
+            -- Canada: province names
+            WHEN LOWER(TRIM(USER_COUNTRY)) IN (
+                'ontario', 'quebec', 'alberta', 'british columbia', 'manitoba',
+                'saskatchewan', 'nova scotia', 'new brunswick', 'prince edward island',
+                'newfoundland and labrador', 'yukon', 'northwest territories', 'nunavut'
+            ) THEN 'Canada'
+
+            -- Canada: contains the word, or matches a Canadian postal code pattern (A1A 1A1)
+            WHEN USER_COUNTRY ILIKE '%canada%' THEN 'Canada'
+            WHEN REGEXP_LIKE(USER_COUNTRY, '[A-Za-z][0-9][A-Za-z]\\s?[0-9][A-Za-z][0-9]') THEN 'Canada'
+
+            -- United States: exact matches / common misspellings / translations
+            WHEN LOWER(TRIM(USER_COUNTRY)) IN (
+                'united states', 'united states of america', 'united states america',
+                'usa', 'us', 'unties states', 'estados unidos',
+                'united states minor outlying islands'
+            ) THEN 'United States'
+
+            -- United States: full state names
+            WHEN LOWER(TRIM(USER_COUNTRY)) IN (
+                'alabama','alaska','arizona','arkansas','california','colorado','connecticut',
+                'delaware','florida','georgia','hawaii','idaho','illinois','indiana','iowa',
+                'kansas','kentucky','louisiana','maine','maryland','massachusetts','michigan',
+                'minnesota','mississippi','missouri','montana','nebraska','nevada',
+                'new hampshire','new jersey','new mexico','new york','north carolina',
+                'north dakota','ohio','oklahoma','oregon','pennsylvania','rhode island',
+                'south carolina','south dakota','tennessee','texas','utah','vermont',
+                'virginia','washington','west virginia','wisconsin','wyoming'
+            ) THEN 'United States'
+
+            -- United States: contains the phrase, or ends in a US address (city ST 5-digit-zip)
+            WHEN USER_COUNTRY ILIKE '%united states%' THEN 'United States'
+            WHEN REGEXP_LIKE(USER_COUNTRY, '[A-Z]{2}\\s*[0-9]{5}(-[0-9]{4})?\\s*$') THEN 'United States'
+
+            ELSE 'Unknown'
+        END AS user_country_clean,
+
+        CASE
+            WHEN REGEXP_LIKE(DeviceId, '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$')
+                THEN 'iOS'
+            WHEN REGEXP_LIKE(DeviceId, '^[0-9a-f]{16}$')
+                THEN 'Android'
+            ELSE 'Unknown'
+        END AS device_type,
 
         case
             when year(BirthDate) = 1900 then null

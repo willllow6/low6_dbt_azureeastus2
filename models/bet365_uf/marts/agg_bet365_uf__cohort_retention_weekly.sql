@@ -5,7 +5,7 @@ events as (
 ),
 
 non_tester_users as (
-    select user_id, client_id, game_type
+    select user_id, client_id, game_type, user_country_clean, device_type
     from {{ ref('stg_bet365_uf__users') }}
     where not is_tester
 ),
@@ -16,6 +16,8 @@ events_with_dims as (
         events.user_id,
         non_tester_users.client_id,
         non_tester_users.game_type,
+        non_tester_users.user_country_clean,
+        non_tester_users.device_type,
         events.created_at
     from events
     inner join non_tester_users on events.user_id = non_tester_users.user_id
@@ -28,9 +30,11 @@ cohort_weeks as (
         user_id,
         client_id,
         game_type,
+        user_country_clean,
+        device_type,
         min(date_trunc('week', convert_timezone('UTC', '{{ var("local_timezone") }}', created_at))) as cohort_week
     from events_with_dims
-    group by 1, 2, 3
+    group by 1, 2, 3, 4, 5
 
 ),
 
@@ -40,9 +44,11 @@ cohort_sizes as (
         cohort_week,
         client_id,
         game_type,
+        user_country_clean,
+        device_type,
         count(distinct user_id) as cohort_size
     from cohort_weeks
-    group by 1, 2, 3
+    group by 1, 2, 3, 4, 5
 
 ),
 
@@ -53,13 +59,17 @@ user_cohort_activity as (
         cohort_weeks.cohort_week,
         cohort_weeks.client_id,
         cohort_weeks.game_type,
+        cohort_weeks.user_country_clean,
+        cohort_weeks.device_type,
         date_trunc('week', convert_timezone('UTC', '{{ var("local_timezone") }}', events_with_dims.created_at)) as activity_week
     from cohort_weeks
     inner join events_with_dims
         on cohort_weeks.user_id = events_with_dims.user_id
         and cohort_weeks.client_id = events_with_dims.client_id
         and cohort_weeks.game_type = events_with_dims.game_type
-    group by 1, 2, 3, 4, 5
+        and cohort_weeks.user_country_clean = events_with_dims.user_country_clean
+        and cohort_weeks.device_type = events_with_dims.device_type
+    group by 1, 2, 3, 4, 5, 6, 7
 
 ),
 
@@ -70,9 +80,11 @@ weekly_activity as (
         activity_week,
         client_id,
         game_type,
+        user_country_clean,
+        device_type,
         count(distinct user_id) as retained_users
     from user_cohort_activity
-    group by 1, 2, 3, 4
+    group by 1, 2, 3, 4, 5, 6
 
 ),
 
@@ -83,6 +95,8 @@ retention as (
         weekly_activity.activity_week,
         weekly_activity.client_id,
         weekly_activity.game_type,
+        weekly_activity.user_country_clean,
+        weekly_activity.device_type,
         datediff('week', weekly_activity.cohort_week, weekly_activity.activity_week) as weeks_since_cohort,
         cohort_sizes.cohort_size,
         weekly_activity.retained_users,
@@ -92,6 +106,8 @@ retention as (
         on weekly_activity.cohort_week = cohort_sizes.cohort_week
         and weekly_activity.client_id = cohort_sizes.client_id
         and weekly_activity.game_type = cohort_sizes.game_type
+        and weekly_activity.user_country_clean = cohort_sizes.user_country_clean
+        and weekly_activity.device_type = cohort_sizes.device_type
 
 )
 
@@ -100,6 +116,8 @@ select
     activity_week,
     client_id,
     game_type,
+    user_country_clean,
+    device_type,
     weeks_since_cohort,
     cohort_size,
     retained_users,

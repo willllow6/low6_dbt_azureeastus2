@@ -16,6 +16,8 @@ agg_users as (
         cast(convert_timezone('UTC', '{{ var("local_timezone") }}', registered_at) as date) as registered_date,
         time_to_first_purchase_band,
         gross_revenue_band,
+        user_country_clean,
+        device_type,
         count(*) as registrations,
         sum(case when is_playable then 1 else 0 end) as playable_users,
         sum(case when is_returning_user then 1 else 0 end) as returning_users,
@@ -24,7 +26,7 @@ agg_users as (
         sum(purchases) as purchases,
         sum(gross_revenue) as gross_revenue
     from users
-    group by 1, 2, 3, 4, 5, 6, 7
+    group by 1, 2, 3, 4, 5, 6, 7, 8, 9
 
 )
 

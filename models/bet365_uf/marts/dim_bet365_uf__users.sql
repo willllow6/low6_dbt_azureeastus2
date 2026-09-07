@@ -71,6 +71,8 @@ joined as (
         users.first_name,
         users.last_name,
         users.user_state,
+        users.user_country_clean,
+        users.device_type,
         users.user_age,
         users.user_age_band,
         users.user_generation,

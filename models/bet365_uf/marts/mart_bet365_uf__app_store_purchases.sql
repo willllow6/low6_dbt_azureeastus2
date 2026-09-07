@@ -5,7 +5,7 @@ purchases as (
 ),
 
 users as (
-    select user_id, username, is_tester from {{ ref('stg_bet365_uf__users') }}
+    select user_id, username, is_tester, user_country_clean, device_type from {{ ref('stg_bet365_uf__users') }}
 ),
 
 joined as (
@@ -30,7 +30,9 @@ joined as (
         purchases.pack_type,
         purchases.user_purchase_number,
         users.username,
-        users.is_tester
+        users.is_tester,
+        users.user_country_clean,
+        users.device_type
     from purchases
     left join users
         on purchases.user_id = users.user_id
