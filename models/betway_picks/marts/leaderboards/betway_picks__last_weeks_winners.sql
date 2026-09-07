@@ -25,7 +25,7 @@ last_weeks_winners as (
     from weekly_leaderboards
     where 
         date_trunc('week', period_end) = dateadd(week,-1,date_trunc('week',sysdate()))
-        and leaderboard_rank < 3
+        and leaderboard_rank < 2
     order by region, leaderboard_competition, leaderboard_position
 
 )

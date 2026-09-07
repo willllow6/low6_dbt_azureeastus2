@@ -25,7 +25,7 @@ last_months_winners as (
     from monthly_leaderboards
     where 
         date_trunc('month', period_end) = dateadd(month,-1,date_trunc('month',sysdate()))
-        and leaderboard_rank < 3
+        and leaderboard_rank < 2
     order by region, leaderboard_competition, leaderboard_position
 
 )
