@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: stg_bet365_overunder__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+
+  - name: stg_bet365_overunder__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bet365_overunder__users')
+                field: user_id
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+
+  - name: stg_bet365_overunder__picks
+    columns:
+      - name: pick_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bet365_overunder__entries')
+                field: entry_id
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']

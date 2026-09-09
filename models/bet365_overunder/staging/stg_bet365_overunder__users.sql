@@ -13,7 +13,11 @@ renamed as (
 
         id as user_id,
         gaming_id,
-       
+
+        'bet365' as client_id,
+        'bet365' as tenant_id,
+        'over_under' as game_type,
+
         currency as currency_code,
         country_code,
         state_code,
@@ -22,13 +26,13 @@ renamed as (
         case when last_login_at >= '2025-09-04 07:00:00' then true else false end as has_logged_in_since_launch,
 
         cast(created_at as date) as registration_date,
-        cast(convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as date) as registration_date_et,
+        cast(convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at)) as date) as registration_date_et,
 
         to_timestamp_ntz(created_at) as registered_at,
-        convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as registered_at_et,
+        convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at)) as registered_at_et,
         to_timestamp_ntz(updated_at) as updated_at,
         to_timestamp_ntz(last_login_at) as last_login_at
-        
+
     from source
 
 )

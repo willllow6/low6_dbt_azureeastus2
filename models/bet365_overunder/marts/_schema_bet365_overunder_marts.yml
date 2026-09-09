@@ -1,0 +1,204 @@
+version: 2
+
+models:
+
+  # ── dim_ models ──────────────────────────────────────────────────────────────
+
+  - name: dim_bet365_overunder__users
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+
+  # ── fct_ models ──────────────────────────────────────────────────────────────
+
+  - name: fct_bet365_overunder__selections
+    columns:
+      - name: selection_id
+        tests:
+          - unique
+          - not_null
+      - name: entry_id
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+
+  - name: fct_bet365_overunder__entries
+    columns:
+      - name: entry_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_bet365_overunder__users')
+                field: user_id
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+      - name: entry_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['First Entry', 'Repeat Entry']
+
+  # ── agg_ dashboard models ────────────────────────────────────────────────────
+
+  - name: agg_bet365_overunder__registration_summary_daily
+    columns:
+      - name: date_day
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__contest_performance_daily
+    columns:
+      - name: contest_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__entry_summary_by_dimension_daily
+    columns:
+      - name: entry_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__entry_timing_daily
+    columns:
+      - name: entry_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__sport_combination_summary_daily
+    columns:
+      - name: contest_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__prop_summary_daily
+    columns:
+      - name: prop_summary_id
+        tests:
+          - unique
+          - not_null
+      - name: contest_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__cohort_retention_weekly
+    columns:
+      - name: cohort_week
+        tests:
+          - not_null
+      - name: activity_week
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+
+  - name: agg_bet365_overunder__user_rfm_segments
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: segment
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['New Users', 'Recently Tried', 'One Hitter Quitter', 'Active Players', 'At Risk', 'Hibernating']
+
+  - name: agg_bet365_overunder__rfm_segment_summary
+    columns:
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: segment
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['New Users', 'Recently Tried', 'One Hitter Quitter', 'Active Players', 'At Risk', 'Hibernating']

@@ -27,6 +27,10 @@ joined as (
         users.user_id,
         users.gaming_id,
 
+        users.client_id,
+        users.tenant_id,
+        users.game_type,
+
         users.currency_code,
         users.country_code,
         users.state_code,
@@ -43,7 +47,7 @@ joined as (
         users.registered_at_et,
         users.updated_at,
         users.last_login_at
-    
+
     from users
     left join country_codes
         on users.country_code = country_codes.alpha_2_code

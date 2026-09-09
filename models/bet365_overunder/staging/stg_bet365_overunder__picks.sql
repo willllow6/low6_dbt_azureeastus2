@@ -14,12 +14,13 @@ renamed as (
         id as pick_id,
         entry_id,
         prop_id,
-        
+
+        'bet365' as client_id,
+        'bet365' as tenant_id,
+        'over_under' as game_type,
+
         initcap(selected_option) as picked_option,
         parse_json(snapshot) as pick_details_json,
-        -- pick_details_json:fid::string                 as fixture_option_id,
-        -- pick_details_json:fixtureId::string           as fixture_id,
-        -- pick_details_json:propId::string              as prop_id,
         ifnull(pick_details_json:sportLabel::string,'NFL')          as sport_name,
         pick_details_json:playerName::string          as player_name,
         pick_details_json:position::string            as player_position,
@@ -41,7 +42,7 @@ renamed as (
         end as is_correct,
 
         created_at as picked_at,
-        convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as picked_at_et
+        convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at)) as picked_at_et
     
     from source
 

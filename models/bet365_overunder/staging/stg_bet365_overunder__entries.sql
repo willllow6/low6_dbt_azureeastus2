@@ -13,8 +13,12 @@ renamed as (
 
         id as entry_id,
         user_id,
-        
-        cast(convert_timezone('UTC','America/New_York',to_timestamp_ntz(locked_at)) as date) as contest_date_et,
+
+        'bet365' as client_id,
+        'bet365' as tenant_id,
+        'over_under' as game_type,
+
+        cast(convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(locked_at)) as date) as contest_date_et,
         total_picks as entered_picks,
         scored_picks,
         correct_picks,
@@ -24,18 +28,18 @@ renamed as (
         case when prize_amount > 0 then true else false end as is_winner,
 
         hour(to_timestamp_ntz(created_at)) as entry_hour,
-        hour(convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at))) as entry_hour_et,
+        hour(convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at))) as entry_hour_et,
 
         cast(to_timestamp_ntz(created_at) as date) as entry_date,
-        cast(convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as date) as entry_date_et,
+        cast(convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at)) as date) as entry_date_et,
 
         to_timestamp_ntz(created_at) as entered_at,
-        convert_timezone('UTC','America/New_York',to_timestamp_ntz(created_at)) as entered_at_et,
+        convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(created_at)) as entered_at_et,
         to_timestamp_ntz(locked_at) as locked_at,
-        convert_timezone('UTC','America/New_York',to_timestamp_ntz(locked_at)) as locked_at_et,
+        convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(locked_at)) as locked_at_et,
         to_timestamp_ntz(settled_at) as settled_at,
-        convert_timezone('UTC','America/New_York',to_timestamp_ntz(settled_at)) as settled_at_et
-    
+        convert_timezone('UTC','{{ var('local_timezone') }}',to_timestamp_ntz(settled_at)) as settled_at_et
+
     from source
 
 )

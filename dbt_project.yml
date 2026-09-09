@@ -67,6 +67,8 @@ models:
     bet365_overunder:
       +schema: bet365_overunder
       +query_tag: bet365
+      marts:
+        +materialized: table
 
     betway_picks:
       +schema: betway_picks
@@ -145,6 +147,7 @@ models:
 
 vars:
   local_timezone: 'America/New_York'
+  bet365_overunder_incremental_lookback_days: 7
   bet365_uf_start_date: '2026-03-26'
   penn_start_date: '2026-05-07'
   cfl_fantasy_start_date: '2026-05-22'
