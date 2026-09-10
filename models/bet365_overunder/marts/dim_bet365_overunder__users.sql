@@ -37,7 +37,11 @@ joined as (
         users.segment_group,
 
         coalesce(country_codes.country,'Unknown') as country,
-        coalesce(state_province_codes.state_province,'Unknown') as state_province,
+        coalesce(
+            state_province_codes.state_province,
+            case when users.country_code = 'CA' then 'Canada' end,
+            'Unknown'
+        ) as state_province,
 
         users.has_logged_in_since_launch,
 
