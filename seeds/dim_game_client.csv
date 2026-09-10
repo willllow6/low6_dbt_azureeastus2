@@ -14,7 +14,7 @@ a17867fc26032f1e8ec6d9a2fe83664c,action,action_picks,Better Collective NBA Final
 b1045a6d03a7d0cbb06d5bcd067d834f,atp,atp_picks,ATP Rankings Predictor,pickem,,low6_us,archived
 5e8751658c7357b8b454885ef446fe72,ballislife,ballislife_bracket,Ballislife Bracket,bracket,,low6_us,archived
 f001ad95d79bf2eabae27e908f2cdd64,bbc,bbc_squares,BBC Squares,bingo,,low6,archived
-d88f95b8478ad7586aa3ec54eeb96842,bet365,bet365_overunder,Bet365 Over/Under,pickem,,low6_azureeastus2,archived
+d88f95b8478ad7586aa3ec54eeb96842,bet365,bet365_overunder,Bet365 Over/Under,pickem,,low6_azureeastus2,live
 695b8bbea7887664ed766e772b6f3e22,bet365,bet365_uf,Bet365 Ultimate Fan,fantasy,,low6_azureeastus2,live
 94e1190e2895714248fb879f6d2f5404,bet99,bet99,Bet99 Free2Play,pickem,,low6_us,archived
 8141d6a3ad1e29f6658313aa600306c1,bet99,bet99_bracket,Bet99 Bracket,bracket,,low6_azureeastus2,archived
@@ -49,8 +49,8 @@ a636af400a8be76a48ee4fbd411f2c05,engagecraft,engagecraft_fantasy,EngageCraft Fan
 0acfc4057911e486b433deda78313ee8,ffh,ffh_uf,FFH Ultimate Fan,fantasy,,low6,archived
 c04dae69a1487e34a8da2ee6fa96d53b,gaming1,gaming1,Gaming1,pickem,Circus Daily,low6_azureuksouth,live
 60da23bc0612ae61e89c1f43d9f6f820,gana,gana_bracket,Gana Bracket,bracket,,low6_azureeastus2,archived
-bd5076b4c1d8fe4708dbddf2da9e8f2d,gana,gana_predictor,Gana Predictor,pickem,,low6_azureeastus2,live
-9785bfd049618e1040578c6e6d190d28,gana,gana_survivor,Gana Survivor,streak,,low6_azureeastus2,live
+bd5076b4c1d8fe4708dbddf2da9e8f2d,gana,gana_predictor,Gana Predictor,pickem,,low6_azureeastus2,archived
+9785bfd049618e1040578c6e6d190d28,gana,gana_survivor,Gana Survivor,streak,,low6_azureeastus2,archived
 be9f25a9fbfe9080a71019219f74aeb7,gsoc,gsoc_picks,GSOC Picks,pickem,,low6_us,archived
 f05873640c77fdb5c9ffaec186f3bdfc,iff,iff_bingo,IFF Bingo,bingo,,low6,archived
 7acb5b3c2b3d1c64116dc81b57c97744,iff,iff_picks,IFF Picks,pickem,,low6,archived
@@ -164,7 +164,7 @@ ee9ab02512fdb88d1247e9063e22e94d,rivalry,rivalry,Rivalry NBA,pickem,,LOW6_AUS,ar
 f88d2b8f0d5e28aa00694d93a1db2e2b,rivalry,rivalry,Rivalry Pickem,pickem,,low6_us,archived
 bc117e082551732c7ca964ecaa9dc540,rivalry,rivalry_uf_nba_br,Rivalry NBA UF,fantasy,,low6_us,archived
 38472cdcad4e8599e349d0149f805f77,saracen,saracen_bracket,Saracen Bracket,bracket,,low6_azureeastus2,archived
-6618df42ffd040003830faca67934001,saracen,saracen_pickem,Saracen Pickem,pickem,,low6_azureeastus2,archived
+6618df42ffd040003830faca67934001,saracen,saracen_pickem,Saracen Pickem,pickem,,low6_azureeastus2,live
 13bddd75f2d1f7a453d13cce70e256ce,sbio,sbio,SBIO,pickem,,low6,archived
 efc95ffcc0ba62623845563b2eebceb2,sbio,sbio_squads,SBIO Squads,squads,,low6,archived
 924bbbe885a96ddf323bb1036ca75917,sportbible,sportbible_picks,Sport Bible Picks,pickem,,low6,archived
@@ -187,3 +187,7 @@ a3da062b6b57be5e4db91e0c7dfa3bf3,uf_euro2020,uf_euro2020,UF Euro 2020,fantasy,,l
 08e876c1fb300a71846a5300dc764b76,wta,wta_streaks,WTA Streaks,streak,,low6_us,archived
 e837d9426414956580de9283dcf5c4da,prizekings,prizekings_comps,Prizekings,prize_competition,South Africa,low6_azureuksouth,live
 604d59fb8e18b16c7b26f1f36c318d5e,prizekings,prizekings_comps,Prizekings,prize_competition,United Kingdom,low6_azureuksouth,archived
+1bc66bcabad9e37c379acafd76d63bdb,caesars,caesars,William Hill Pickem,pickem,William Hill,low6_awsuseast1,live
+9269d81f78f1d8fe21536c2b5351ad78,caesars,caesars,Caesars Pickem,pickem,Caesars,low6_awsuseast1,live
+06b533c6d322b642f9a5344f0ee2657c,caesars,caesars,Caesars Squads,squads,Caesars,low6_awsuseast1,live
+dd69fa0e8e12f45670fdf620e0f90d6b,caesars,caesars,William Hill Squads,squads,William Hill,low6_awsuseast1,live
