@@ -77,6 +77,11 @@ models:
           - accepted_values:
               arguments:
                 values: ['First Entry', 'Repeat Entry']
+      - name: season_entry_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['First Entry', 'Repeat Entry']
 
   # ── agg_ dashboard models ────────────────────────────────────────────────────
 

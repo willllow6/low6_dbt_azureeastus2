@@ -19,6 +19,8 @@ contest_performance as (
         count(*) as entries,
         sum(case when entry_type = 'First Entry' then 1 else 0 end) as first_entries,
         sum(case when entry_type = 'Repeat Entry' then 1 else 0 end) as repeat_entries,
+        sum(case when season_entry_type = 'First Entry' then 1 else 0 end) as first_entries_this_season,
+        sum(case when season_entry_type = 'Repeat Entry' then 1 else 0 end) as repeat_entries_this_season,
         sum(case when is_winner then 1 else 0 end) as winning_entries,
         sum(prize_amount) as prize_amount
     from entries

@@ -53,6 +53,16 @@ ranked_entries as (
 
 ),
 
+season_entries as (
+
+    select
+        entry_id,
+        row_number() over (partition by user_id order by entered_at) as user_season_entry_number
+    from entries
+    where entered_at_et >= '{{ var("bet365_overunder_season_start_date") }}'
+
+),
+
 joined as (
 
     select
@@ -69,12 +79,19 @@ joined as (
                 then 'First Entry'
             else 'Repeat Entry'
         end as entry_type,
+        case
+            when season_entries.user_season_entry_number = 1
+                then 'First Entry'
+            when season_entries.user_season_entry_number is not null
+                then 'Repeat Entry'
+        end as season_entry_type,
         users.country,
         users.state_province,
         users.segment_group,
         entry_selections.sport_combination,
 
         ranked_entries.user_entry_number,
+        season_entries.user_season_entry_number,
         ranked_entries.contest_date_et,
         ranked_entries.entered_picks,
         ranked_entries.scored_picks,
@@ -105,6 +122,8 @@ joined as (
         on ranked_entries.user_id = users.user_id
     left join entry_selections
         on ranked_entries.entry_id = entry_selections.entry_id
+    left join season_entries
+        on ranked_entries.entry_id = season_entries.entry_id
 
 )
 
