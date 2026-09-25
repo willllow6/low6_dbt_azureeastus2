@@ -83,6 +83,43 @@ models:
               arguments:
                 values: ['First Entry', 'Repeat Entry']
 
+  - name: fct_bet365_overunder__user_activity_daily
+    description: >
+      One row per user per active day (ET). A user is active on a day when they
+      submit at least one entry. Country comes from dim_bet365_overunder__users.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - user_id
+              - activity_date_et
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_bet365_overunder__users')
+                field: user_id
+      - name: activity_date_et
+        tests:
+          - not_null
+      - name: client_id
+        tests:
+          - not_null
+      - name: tenant_id
+        tests:
+          - not_null
+      - name: game_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['over_under']
+      - name: country
+        tests:
+          - not_null
+
   # ── agg_ dashboard models ────────────────────────────────────────────────────
 
   - name: agg_bet365_overunder__registration_summary_daily
