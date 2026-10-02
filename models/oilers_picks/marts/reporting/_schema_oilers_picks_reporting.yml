@@ -1,0 +1,83 @@
+version: 2
+
+models:
+
+  - name: rpt_oilers_picks__growth_metrics_daily
+    description: >
+      One row per day per client, tenant and game_type, from
+      oilers_picks_start_date to today. Standard growth metrics
+      (rpt_growth_metrics_daily macro).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - date_day
+              - client_id
+              - tenant_id
+              - game_type
+
+  - name: rpt_oilers_picks__cohort_retention_weekly
+    description: >
+      One row per cohort week per activity week per client, tenant and
+      game_type. Cohort is the week of the user's first entry
+      (rpt_cohort_retention_weekly macro).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - cohort_week
+              - activity_week
+              - client_id
+              - tenant_id
+              - game_type
+
+  - name: rpt_oilers_picks__contest_performance_summary
+    description: >
+      One row per contest per tenant (rpt_contest_performance_summary macro).
+      Oilers has no payouts, so paid_out_entries is 0.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - contest_id
+              - tenant_id
+
+  - name: rpt_oilers_picks__entry_summary_hourly
+    description: >
+      One row per contest per entry hour (ET) per entry type, marketing consent
+      and sports-bet flag. Feeds the Tableau dashboard through
+      oilers_picks__entry_stats.
+
+  - name: rpt_oilers_picks__registrations_daily
+    description: >
+      One row per registration date (ET) per marketing consent value. Feeds the
+      Tableau dashboard through oilers_picks__user_stats.
+
+  - name: rpt_oilers_picks__rfm_segment_summary
+    description: >
+      One row per RFM recency, frequency and segment, measured when queried and
+      excluding entries in DRAFT contests. Feeds the Tableau dashboard through
+      oilers_picks__rfm_segment_stats.
+
+  - name: rpt_oilers_picks__friend_league_joins_daily
+    description: >
+      One row per league per join date (ET). Feeds the Tableau dashboard through
+      oilers_picks__league_membership_stats.
+
+exposures:
+
+  - name: oilers_picks_tableau_dashboard
+    label: Oilers Picks (Tableau)
+    type: dashboard
+    maturity: medium
+    description: >
+      Oilers Picks Tableau dashboard, read by TABLEAU_USER. Still points at the
+      legacy compatibility views; repoint it to the rpt_ models and delete them.
+    owner:
+      name: Will Breeden
+      email: will@low6.co.uk
+    depends_on:
+      - ref('oilers_picks__entry_stats')
+      - ref('oilers_picks__user_stats')
+      - ref('oilers_picks__rfm_segment_stats')
+      - ref('oilers_picks__league_membership_stats')

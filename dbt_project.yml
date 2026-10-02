@@ -47,12 +47,6 @@ models:
         +query_tag: sackings
         +enabled: false
       
-      oilers_picks:
-        +schema: oilers_picks
-        +query_tag: oilers
-        +pre-hook: "{{ create_share('oilers_share',['RFA58902']) }}"
-        +enabled: false
-      
       fanstake_rivals:
         +schema: fanstake_rivals
         +query_tag: fanstake
@@ -74,6 +68,11 @@ models:
       +schema: betway_picks
       +query_tag: betway
       +pre-hook: "{{ create_share('betway_share',['EHA76962']) }}"
+
+    oilers_picks:
+      +schema: oilers_picks
+      +query_tag: oilers
+      +pre-hook: "{{ create_share('oilers_share',['RFA58902']) }}"
 
     bet99_picks:
       +schema: bet99_picks
@@ -147,10 +146,14 @@ models:
 
 vars:
   local_timezone: 'America/New_York'
+  # 'YYYY-MM-DD' pins "today" for the clock-dependent reporting macros
+  # (unit tests, backfills); null means the current date.
+  reporting_as_of_date: null
   bet365_overunder_incremental_lookback_days: 7
   bet365_overunder_season_start_date: '2026-09-01'
   bet365_uf_start_date: '2026-03-26'
   penn_start_date: '2026-05-07'
+  oilers_picks_start_date: '2024-10-16'
   cfl_fantasy_start_date: '2026-05-22'
   opap_spintowin_start_date: '2026-06-05'
   opap_spintowin_local_timezone: 'Europe/Athens'

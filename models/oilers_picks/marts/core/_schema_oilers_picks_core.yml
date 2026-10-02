@@ -1,0 +1,88 @@
+version: 2
+
+models:
+
+  - name: dim_oilers_picks__users
+    description: >
+      One row per registered user. Oilers is single-tenant (tenant_id =
+      client_id) and users register through a form.
+    columns:
+      - name: user_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_oilers_picks__contests
+    description: >
+      One row per pickem contest. The source has no contest end time, so ends_at
+      is null. The 2024-25 season's contests are DRAFT in the source but still
+      have entries.
+    columns:
+      - name: contest_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_oilers_picks__friend_leagues
+    description: >
+      One row per league: the game-wide 'Overall League' (id 1, CUSTOM_LEAGUE)
+      and user-created FRIENDS leagues.
+    columns:
+      - name: friend_league_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_oilers_picks__entries
+    description: >
+      One row per user per contest. Built from selections; entered_at is the
+      user's first pick in the contest and user_entry_number is their nth entry
+      across all contests. Includes entries in DRAFT contests.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_oilers_picks__selections
+    description: One row per user pick on a contest question.
+    columns:
+      - name: selection_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_oilers_picks__user_activity_daily
+    description: >
+      One row per user per active day (ET). A user is active on a day when they
+      enter at least one contest.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - user_id
+              - activity_date_et
+
+  - name: fct_oilers_picks__friend_league_members
+    description: One row per user per league joined.
+    columns:
+      - name: friend_league_member_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_oilers_picks__leaderboard_positions
+    description: >
+      One row per user per leaderboard. Contest leaderboards (leaderboard_type
+      CONTEST) rank each COMPLETE contest's entries; MONTH and SEASON
+      leaderboards on the Overall League total points from COMPLETE contests
+      starting in the period. Ranked by total points, then tiebreak error,
+      within each leaderboard.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - leaderboard_type
+              - period_leaderboard_id
+              - contest_id
+              - user_id

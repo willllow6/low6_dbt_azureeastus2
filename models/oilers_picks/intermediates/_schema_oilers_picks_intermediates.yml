@@ -1,0 +1,9 @@
+version: 2
+
+models:
+
+  - name: int_oilers_picks__selections_aggregated_to_entries
+    description: >
+      One row per user per contest. Grain change from selections to entries:
+      entered_at is the user's first pick in the contest, and user_entry_number
+      is the user's nth entry across all contests (1 = first ever).

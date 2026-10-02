@@ -1599,6 +1599,97 @@ game_newscorp_trivia as (
     left join nc_trivia_mau m on s.date_day = m.date_day
     left join nc_trivia_regs r on s.date_day = r.date_day
     left join nc_trivia_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
+-- oilers_picks (pickem, single-tenant)
+-- Reads the contracted core. Includes the 2024-25 season, whose contests are
+-- DRAFT in source; the Oilers share and Tableau views exclude those.
+--------------------------------------------------------------------------------
+
+oilers_picks_ents_raw as (
+    select user_id, entry_date_et as date_day
+    from {{ ref('fct_oilers_picks__entries') }}
+),
+
+oilers_picks_regs_raw as (
+    select registration_date_et as date_day
+    from {{ ref('dim_oilers_picks__users') }}
+),
+
+oilers_picks_bounds as (
+    select min(date_day) as min_date from oilers_picks_ents_raw
+),
+
+oilers_picks_spine as (
+    select dateadd(day, seq4(), (select min_date from oilers_picks_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+oilers_picks_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from oilers_picks_ents_raw group by 1
+),
+
+oilers_picks_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from oilers_picks_spine s
+    left join oilers_picks_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+oilers_picks_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from oilers_picks_spine s
+    left join oilers_picks_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+oilers_picks_regs as (
+    select date_day, count(*) as registrations
+    from oilers_picks_regs_raw group by 1
+),
+
+oilers_picks_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from oilers_picks_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_oilers_picks as (
+    select
+        s.date_day,
+        'oilers_picks' as game_id,
+        'Oilers Picks' as game_name,
+        'pickem' as game_type,
+        'oilers' as client_id,
+        'oilers_picks' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from oilers_picks_spine s
+    left join oilers_picks_daily d on s.date_day = d.date_day
+    left join oilers_picks_wau w on s.date_day = w.date_day
+    left join oilers_picks_mau m on s.date_day = m.date_day
+    left join oilers_picks_regs r on s.date_day = r.date_day
+    left join oilers_picks_first_entries_daily fe on s.date_day = fe.date_day
 )
 
 select * from game_bet365_overunder
@@ -1634,3 +1725,5 @@ union all
 select * from game_newscorp_matchup
 union all
 select * from game_newscorp_trivia
+union all
+select * from game_oilers_picks

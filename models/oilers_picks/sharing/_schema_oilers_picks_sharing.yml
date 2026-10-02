@@ -1,0 +1,218 @@
+version: 2
+
+models:
+
+  - name: shared_oilers_picks__entries
+    description: >
+      One row per user per contest, excluding DRAFT contests. Client contract:
+      columns, types and order match what oilers_share has exposed since 2024 and
+      must not change.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: entry_id
+        data_type: varchar
+        data_tests:
+          - unique
+          - not_null
+      - name: user_id
+        data_type: number(38, 0)
+      - name: pickem_id
+        data_type: number(38, 0)
+      - name: service_user_id
+        data_type: number(38, 0)
+      - name: entry_score_id
+        data_type: number(38, 0)
+      - name: email
+        data_type: varchar
+      - name: low6_username
+        data_type: varchar
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+      - name: postal_code
+        data_type: varchar
+      - name: mobile_number
+        data_type: varchar
+      - name: has_consented_marketing
+        data_type: boolean
+      - name: has_placed_sports_bet
+        data_type: boolean
+      - name: user_created_date
+        data_type: date
+      - name: user_created_date_et
+        data_type: date
+      - name: pickem_title
+        data_type: varchar
+      - name: pickem_status
+        data_type: varchar
+      - name: pickem_prize
+        data_type: varchar
+      - name: pickem_start_date
+        data_type: date
+      - name: pickem_start_date_et
+        data_type: date
+      - name: pickem_starts_at
+        data_type: timestamp_ntz
+      - name: entry_points
+        data_type: number(38, 0)
+      - name: tiebreak_prediction
+        data_type: number(38, 0)
+      - name: tiebreak_outcome
+        data_type: number(38, 0)
+      - name: tiebreak_error
+        data_type: number(38, 0)
+      - name: user_entry_number
+        data_type: number(18, 0)
+      - name: user_entry_type
+        data_type: varchar
+      - name: entry_date
+        data_type: date
+      - name: entry_date_et
+        data_type: date
+      - name: entry_day_et
+        data_type: number(2, 0)
+      - name: entry_hour_et
+        data_type: number(2, 0)
+      - name: entered_at
+        data_type: timestamp_ntz
+      - name: entered_at_et
+        data_type: timestamp_ntz
+
+  - name: shared_oilers_picks__users
+    description: >
+      One row per registered user. Client contract: columns, types and order match
+      what oilers_share has exposed since 2024 and must not change.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: user_id
+        data_type: number(38, 0)
+        data_tests:
+          - unique
+          - not_null
+      - name: service_user_id
+        data_type: number(38, 0)
+      - name: favorite_team_id
+        data_type: number(38, 0)
+      - name: email
+        data_type: varchar
+      - name: low6_username
+        data_type: varchar
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+      - name: postal_code
+        data_type: varchar
+      - name: mobile_number
+        data_type: varchar
+      - name: has_consented_marketing
+        data_type: boolean
+      - name: has_placed_sports_bet
+        data_type: boolean
+      - name: created_date
+        data_type: date
+      - name: created_date_et
+        data_type: date
+      - name: created_at
+        data_type: timestamp_ntz
+      - name: created_at_et
+        data_type: timestamp_ntz
+
+  - name: shared_oilers_picks__leaderboard_positions
+    description: >
+      One row per user per leaderboard (contest, month and season). Client
+      contract: columns, types and order match what oilers_share has exposed since
+      2024 and must not change.
+    config:
+      contract:
+        enforced: true
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - leaderboard_type
+              - leaderboard_id
+              - leaderboard_name
+              - leaderboard_starts_at
+              - user_id
+    columns:
+      - name: leaderboard_id
+        data_type: number(38, 0)
+      - name: league_id
+        data_type: number(38, 0)
+      - name: leaderboard_name
+        data_type: varchar
+      - name: leaderboard_type
+        data_type: varchar
+      - name: leaderboard_starts_at
+        data_type: timestamp_ntz
+      - name: leaderboard_ends_at
+        data_type: timestamp_ntz
+      - name: user_id
+        data_type: number(38, 0)
+      - name: low6_username
+        data_type: varchar
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+      - name: email
+        data_type: varchar
+      - name: entries
+        data_type: number(18, 0)
+      - name: total_points
+        data_type: number(38, 0)
+      - name: tiebreak_error
+        data_type: number(38, 0)
+      - name: leaderboard_position
+        data_type: number(18, 0)
+
+  - name: shared_oilers_picks__user_rfm_segments
+    description: >
+      One row per user with entries in non-DRAFT contests; segments are measured
+      when the view is queried. Client contract: columns, types and order match
+      what oilers_share has exposed since 2024 and must not change.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: user_id
+        data_type: number(38, 0)
+        data_tests:
+          - unique
+          - not_null
+      - name: last_entry_date
+        data_type: date
+      - name: entries
+        data_type: number(18, 0)
+      - name: days_since_last_entry
+        data_type: number(9, 0)
+      - name: frequency
+        data_type: varchar
+      - name: recency
+        data_type: varchar
+      - name: segment
+        data_type: varchar
+
+exposures:
+
+  - name: oilers_share
+    label: Oilers Snowflake share
+    type: application
+    maturity: high
+    description: >
+      Secure data share to the Oilers' Snowflake account (RFA58902), created by
+      the create_share pre-hook and granted by each model's share_view post-hook.
+    owner:
+      name: Will Breeden
+      email: will@low6.co.uk
+    depends_on:
+      - ref('shared_oilers_picks__entries')
+      - ref('shared_oilers_picks__users')
+      - ref('shared_oilers_picks__leaderboard_positions')
+      - ref('shared_oilers_picks__user_rfm_segments')

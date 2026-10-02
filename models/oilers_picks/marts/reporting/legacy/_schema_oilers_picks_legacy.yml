@@ -1,0 +1,23 @@
+version: 2
+
+models:
+
+  - name: oilers_picks__entry_stats
+    description: >
+      Compatibility view for the Oilers Picks Tableau dashboard, excluding DRAFT
+      contests. Use rpt_oilers_picks__entry_summary_hourly instead.
+
+  - name: oilers_picks__user_stats
+    description: >
+      Compatibility view for the Oilers Picks Tableau dashboard. Use
+      rpt_oilers_picks__registrations_daily instead.
+
+  - name: oilers_picks__rfm_segment_stats
+    description: >
+      Compatibility view for the Oilers Picks Tableau dashboard. Use
+      rpt_oilers_picks__rfm_segment_summary instead.
+
+  - name: oilers_picks__league_membership_stats
+    description: >
+      Compatibility view for the Oilers Picks Tableau dashboard. Use
+      rpt_oilers_picks__friend_league_joins_daily instead.

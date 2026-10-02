@@ -1,0 +1,130 @@
+version: 2
+
+unit_tests:
+
+  - name: test_oilers_picks_growth_metrics_fill_every_day
+    description: >
+      rpt_growth_metrics_daily macro: every day from the start date to "today"
+      gets a row, days with no activity are zero, and wau/mau look back over
+      trailing windows.
+    model: rpt_oilers_picks__growth_metrics_daily
+    overrides:
+      vars:
+        oilers_picks_start_date: '2025-10-01'
+        reporting_as_of_date: '2025-10-03'
+    given:
+      - input: ref('dim_oilers_picks__users')
+        rows:
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, game_type: pickem, registered_at: '2025-10-01 12:00:00'}
+          - {user_id: '2', client_id: oilers, tenant_id: oilers, game_type: pickem, registered_at: '2025-10-02 12:00:00'}
+      - input: ref('fct_oilers_picks__entries')
+        rows:
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-01', user_entry_number: 1}
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-03', user_entry_number: 2}
+          - {user_id: '2', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-03', user_entry_number: 1}
+      - input: ref('fct_oilers_picks__user_activity_daily')
+        rows:
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, game_type: pickem, activity_date_et: '2025-10-01'}
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, game_type: pickem, activity_date_et: '2025-10-03'}
+          - {user_id: '2', client_id: oilers, tenant_id: oilers, game_type: pickem, activity_date_et: '2025-10-03'}
+    expect:
+      rows:
+        - {date_day: '2025-10-01', registrations: 1, entries: 1, dau: 1, wau: 1, mau: 1, first_entries: 1}
+        - {date_day: '2025-10-02', registrations: 1, entries: 0, dau: 0, wau: 1, mau: 1, first_entries: 0}
+        - {date_day: '2025-10-03', registrations: 0, entries: 2, dau: 2, wau: 2, mau: 2, first_entries: 1}
+
+  - name: test_oilers_picks_rfm_segments_from_recency_and_frequency
+    description: >
+      user_rfm_segments_ctes macro: recency is days since last entry (7 / 21 day
+      bands), frequency is one entry vs several, and DRAFT-contest entries are
+      left out.
+    model: rpt_oilers_picks__rfm_segment_summary
+    overrides:
+      vars:
+        reporting_as_of_date: '2025-10-31'
+    given:
+      - input: ref('fct_oilers_picks__entries')
+        rows:
+          - {user_id: '1', contest_id: '10', entry_date_et: '2025-10-30'}
+          - {user_id: '1', contest_id: '11', entry_date_et: '2025-10-20'}
+          - {user_id: '2', contest_id: '10', entry_date_et: '2025-10-15'}
+          - {user_id: '3', contest_id: '12', entry_date_et: '2025-10-29'}
+          - {user_id: '4', contest_id: '10', entry_date_et: '2025-10-01'}
+          - {user_id: '4', contest_id: '11', entry_date_et: '2025-10-02'}
+      - input: ref('dim_oilers_picks__contests')
+        rows:
+          - {contest_id: '10', contest_status: COMPLETE}
+          - {contest_id: '11', contest_status: COMPLETE}
+          - {contest_id: '12', contest_status: DRAFT}
+    expect:
+      rows:
+        - {recency: High, frequency: High, segment: Active Users, users: 1, entries_median: 2, days_since_last_entry_median: 1}
+        - {recency: Med, frequency: Low, segment: Recently Tried, users: 1, entries_median: 1, days_since_last_entry_median: 16}
+        - {recency: Low, frequency: High, segment: Hibernating, users: 1, entries_median: 2, days_since_last_entry_median: 29}
+
+  - name: test_oilers_picks_leaderboards_rank_within_each_leaderboard
+    description: >
+      Two month leaderboards share the name 'November' in different seasons.
+      Each is ranked on its own, only COMPLETE contests count, and a period with
+      no entries produces no rows.
+    model: fct_oilers_picks__leaderboard_positions
+    given:
+      - input: ref('fct_oilers_picks__entries')
+        rows:
+          - {user_id: '1', contest_id: '10', entry_points: 50, tiebreak_error: 2}
+          - {user_id: '2', contest_id: '10', entry_points: 50, tiebreak_error: 1}
+          - {user_id: '1', contest_id: '11', entry_points: 30, tiebreak_error: null}
+          - {user_id: '2', contest_id: '12', entry_points: 99, tiebreak_error: null}
+      - input: ref('dim_oilers_picks__contests')
+        rows:
+          - {contest_id: '10', contest_name: Game 1, contest_status: COMPLETE, starts_at: '2025-11-05 00:00:00'}
+          - {contest_id: '11', contest_name: Game 2, contest_status: COMPLETE, starts_at: '2025-11-12 00:00:00'}
+          - {contest_id: '12', contest_name: Game 3, contest_status: ACTIVE, starts_at: '2025-11-19 00:00:00'}
+      - input: ref('stg_oilers_picks__period_leaderboards')
+        rows:
+          - {period_leaderboard_id: '24', friend_league_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, period_leaderboard_name: November, period_type: MONTH, period_start: '2024-11-01 00:00:00', period_end: '2024-12-01 00:00:00'}
+          - {period_leaderboard_id: '41', friend_league_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, period_leaderboard_name: November, period_type: MONTH, period_start: '2025-11-01 00:00:00', period_end: '2025-12-01 00:00:00'}
+          - {period_leaderboard_id: '99', friend_league_id: '7', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, period_leaderboard_name: Friends Season, period_type: SEASON, period_start: '2025-11-01 00:00:00', period_end: '2025-12-01 00:00:00'}
+    expect:
+      rows:
+        - {leaderboard_type: CONTEST, period_leaderboard_id: null, contest_id: '10', user_id: '2', entries: 1, total_points: 50, leaderboard_position: 1}
+        - {leaderboard_type: CONTEST, period_leaderboard_id: null, contest_id: '10', user_id: '1', entries: 1, total_points: 50, leaderboard_position: 2}
+        - {leaderboard_type: CONTEST, period_leaderboard_id: null, contest_id: '11', user_id: '1', entries: 1, total_points: 30, leaderboard_position: 1}
+        - {leaderboard_type: MONTH, period_leaderboard_id: '41', contest_id: null, user_id: '1', entries: 2, total_points: 80, leaderboard_position: 1}
+        - {leaderboard_type: MONTH, period_leaderboard_id: '41', contest_id: null, user_id: '2', entries: 1, total_points: 50, leaderboard_position: 2}
+
+  - name: test_oilers_picks_cohort_retention_counts_from_first_entry_week
+    description: >
+      Cohort week is the Monday of the user's first entry week; retention is
+      retained users over cohort size, and week 0 is always 100%.
+    model: rpt_oilers_picks__cohort_retention_weekly
+    given:
+      - input: ref('fct_oilers_picks__entries')
+        rows:
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-01'}
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-02'}
+          - {user_id: '1', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-08'}
+          - {user_id: '2', client_id: oilers, tenant_id: oilers, tenant_name: Edmonton Oilers, game_type: pickem, entry_date_et: '2025-10-03'}
+    expect:
+      rows:
+        - {cohort_week: '2025-09-29', activity_week: '2025-09-29', weeks_since_cohort: 0, cohort_size: 2, retained_users: 2, retention_rate: 1.0}
+        - {cohort_week: '2025-09-29', activity_week: '2025-10-06', weeks_since_cohort: 1, cohort_size: 2, retained_users: 1, retention_rate: 0.5}
+
+  - name: test_oilers_picks_contest_summary_counts_entrants
+    description: >
+      Contests without entries still appear with zero counts; first-time
+      entrants are entries with user_entry_number = 1.
+    model: rpt_oilers_picks__contest_performance_summary
+    given:
+      - input: ref('dim_oilers_picks__contests')
+        rows:
+          - {contest_id: '10', tenant_id: oilers, contest_name: Game 1}
+          - {contest_id: '11', tenant_id: oilers, contest_name: Game 2}
+      - input: ref('fct_oilers_picks__entries')
+        rows:
+          - {entry_id: '1-10', user_id: '1', contest_id: '10', tenant_id: oilers, user_entry_number: 1}
+          - {entry_id: '2-10', user_id: '2', contest_id: '10', tenant_id: oilers, user_entry_number: 3}
+    expect:
+      rows:
+        - {contest_id: '10', total_entries: 2, unique_entrants: 2, first_time_entrants: 1, paid_out_entries: 0}
+        - {contest_id: '11', total_entries: 0, unique_entrants: 0, first_time_entrants: 0, paid_out_entries: 0}

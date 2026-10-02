@@ -788,6 +788,24 @@ game_cohort_olybet_casino as (
         cast(null as varchar) as tenant_name,
         weeks_since_cohort, cohort_size, retained_users, retention_rate
     from {{ ref('agg_olybet_casino__cohort_retention_weekly') }}
+),
+
+--------------------------------------------------------------------------------
+-- oilers_picks
+--------------------------------------------------------------------------------
+
+game_cohort_oilers_picks as (
+    select
+        cohort_week, activity_week,
+        'oilers_picks' as game_id,
+        'Oilers Picks' as game_name,
+        game_type,
+        client_id,
+        'oilers_picks' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from {{ ref('rpt_oilers_picks__cohort_retention_weekly') }}
 )
 
 select * from game_cohort_bet365_overunder
@@ -823,3 +841,5 @@ union all
 select * from game_cohort_newscorp_matchup
 union all
 select * from game_cohort_newscorp_trivia
+union all
+select * from game_cohort_oilers_picks

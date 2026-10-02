@@ -1,0 +1,33 @@
+version: 2
+
+models:
+
+  - name: stg_oilers_picks__users
+    description: One row per registered user.
+
+  - name: stg_oilers_picks__contests
+    description: One row per pickem contest.
+
+  - name: stg_oilers_picks__questions
+    description: One row per contest question, including cancelled questions (is_active = false).
+
+  - name: stg_oilers_picks__options
+    description: One row per answer option on a contest question.
+
+  - name: stg_oilers_picks__selections
+    description: One row per user pick on a contest question (selection grain).
+
+  - name: stg_oilers_picks__entry_scores
+    description: One row per user per contest, holding the points scored for that entry.
+
+  - name: stg_oilers_picks__friend_leagues
+    description: >
+      One row per league: the game-wide 'Overall League' (id 1, CUSTOM_LEAGUE)
+      and user-created FRIENDS leagues. Oilers is single-tenant, so leagues are
+      not tenants.
+
+  - name: stg_oilers_picks__friend_league_members
+    description: One row per user per league joined.
+
+  - name: stg_oilers_picks__period_leaderboards
+    description: One row per period leaderboard (month or season) within a league.

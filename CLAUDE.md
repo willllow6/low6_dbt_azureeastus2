@@ -25,6 +25,7 @@ Active domains (from `dbt_project.yml`, no `+enabled: false`):
 | bet365_overunder | Bet365 | pickem |
 | bet99_picks | Bet99 | pickem |
 | betway_picks | Betway | pickem |
+| oilers_picks | Oilers | pickem — relaunched 2026-09 on the lean standard. The platform resets every contest to DRAFT at season rollover: core includes all entries; the share and Tableau legacy views exclude DRAFT contests |
 | elf_collectyourelf | ELF | pickem (no entries/contest concept — challenge/product progress tracking; excluded from `low6_reporting`) |
 | saracen | Saracen | pickem, bracket |
 | bet99_bracket | Bet99 | bracket |
@@ -42,7 +43,6 @@ Archived domains (`+enabled: false`, under `models/_archive/`):
 | Domain | Client | game_type |
 |---|---|---|
 | fanstake_rivals | Fanstake | pickem |
-| oilers_picks | Oilers | pickem |
 | pln_arcade | PLN | pickem |
 | sackings_picks | Sackings | pickem |
 | penn | Penn | squads |
