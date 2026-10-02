@@ -244,3 +244,22 @@ models:
           - accepted_values:
               arguments:
                 values: ['New Users', 'Recently Tried', 'One Hitter Quitter', 'Active Players', 'At Risk', 'Hibernating']
+
+  # ── rpt_ dashboard models ────────────────────────────────────────────────────
+
+  - name: rpt_bet365_overunder__kpi_summary_weekly
+    description: >
+      One row per week (Tuesday-Monday, ET, so Monday Night Football falls in its gameweek) per client per tenant per game_type per country.
+      Registrations are by registration week; active users are distinct users with an entry
+      in the week; entries, new players, winners and payouts are by entry week. Payouts are
+      only reported for CAD and USD accounts. Every metric is additive across countries, but
+      active_users is not additive across weeks.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - week_start_et
+              - client_id
+              - tenant_id
+              - game_type
+              - country
