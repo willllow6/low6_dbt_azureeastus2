@@ -78,8 +78,8 @@ f97c31b25cd486a269e8b1892a016e2b,learfield,learfield,Sic Em Pick Em,pickem,,low6
 4cd4f5ab96965b5f0962f2318d2fc6a3,learfield,learfield,The Herd Challenge,pickem,,low6_us,archived,N,N,The Herd Challenge
 430c78d16bc6b94545f09505a3472988,learfield,learfield,Wolfpack Predictions,pickem,,low6_us,archived,N,N,Wolfpack Predictions
 953280121681ef314a3906f020ddcf76,learfield,learfield,Wolverine Challenge,pickem,,low6_us,archived,N,N,Wolverine Challenge
-2c1ab3d00accb3be065bff8f5125843f,newscorp,newscorp_matchup,NewsCorp Matchup,connections,,low6_azureeastus2,live,N,N,NewsCorp Matchup
-4df6e8e2536fddbbc08ca7ac25cec572,newscorp,newscorp_trivia,NewsCorp Trivia,trivia,,low6_azureeastus2,live,N,N,NewsCorp Trivia
+2c1ab3d00accb3be065bff8f5125843f,newscorp,newscorp_matchup,NewsCorp Matchup,connections,,low6_azureeastus2,archived,N,N,NewsCorp Matchup
+4df6e8e2536fddbbc08ca7ac25cec572,newscorp,newscorp_trivia,NewsCorp Trivia,trivia,,low6_azureeastus2,archived,N,N,NewsCorp Trivia
 f2f8cb661f5f4dcd83b7044a4d31681a,nhl,nhl_all_star_fan_vote,NHL All Star Fan Vote,vote,,low6_us,archived,N,N,NHL All Star Fan Vote
 4e9221d1d6c7feadbceef744ce1a6b41,nhl,nhl_bingo,NHL Bingo,bingo,,low6_awsuseast1,archived,N,N,NHL Bingo
 375e2e0984897385984316587eb5b137,nhl,nhl_bingo,NHL Bingo,bingo,,low6_us,archived,N,N,NHL Bingo
