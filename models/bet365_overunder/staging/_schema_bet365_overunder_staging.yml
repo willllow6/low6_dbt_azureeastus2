@@ -50,7 +50,10 @@ models:
     columns:
       - name: pick_id
         tests:
-          - unique
+          # warn only: source double-loads are deduped in fct_bet365_overunder__selections
+          - unique:
+              config:
+                severity: warn
           - not_null
       - name: entry_id
         tests:

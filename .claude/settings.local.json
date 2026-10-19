@@ -7,7 +7,9 @@
       "mcp__dbt__show",
       "Read(//c/Users/WillBreeden/.claude/**)",
       "mcp__dbt__compile",
-      "mcp__dbt__build"
+      "mcp__dbt__build",
+      "mcp__claude_ai_Claude_Docs__read",
+      "mcp__claude_ai_Claude_Docs__update"
     ],
     "additionalDirectories": [
       "c:\\Users\\WillBreeden\\low6_dbt_azureeastus2\\models\\bet365_uf",

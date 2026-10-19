@@ -20,6 +20,9 @@ selections as (
     )
     {% endif %}
 
+    -- source occasionally double-loads picks as exact copies (e.g. 2026-10-17); merge needs one row per key
+    qualify row_number() over (partition by pick_id order by picked_at) = 1
+
 )
 
 select
