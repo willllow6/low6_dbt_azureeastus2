@@ -31,6 +31,8 @@ renamed as (
         case
             when split_part(sso_user_id,'_',2) in ('37541','37542','37544','8663')
                 then 'Ontario'
+            when split_part(sso_user_id,'_',2) = '46694'
+                then 'Alberta'
             else 'Canada'
         end as region,
         
