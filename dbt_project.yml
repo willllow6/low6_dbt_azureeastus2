@@ -41,12 +41,7 @@ models:
         +schema: pln_arcade
         +query_tag: pln
         +enabled: false
-      
-      sackings_picks:
-        +schema: sackings_picks
-        +query_tag: sackings
-        +enabled: false
-      
+
       fanstake_rivals:
         +schema: fanstake_rivals
         +query_tag: fanstake
@@ -77,6 +72,10 @@ models:
     bet99_picks:
       +schema: bet99_picks
       +query_tag: bet99
+
+    sackings_picks:
+      +schema: sackings_picks
+      +query_tag: sackings
 
     elf_blast:
       +schema: elf_blast
@@ -154,6 +153,9 @@ vars:
   bet365_uf_start_date: '2026-03-26'
   penn_start_date: '2026-05-07'
   oilers_picks_start_date: '2024-10-16'
+  # last date of sackings_picks in analytics_archive.game_metrics_daily; the
+  # live low6_reporting rows start the day after so the series doesn't overlap
+  sackings_picks_archive_end_date: '2026-05-17'
   cfl_fantasy_start_date: '2026-05-22'
   opap_spintowin_start_date: '2026-06-05'
   opap_spintowin_local_timezone: 'Europe/Athens'

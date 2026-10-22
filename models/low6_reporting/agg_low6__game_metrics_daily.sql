@@ -1690,6 +1690,102 @@ game_oilers_picks as (
     left join oilers_picks_mau m on s.date_day = m.date_day
     left join oilers_picks_regs r on s.date_day = r.date_day
     left join oilers_picks_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
+-- sackings_picks (pickem, single-tenant)
+-- Restored from _archive. Continues the archived series in
+-- analytics_archive.game_metrics_daily, so game_id / game_name / client_id /
+-- source_schema match the archive rows exactly (game_client_key would split
+-- otherwise). Only dates after sackings_picks_archive_end_date are emitted so
+-- the two don't overlap in agg_low6__all_game_metrics_daily; the spine still
+-- starts at the first entry so wau/mau windows are correct from day one.
+--------------------------------------------------------------------------------
+
+sackings_picks_ents_raw as (
+    select user_id, entry_date as date_day
+    from {{ ref('sackings_picks__entries') }}
+),
+
+sackings_picks_regs_raw as (
+    select created_date_et as date_day
+    from {{ ref('sackings_picks__users') }}
+),
+
+sackings_picks_bounds as (
+    select min(date_day) as min_date from sackings_picks_ents_raw
+),
+
+sackings_picks_spine as (
+    select dateadd(day, seq4(), (select min_date from sackings_picks_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+sackings_picks_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from sackings_picks_ents_raw group by 1
+),
+
+sackings_picks_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from sackings_picks_spine s
+    left join sackings_picks_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+sackings_picks_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from sackings_picks_spine s
+    left join sackings_picks_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+sackings_picks_regs as (
+    select date_day, count(*) as registrations
+    from sackings_picks_regs_raw group by 1
+),
+
+sackings_picks_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from sackings_picks_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_sackings_picks as (
+    select
+        s.date_day,
+        'sackings_picks' as game_id,
+        'Sacramento Kings Call The Shot' as game_name,
+        'pickem' as game_type,
+        'sacramento_kings' as client_id,
+        'ADFSACKINGSPICKSPROD' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from sackings_picks_spine s
+    left join sackings_picks_daily d on s.date_day = d.date_day
+    left join sackings_picks_wau w on s.date_day = w.date_day
+    left join sackings_picks_mau m on s.date_day = m.date_day
+    left join sackings_picks_regs r on s.date_day = r.date_day
+    left join sackings_picks_first_entries_daily fe on s.date_day = fe.date_day
+    where s.date_day > '{{ var("sackings_picks_archive_end_date") }}'
 )
 
 select * from game_bet365_overunder
@@ -1727,3 +1823,5 @@ union all
 select * from game_newscorp_trivia
 union all
 select * from game_oilers_picks
+union all
+select * from game_sackings_picks
