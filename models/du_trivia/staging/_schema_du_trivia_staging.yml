@@ -1,0 +1,32 @@
+version: 2
+
+models:
+
+  - name: stg_du_trivia__users
+    description: One row per registered user, including soft-deleted users (is_active = false).
+
+  - name: stg_du_trivia__campaigns
+    description: One row per campaign. content is raw VARIANT and is not parsed yet.
+
+  - name: stg_du_trivia__campaign_categories
+    description: One row per campaign category. content is raw VARIANT and is not parsed yet.
+
+  - name: stg_du_trivia__contests
+    description: >
+      One row per daily contest. contest_status_code is the source integer, whose
+      meaning is unconfirmed; contest_status comes from the campaign in
+      dim_du_trivia__contests.
+
+  - name: stg_du_trivia__questions
+    description: One row per contest question.
+
+  - name: stg_du_trivia__options
+    description: One row per answer option on a contest question.
+
+  - name: stg_du_trivia__entries
+    description: One row per user per contest, from UserParticipations.
+
+  - name: stg_du_trivia__selections
+    description: >
+      One row per user per contest question. A row exists once the question is
+      started, so timed-out questions have a null option_id and selected_at.

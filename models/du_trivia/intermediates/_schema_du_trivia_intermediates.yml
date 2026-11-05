@@ -1,0 +1,13 @@
+version: 2
+
+models:
+
+  - name: int_du_trivia__selections_aggregated_to_entries
+    description: >
+      One row per user per contest. Selection measures rolled up to entry grain
+      for fct_du_trivia__entries, which is built from participations.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null

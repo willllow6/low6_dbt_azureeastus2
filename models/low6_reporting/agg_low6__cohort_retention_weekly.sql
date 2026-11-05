@@ -791,6 +791,24 @@ game_cohort_olybet_casino as (
 ),
 
 --------------------------------------------------------------------------------
+-- du_trivia
+--------------------------------------------------------------------------------
+
+game_cohort_du_trivia as (
+    select
+        cohort_week, activity_week,
+        'du_trivia' as game_id,
+        'DU Trivia' as game_name,
+        game_type,
+        client_id,
+        'du_trivia' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from {{ ref('rpt_du_trivia__cohort_retention_weekly') }}
+),
+
+--------------------------------------------------------------------------------
 -- oilers_picks
 --------------------------------------------------------------------------------
 
@@ -841,5 +859,7 @@ union all
 select * from game_cohort_newscorp_matchup
 union all
 select * from game_cohort_newscorp_trivia
+union all
+select * from game_cohort_du_trivia
 union all
 select * from game_cohort_oilers_picks

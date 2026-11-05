@@ -1,0 +1,75 @@
+version: 2
+
+models:
+
+  - name: dim_du_trivia__users
+    description: >
+      One row per registered user, including soft-deleted users. du trivia is
+      single-tenant (tenant_id = client_id).
+    columns:
+      - name: user_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_du_trivia__contests
+    description: >
+      One row per daily contest, with campaign attributes flattened in.
+      contest_status is the campaign status (draft, published, archived) and
+      is_active means published; contest_status_code is the source's unconfirmed
+      integer. starts_at is contest_date at the campaign's daily unlock time in
+      the campaign's timezone, in UTC. The source has no end time, so ends_at is
+      null.
+    columns:
+      - name: contest_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_du_trivia__questions
+    description: One row per contest question.
+    columns:
+      - name: question_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_du_trivia__options
+    description: One row per answer option on a contest question.
+    columns:
+      - name: option_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_du_trivia__entries
+    description: >
+      One row per user per contest. Built from participations; entered_at is when
+      the user joined the contest and user_entry_number is their nth entry across
+      all contests.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_du_trivia__selections
+    description: >
+      One row per user per contest question started. Timed-out questions have a
+      null option_id and selected_at.
+    columns:
+      - name: selection_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_du_trivia__user_activity_daily
+    description: >
+      One row per user per active day (GST). A user is active on a day when they
+      enter at least one contest.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - user_id
+              - activity_date_gst

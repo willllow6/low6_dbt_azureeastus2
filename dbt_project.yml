@@ -109,6 +109,10 @@ models:
       +schema: gana_gamezone
       +query_tag: gana
 
+    du_trivia:
+      +schema: du_trivia
+      +query_tag: du
+
     newscorp_trivia:
         +schema: newscorp_trivia
         +query_tag: newscorp_trivia
@@ -166,3 +170,6 @@ vars:
   bet99_bracket_start_date: '2026-01-01'
   olybet_casino_start_date: '2026-06-19'
   olybet_casino_local_timezone: 'UTC'
+  # earliest registration in the source (GST)
+  du_trivia_start_date: '2026-10-29'
+  du_trivia_local_timezone: 'Asia/Dubai'

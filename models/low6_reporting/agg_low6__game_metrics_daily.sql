@@ -1602,6 +1602,97 @@ game_newscorp_trivia as (
 ),
 
 --------------------------------------------------------------------------------
+-- du_trivia (trivia, single-tenant)
+-- Reads the standard core. du's other games are in low6_dbt_uaenorth; client_id
+-- 'du' matches them.
+--------------------------------------------------------------------------------
+
+du_trivia_ents_raw as (
+    select user_id, entry_date_gst as date_day
+    from {{ ref('fct_du_trivia__entries') }}
+),
+
+du_trivia_regs_raw as (
+    select registration_date_gst as date_day
+    from {{ ref('dim_du_trivia__users') }}
+),
+
+du_trivia_bounds as (
+    select min(date_day) as min_date from du_trivia_ents_raw
+),
+
+du_trivia_spine as (
+    select dateadd(day, seq4(), (select min_date from du_trivia_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+du_trivia_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from du_trivia_ents_raw group by 1
+),
+
+du_trivia_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from du_trivia_spine s
+    left join du_trivia_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+du_trivia_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from du_trivia_spine s
+    left join du_trivia_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+du_trivia_regs as (
+    select date_day, count(*) as registrations
+    from du_trivia_regs_raw group by 1
+),
+
+du_trivia_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from du_trivia_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_du_trivia as (
+    select
+        s.date_day,
+        'du_trivia' as game_id,
+        'DU Trivia' as game_name,
+        'trivia' as game_type,
+        'du' as client_id,
+        'du_trivia' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from du_trivia_spine s
+    left join du_trivia_daily d on s.date_day = d.date_day
+    left join du_trivia_wau w on s.date_day = w.date_day
+    left join du_trivia_mau m on s.date_day = m.date_day
+    left join du_trivia_regs r on s.date_day = r.date_day
+    left join du_trivia_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
 -- oilers_picks (pickem, single-tenant)
 -- Reads the contracted core. Includes the 2024-25 season, whose contests are
 -- DRAFT in source; the Oilers share and Tableau views exclude those.
@@ -1821,6 +1912,8 @@ union all
 select * from game_newscorp_matchup
 union all
 select * from game_newscorp_trivia
+union all
+select * from game_du_trivia
 union all
 select * from game_oilers_picks
 union all

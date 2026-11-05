@@ -38,6 +38,7 @@ Active domains (from `dbt_project.yml`, no `+enabled: false`):
 | newscorp_matchup | NewsCorp | connections |
 | newscorp_trivia | NewsCorp | trivia |
 | olybet_casino | Olybet | instant_win — no users source table; registrations/cohorts are a first-entry-date proxy |
+| du_trivia | DU | trivia — prod database is in this region (du_picks/du_squares are in `low6_dbt_uaenorth`); users are SSO via `duReference` (`external_user_id`); local-time columns use `_gst` and `du_trivia_local_timezone` (Asia/Dubai); `contest_status` is the campaign status |
 
 Archived domains (`+enabled: false`, under `models/_archive/`):
 

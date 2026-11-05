@@ -7,8 +7,11 @@
 
     entries     fct_{domain}__entries (user_id, entry_date_et, client_id,
                 tenant_id, tenant_name, game_type)
+    date_suffix
+                suffix of the local-time date columns: entry_date_{suffix} and
+                activity_date_{suffix}. Non-US domains pass their own, e.g. 'gst'.
 #}
-{% macro rpt_cohort_retention_weekly(entries) %}
+{% macro rpt_cohort_retention_weekly(entries, date_suffix='et') %}
 
 with
 
@@ -38,7 +41,7 @@ user_cohorts as (
         client_id,
         tenant_id,
         game_type,
-        cast(date_trunc('week', min(entry_date_et)) as date) as cohort_week
+        cast(date_trunc('week', min(entry_date_{{ date_suffix }})) as date) as cohort_week
     from entries
     group by user_id, client_id, tenant_id, game_type
 
@@ -64,7 +67,7 @@ user_activity_weeks as (
         client_id,
         tenant_id,
         game_type,
-        cast(date_trunc('week', entry_date_et) as date) as activity_week
+        cast(date_trunc('week', entry_date_{{ date_suffix }}) as date) as activity_week
     from entries
 
 ),

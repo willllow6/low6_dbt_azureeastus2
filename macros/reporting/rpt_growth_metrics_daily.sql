@@ -3,12 +3,17 @@
     Grain: date_day x client_id x tenant_id x game_type, over a gap-free date
     spine from start_date to today (or var reporting_as_of_date when set).
 
-    users       dim_{domain}__users (registered_at, client_id, tenant_id, game_type)
+    users       dim_{domain}__users (registered_at, client_id, tenant_id, tenant_name,
+                game_type). When registrations_by_tenant, users also supply the
+                spine's combinations, so registrations show before the first entry.
     entries     fct_{domain}__entries (entry_date_et, user_entry_number, ...)
     activity    fct_{domain}__user_activity_daily (activity_date_et, user_id, ...)
     registrations_by_tenant
                 false when one registration covers the whole game: registrations
                 is then null rather than repeating a game-wide count on every row.
+    date_suffix
+                suffix of the local-time date columns: entry_date_{suffix} and
+                activity_date_{suffix}. Non-US domains pass their own, e.g. 'gst'.
     extra_metrics
                 {name: aggregate expression over entries}, appended after the
                 standard columns. Must not change the grain.
@@ -20,6 +25,7 @@
     start_date,
     registrations_by_tenant=true,
     local_timezone=var('local_timezone'),
+    date_suffix='et',
     extra_metrics={}
 ) %}
 
@@ -49,13 +55,48 @@ activity as (
 
 ),
 
+-- Not dbt_utils.date_spine: it fixes the number of days when the model compiles,
+-- so a view would stop at its last build. 10,000 rows covers 27 years from
+-- start_date, and date_spine trims them to the end date on every query.
+candidate_days as (
+
+    select
+        dateadd(
+            day,
+            row_number() over (order by seq4()) - 1,
+            cast('{{ start_date }}' as date)
+        ) as date_day
+    from table(generator(rowcount => 10000))
+
+),
+
 date_spine as (
 
-    {{ dbt_utils.date_spine(
-        datepart="day",
-        start_date="cast('" ~ start_date ~ "' as date)",
-        end_date="dateadd(day, 1, " ~ end_date ~ ")"
-    ) }}
+    select date_day
+    from candidate_days
+    where date_day <= {{ end_date }}
+
+),
+
+combination_rows as (
+
+    select
+        client_id,
+        tenant_id,
+        tenant_name,
+        game_type
+    from entries
+    {%- if registrations_by_tenant %}
+
+    union all
+
+    select
+        client_id,
+        tenant_id,
+        tenant_name,
+        game_type
+    from users
+    {%- endif %}
 
 ),
 
@@ -66,7 +107,7 @@ combinations as (
         tenant_id,
         max(tenant_name) as tenant_name,
         game_type
-    from entries
+    from combination_rows
     group by client_id, tenant_id, game_type
 
 ),
@@ -100,7 +141,7 @@ registrations_daily as (
 entries_daily as (
 
     select
-        entry_date_et as date_day,
+        entry_date_{{ date_suffix }} as date_day,
         client_id,
         tenant_id,
         game_type,
@@ -121,16 +162,16 @@ active_users as (
         spine.client_id,
         spine.tenant_id,
         spine.game_type,
-        count(distinct case when activity.activity_date_et = spine.date_day then activity.user_id end) as dau,
-        count(distinct case when activity.activity_date_et > dateadd(day, -7, spine.date_day) then activity.user_id end) as wau,
+        count(distinct case when activity.activity_date_{{ date_suffix }} = spine.date_day then activity.user_id end) as dau,
+        count(distinct case when activity.activity_date_{{ date_suffix }} > dateadd(day, -7, spine.date_day) then activity.user_id end) as wau,
         count(distinct activity.user_id) as mau
     from spine
     inner join activity
         on activity.client_id = spine.client_id
         and activity.tenant_id = spine.tenant_id
         and activity.game_type = spine.game_type
-        and activity.activity_date_et > dateadd(day, -28, spine.date_day)
-        and activity.activity_date_et <= spine.date_day
+        and activity.activity_date_{{ date_suffix }} > dateadd(day, -28, spine.date_day)
+        and activity.activity_date_{{ date_suffix }} <= spine.date_day
     group by 1, 2, 3, 4
 
 )

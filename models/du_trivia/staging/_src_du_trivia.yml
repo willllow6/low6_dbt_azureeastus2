@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+
+  - name: du_trivia
+    description: du trivia production database (trivia platform with campaigns).
+    database: low6_azureeastus2
+    schema: adfdutriviaprod
+    tags: ['du']
+    tables:
+      - name: campaigncategories
+      - name: campaigns
+      - name: contests
+      - name: options
+      - name: questions
+      - name: userparticipations
+      - name: userselections
+      - name: users
