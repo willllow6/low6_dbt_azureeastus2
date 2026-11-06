@@ -1617,8 +1617,14 @@ du_trivia_regs_raw as (
     from {{ ref('dim_du_trivia__users') }}
 ),
 
+-- starts at the first entry or registration, so registrations show before any entries
 du_trivia_bounds as (
-    select min(date_day) as min_date from du_trivia_ents_raw
+    select min(date_day) as min_date
+    from (
+        select date_day from du_trivia_ents_raw
+        union all
+        select date_day from du_trivia_regs_raw
+    )
 ),
 
 du_trivia_spine as (
