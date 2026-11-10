@@ -30,8 +30,8 @@ renamed as (
         points as question_points,
 
         ---------- timestamps
-        convert_timezone('UTC', createdat)::timestamp_ntz as created_at,
-        convert_timezone('UTC', updatedat)::timestamp_ntz as updated_at
+        createdat::timestamp_ntz as created_at,
+        updatedat::timestamp_ntz as updated_at
 
     from source
 

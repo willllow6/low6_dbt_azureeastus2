@@ -30,9 +30,9 @@ renamed as (
         hasmaxpoints as has_max_points,
 
         ---------- timestamps
-        convert_timezone('UTC', joinedat)::timestamp_ntz as entered_at,
-        convert_timezone('UTC', completedat)::timestamp_ntz as completed_at,
-        convert_timezone('UTC', updatedat)::timestamp_ntz as updated_at
+        joinedat::timestamp_ntz as entered_at,
+        completedat::timestamp_ntz as completed_at,
+        updatedat::timestamp_ntz as updated_at
 
     from source
 

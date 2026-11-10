@@ -33,9 +33,9 @@ renamed as (
         deletedat is null as is_active,
 
         ---------- timestamps
-        convert_timezone('UTC', createdat)::timestamp_ntz as registered_at,
-        convert_timezone('UTC', updatedat)::timestamp_ntz as updated_at,
-        convert_timezone('UTC', deletedat)::timestamp_ntz as deleted_at
+        createdat::timestamp_ntz as registered_at,
+        updatedat::timestamp_ntz as updated_at,
+        deletedat::timestamp_ntz as deleted_at
 
     from source
 

@@ -171,5 +171,5 @@ vars:
   olybet_casino_start_date: '2026-06-19'
   olybet_casino_local_timezone: 'UTC'
   # earliest registration in the source (GST)
-  du_trivia_start_date: '2026-10-29'
+  du_trivia_start_date: '2026-11-10'
   du_trivia_local_timezone: 'Asia/Dubai'

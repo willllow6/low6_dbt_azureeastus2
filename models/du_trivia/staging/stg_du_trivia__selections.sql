@@ -35,9 +35,9 @@ renamed as (
         iscorrect as is_correct,
 
         ---------- timestamps
-        convert_timezone('UTC', startedat)::timestamp_ntz as started_at,
-        convert_timezone('UTC', selectedat)::timestamp_ntz as selected_at,
-        convert_timezone('UTC', updatedat)::timestamp_ntz as updated_at
+        startedat::timestamp_ntz as started_at,
+        selectedat::timestamp_ntz as selected_at,
+        updatedat::timestamp_ntz as updated_at
 
     from source
 

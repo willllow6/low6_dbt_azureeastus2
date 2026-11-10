@@ -36,10 +36,10 @@ renamed as (
         enddate as campaign_end_date,
 
         ---------- timestamps
-        convert_timezone('UTC', publishedat)::timestamp_ntz as published_at,
-        convert_timezone('UTC', archivedat)::timestamp_ntz as archived_at,
-        convert_timezone('UTC', createdat)::timestamp_ntz as created_at,
-        convert_timezone('UTC', updatedat)::timestamp_ntz as updated_at
+        publishedat::timestamp_ntz as published_at,
+        archivedat::timestamp_ntz as archived_at,
+        createdat::timestamp_ntz as created_at,
+        updatedat::timestamp_ntz as updated_at
 
     from source
 

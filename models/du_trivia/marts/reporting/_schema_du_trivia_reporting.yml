@@ -41,3 +41,17 @@ models:
             combination_of_columns:
               - contest_id
               - tenant_id
+
+  - name: rpt_du_trivia__selections_by_option
+    description: >
+      One row per option per question per contest, including options nobody
+      picked (counts 0), plus a null option_id row where users made a selection
+      without choosing an option (e.g. timed out). Sum over options for question
+      totals. selection_share is the option's share of the question's selections.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - contest_id
+              - question_id
+              - option_id

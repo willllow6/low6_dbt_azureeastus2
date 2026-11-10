@@ -1,7 +1,8 @@
 {#
     Standard rpt_{domain}__growth_metrics_daily.
     Grain: date_day x client_id x tenant_id x game_type, over a gap-free date
-    spine from start_date to today (or var reporting_as_of_date when set).
+    spine from start_date to today in local_timezone (or var reporting_as_of_date
+    when set).
 
     users       dim_{domain}__users (registered_at, client_id, tenant_id, tenant_name,
                 game_type). When registrations_by_tenant, users also supply the
@@ -30,7 +31,11 @@
 ) %}
 
 {%- set as_of_date = var('reporting_as_of_date', none) -%}
-{%- set end_date = "cast('" ~ as_of_date ~ "' as date)" if as_of_date else "current_date()" -%}
+{#- Today in the domain's local timezone, not the session's: entry/activity dates
+    are local, so a session-timezone current_date() drops local "today" whenever
+    the local clock is ahead (e.g. Asia/Dubai evenings). -#}
+{%- set end_date = "cast('" ~ as_of_date ~ "' as date)" if as_of_date
+    else "cast(convert_timezone('" ~ local_timezone ~ "', current_timestamp()) as date)" -%}
 
 with
 
