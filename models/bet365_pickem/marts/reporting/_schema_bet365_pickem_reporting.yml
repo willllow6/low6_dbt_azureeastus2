@@ -1,0 +1,77 @@
+version: 2
+
+models:
+
+  - name: rpt_bet365_pickem__growth_metrics_daily
+    description: >
+      One row per day per client, tenant (country-state) and game_type, from
+      bet365_pickem_start_date to today, on ET dates. Standard growth metrics
+      (rpt_growth_metrics_daily macro). Registrations are by the player's
+      tenant; entries and activity by the tenant the entry was made from.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - date_day
+              - client_id
+              - tenant_id
+              - game_type
+
+  - name: rpt_bet365_pickem__cohort_retention_weekly
+    description: >
+      One row per cohort week per activity week per client, tenant (country-state)
+      and game_type. Cohort is the ET week of the user's first entry in that
+      tenant (rpt_cohort_retention_weekly macro).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - cohort_week
+              - activity_week
+              - client_id
+              - tenant_id
+              - game_type
+
+  - name: rpt_bet365_pickem__contest_performance_summary
+    description: >
+      One row per contest per tenant (country-state) it was entered from, plus
+      one row with null tenant_id for a contest with no entries
+      (rpt_contest_performance_summary macro, tenants_from_entries). Payouts are
+      not modelled yet, so paid_out_entries is 0.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - contest_id
+              - tenant_id
+
+  - name: rpt_bet365_pickem__contest_abandonment_summary
+    description: >
+      One row per contest per tenant (country-state). Users who launched while
+      the contest was open, split into launched_not_started, saved_not_submitted,
+      refused and submitted. abandonment_rate = 1 - submitted / eligible_users
+      (launched_not_started is a lower bound, see fct_bet365_pickem__contest_funnel);
+      saved_abandonment_rate = saved_not_submitted / started is exact. Rates are
+      final only when is_final (the contest has locked).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - contest_id
+              - tenant_id
+
+  - name: rpt_bet365_pickem__selections_by_option
+    description: >
+      One row per option per question per contest per tenant (country-state)
+      that entered the contest, including options nobody picked there (0), and
+      options picked before being removed. selection_share is the option's share
+      of the question's picks within the tenant: sum selections, never average
+      shares, to combine tenants.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - contest_id
+              - question_id
+              - option_id
+              - tenant_id

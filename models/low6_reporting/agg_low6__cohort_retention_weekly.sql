@@ -791,6 +791,64 @@ game_cohort_olybet_casino as (
 ),
 
 --------------------------------------------------------------------------------
+-- bet365_pickem
+-- Built inline rather than from rpt_bet365_pickem__cohort_retention_weekly,
+-- which is split by tenant: pooling it would double-count users who enter
+-- from more than one jurisdiction.
+--------------------------------------------------------------------------------
+
+bet365_pickem_entries as (
+    select user_id, entry_date_et as entry_date
+    from {{ ref('fct_bet365_pickem__entries') }}
+),
+
+bet365_pickem_cohort_weeks as (
+    select user_id, date_trunc('week', min(entry_date))::date as cohort_week
+    from bet365_pickem_entries group by 1
+),
+
+bet365_pickem_cohort_sizes as (
+    select cohort_week, count(distinct user_id) as cohort_size
+    from bet365_pickem_cohort_weeks group by 1
+),
+
+bet365_pickem_user_cohort_activity as (
+    select
+        cw.cohort_week,
+        date_trunc('week', e.entry_date)::date as activity_week,
+        e.user_id
+    from bet365_pickem_entries e
+    inner join bet365_pickem_cohort_weeks cw on e.user_id = cw.user_id
+),
+
+bet365_pickem_retention as (
+    select
+        uca.cohort_week,
+        uca.activity_week,
+        datediff('week', uca.cohort_week, uca.activity_week) as weeks_since_cohort,
+        cs.cohort_size,
+        count(distinct uca.user_id) as retained_users,
+        round(count(distinct uca.user_id) / cs.cohort_size::float, 4) as retention_rate
+    from bet365_pickem_user_cohort_activity uca
+    inner join bet365_pickem_cohort_sizes cs on uca.cohort_week = cs.cohort_week
+    group by 1, 2, 3, 4
+),
+
+game_cohort_bet365_pickem as (
+    select
+        cohort_week, activity_week,
+        'bet365_pickem' as game_id,
+        'Bet365 Pickem' as game_name,
+        'pickem' as game_type,
+        'bet365' as client_id,
+        'bet365_pickem' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        weeks_since_cohort, cohort_size, retained_users, retention_rate
+    from bet365_pickem_retention
+),
+
+--------------------------------------------------------------------------------
 -- du_trivia
 --------------------------------------------------------------------------------
 
@@ -861,5 +919,7 @@ union all
 select * from game_cohort_newscorp_trivia
 union all
 select * from game_cohort_du_trivia
+union all
+select * from game_cohort_bet365_pickem
 union all
 select * from game_cohort_oilers_picks

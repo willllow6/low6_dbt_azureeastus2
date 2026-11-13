@@ -1,0 +1,132 @@
+version: 2
+
+unit_tests:
+
+  - name: test_bet365_pickem_entries_count_only_submitted_unrefused
+    description: >
+      fct_bet365_pickem__entries keeps only valid entries (submitted, not
+      refused), and user_entry_number counts valid entries only.
+    model: fct_bet365_pickem__entries
+    given:
+      - input: ref('stg_bet365_pickem__entries')
+        rows:
+          - {entry_id: d1, user_id: '1', contest_id: c1, tenant_id: US-NJ, is_valid: false, entered_at: null}
+          - {entry_id: r1, user_id: '1', contest_id: c2, tenant_id: US-NJ, is_valid: false, entered_at: '2026-11-01 10:00:00'}
+          - {entry_id: e1, user_id: '1', contest_id: c3, tenant_id: US-NJ, is_valid: true, entered_at: '2026-11-02 10:00:00'}
+          - {entry_id: e2, user_id: '1', contest_id: c4, tenant_id: GB, is_valid: true, entered_at: '2026-11-03 02:00:00'}
+      - input: ref('int_bet365_pickem__selections_aggregated_to_entries')
+        rows:
+          - {entry_id: e1, selections: 3}
+      - input: ref('stg_bet365_pickem__standings')
+        rows: []
+    expect:
+      rows:
+        - {entry_id: e1, tenant_id: US-NJ, selections: 3, user_entry_number: 1, entry_date_et: '2026-11-02'}
+        - {entry_id: e2, tenant_id: GB, selections: 0, user_entry_number: 2, entry_date_et: '2026-11-02'}
+
+  - name: test_bet365_pickem_contest_summary_splits_by_entry_tenant
+    description: >
+      rpt_contest_performance_summary macro with tenants_from_entries: a contest
+      gets one row per tenant it was entered from, and a contest with no entries
+      keeps one zero row with a null tenant.
+    model: rpt_bet365_pickem__contest_performance_summary
+    given:
+      - input: ref('dim_bet365_pickem__contests')
+        rows:
+          - {contest_id: c1, client_id: bet365, tenant_id: null, tenant_name: null, game_type: pickem}
+          - {contest_id: c2, client_id: bet365, tenant_id: null, tenant_name: null, game_type: pickem}
+      - input: ref('fct_bet365_pickem__entries')
+        rows:
+          - {entry_id: e1, user_id: '1', contest_id: c1, tenant_id: US-NJ, tenant_name: US-NJ, user_entry_number: 1}
+          - {entry_id: e2, user_id: '2', contest_id: c1, tenant_id: GB, tenant_name: GB, user_entry_number: 1}
+          - {entry_id: e3, user_id: '3', contest_id: c1, tenant_id: US-NJ, tenant_name: US-NJ, user_entry_number: 2}
+    expect:
+      rows:
+        - {contest_id: c1, tenant_id: US-NJ, tenant_name: US-NJ, total_entries: 2, unique_entrants: 2, first_time_entrants: 1, paid_out_entries: 0}
+        - {contest_id: c1, tenant_id: GB, tenant_name: GB, total_entries: 1, unique_entrants: 1, first_time_entrants: 1, paid_out_entries: 0}
+        - {contest_id: c2, tenant_id: null, tenant_name: null, total_entries: 0, unique_entrants: 0, first_time_entrants: 0, paid_out_entries: 0}
+
+  - name: test_bet365_pickem_selections_by_option_fills_unpicked_options_per_tenant
+    description: >
+      Every active option gets a row for each tenant that entered the contest,
+      with 0 where nobody there picked it, and shares sum to 1 per question per
+      tenant.
+    model: rpt_bet365_pickem__selections_by_option
+    given:
+      - input: ref('dim_bet365_pickem__contests')
+        rows:
+          - {contest_id: c1, client_id: bet365, game_type: pickem}
+      - input: ref('dim_bet365_pickem__questions')
+        rows:
+          - {question_id: q1, contest_id: c1, is_active: true}
+      - input: ref('dim_bet365_pickem__options')
+        rows:
+          - {option_id: o1, question_id: q1, is_active: true}
+          - {option_id: o2, question_id: q1, is_active: true}
+          - {option_id: o3, question_id: q1, is_active: false}
+      - input: ref('fct_bet365_pickem__entries')
+        rows:
+          - {entry_id: e1, contest_id: c1, tenant_id: US-NJ, tenant_name: US-NJ, country_code: US, state_code: NJ}
+          - {entry_id: e2, contest_id: c1, tenant_id: GB, tenant_name: GB, country_code: GB, state_code: null}
+          - {entry_id: e3, contest_id: c1, tenant_id: US-NJ, tenant_name: US-NJ, country_code: US, state_code: NJ}
+      - input: ref('fct_bet365_pickem__selections')
+        rows:
+          - {selection_id: s1, entry_id: e1, contest_id: c1, question_id: q1, option_id: o1, tenant_id: US-NJ, price_decimal: 2.5}
+          - {selection_id: s2, entry_id: e2, contest_id: c1, question_id: q1, option_id: o2, tenant_id: GB, price_decimal: 1.8}
+          - {selection_id: s3, entry_id: e3, contest_id: c1, question_id: q1, option_id: o1, tenant_id: US-NJ, price_decimal: 2.5}
+    expect:
+      rows:
+        - {option_id: o1, tenant_id: US-NJ, state_code: NJ, selections: 2, selection_share: 1.0}
+        - {option_id: o2, tenant_id: US-NJ, state_code: NJ, selections: 0, selection_share: 0.0}
+        - {option_id: o1, tenant_id: GB, state_code: null, selections: 0, selection_share: 0.0}
+        - {option_id: o2, tenant_id: GB, state_code: null, selections: 1, selection_share: 1.0}
+
+  - name: test_bet365_pickem_contest_funnel_classifies_eligible_users
+    description: >
+      A launch inside the window without an entry is launched_not_started, a
+      saved entry is saved_not_submitted, a submitted entry is submitted. A
+      launch outside the window, and anything on a cancelled contest, is not
+      eligible.
+    model: fct_bet365_pickem__contest_funnel
+    given:
+      - input: ref('stg_bet365_pickem__contests')
+        rows:
+          - {contest_id: c1, opened_at: '2026-11-12 13:00:00', cancelled_at: null}
+          - {contest_id: c2, opened_at: '2026-11-12 13:00:00', cancelled_at: '2026-11-13 00:00:00'}
+      - input: ref('stg_bet365_pickem__contest_fixtures')
+        rows:
+          - {contest_id: c1, lock_at: '2026-11-15 02:00:00'}
+          - {contest_id: c1, lock_at: '2026-11-15 04:00:00'}
+          - {contest_id: c2, lock_at: '2026-11-15 02:00:00'}
+      - input: ref('stg_bet365_pickem__users')
+        rows:
+          - {user_id: u1, client_id: bet365, tenant_id: US-NJ, game_type: pickem}
+          - {user_id: u2, client_id: bet365, tenant_id: US-NJ, game_type: pickem}
+          - {user_id: u3, client_id: bet365, tenant_id: US-NJ, game_type: pickem}
+          - {user_id: u4, client_id: bet365, tenant_id: GB, game_type: pickem}
+          - {user_id: u5, client_id: bet365, tenant_id: GB, game_type: pickem}
+      - input: ref('int_bet365_pickem__launches_unioned')
+        rows:
+          - {user_id: u1, launched_at: '2026-11-13 10:00:00', launch_source: first_launch}
+          - {user_id: u2, launched_at: '2026-11-10 10:00:00', launch_source: first_launch}
+          - {user_id: u3, launched_at: '2026-11-14 10:00:00', launch_source: last_launch}
+          - {user_id: u4, launched_at: '2026-11-10 10:00:00', launch_source: first_launch}
+          - {user_id: u4, launched_at: '2026-11-15 05:00:00', launch_source: last_launch}
+          - {user_id: u5, launched_at: '2026-11-10 10:00:00', launch_source: first_launch}
+          - {user_id: u5, launched_at: '2026-11-14 09:00:00', launch_source: captured_launch}
+          - {user_id: u5, launched_at: '2026-11-16 09:00:00', launch_source: last_launch}
+      - input: ref('stg_bet365_pickem__entries')
+        rows:
+          - {entry_id: e2, user_id: u2, contest_id: c1, tenant_id: US-PA, is_valid: false, refused_at: null}
+          - {entry_id: e3, user_id: u3, contest_id: c1, tenant_id: US-NJ, is_valid: true, refused_at: null}
+          - {entry_id: e9, user_id: u2, contest_id: c2, tenant_id: US-PA, is_valid: false, refused_at: null}
+      - input: ref('int_bet365_pickem__selections_aggregated_to_entries')
+        rows:
+          - {entry_id: e2, selections: 12}
+          - {entry_id: e3, selections: 16}
+    expect:
+      rows:
+        - {user_id: u1, contest_id: c1, tenant_id: US-NJ, eligibility_source: first_launch, funnel_stage: launched_not_started, picks_saved: 0, has_started: false, has_submitted: false}
+        - {user_id: u2, contest_id: c1, tenant_id: US-PA, eligibility_source: entry, funnel_stage: saved_not_submitted, picks_saved: 12, has_started: true, has_submitted: false}
+        - {user_id: u3, contest_id: c1, tenant_id: US-NJ, eligibility_source: entry, funnel_stage: submitted, picks_saved: 16, has_started: true, has_submitted: true}
+        - {user_id: u5, contest_id: c1, tenant_id: GB, eligibility_source: captured_launch, funnel_stage: launched_not_started, picks_saved: 0, has_started: false, has_submitted: false}

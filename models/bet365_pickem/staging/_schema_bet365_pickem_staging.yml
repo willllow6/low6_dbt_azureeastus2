@@ -1,0 +1,93 @@
+version: 2
+
+models:
+
+  - name: stg_bet365_pickem__users
+    description: >
+      One row per player (source players table). Players launch from bet365, so
+      registration is SSO on first launch. Tenant is the player's country-state.
+    columns:
+      - name: user_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__contests
+    description: One row per contest. contest_status is the latest lifecycle timestamp set.
+    columns:
+      - name: contest_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__contest_fixtures
+    description: One row per fixture in a contest.
+    columns:
+      - name: contest_fixture_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__questions
+    description: One row per question on a contest fixture, including removed questions (is_active = false).
+    columns:
+      - name: question_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__options
+    description: One row per answer option on a question, including removed options (is_active = false).
+    columns:
+      - name: option_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__competitors
+    description: >
+      One row per competitor in the catalogue (e.g. a fighter), including
+      competitors merged into another (is_active = false).
+    columns:
+      - name: competitor_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__launches
+    description: >
+      One row per captured player launch (from 2026-11-13). A launch is recorded
+      when last_launched_at has changed since the previous ADF run, so several
+      launches between two runs are captured as the latest one.
+    columns:
+      - name: launch_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__entries
+    description: >
+      One row per entry, including drafts and refused entries. is_valid
+      (submitted and not refused) decides what counts as an entry downstream.
+      Tenant is the country-state the entry was made from.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__selections
+    description: One row per pick (selection grain).
+    columns:
+      - name: selection_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_bet365_pickem__standings
+    description: One row per entry, holding its current score and rank.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null

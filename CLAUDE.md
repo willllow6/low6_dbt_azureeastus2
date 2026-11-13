@@ -31,6 +31,7 @@ Active domains (from `dbt_project.yml`, no `+enabled: false`):
 | saracen | Saracen | pickem, bracket |
 | bet99_bracket | Bet99 | bracket |
 | bet365_uf | Bet365 | fantasy |
+| bet365_pickem | Bet365 | pickem — built 2026-11 on an empty source. Multi-tenant: tenant = country-state jurisdiction (`US-NJ`, `GB`) from the entry (users: from the player); contests aren't tied to a tenant, so the contest summary uses `tenants_from_entries`. Entries count when submitted and not refused. Payouts not modelled yet. Single-tenant in `low6_reporting` for now |
 | cfl_fantasy | CFL | fantasy |
 | opap_spintowin | OPAP | spin_to_win |
 | gana_gamezone | Gana | pickem (predictor), streak (survivor), bracket (bracket) |

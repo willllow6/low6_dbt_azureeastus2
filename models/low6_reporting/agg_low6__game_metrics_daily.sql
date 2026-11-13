@@ -11,6 +11,8 @@
 -- entries fact). elf_collectyourelf is out of scope (no entries/contest concept).
 -- bet365_uf is treated as single-tenant here even though it has real tenant_id
 -- data in source — dim_bet365_uf__tenants doesn't exist yet, that's a follow-up.
+-- bet365_pickem is also pooled to single-tenant here, though its rpt_ models
+-- split by country-state tenant.
 -- elf_blast is likewise genuinely multi-tenant in source (country-code tenants)
 -- but treated as single-tenant here per user decision, same follow-up pattern.
 -- elf_blast/elf_ski (candy_crush/endless_runner) and newscorp_matchup/
@@ -1699,6 +1701,103 @@ game_du_trivia as (
 ),
 
 --------------------------------------------------------------------------------
+-- bet365_pickem (pickem, single-tenant here)
+-- Reads the standard core. The domain is multi-tenant (country-state
+-- jurisdictions) but is pooled to one row per day here for now, like bet365_uf.
+--------------------------------------------------------------------------------
+
+bet365_pickem_ents_raw as (
+    select user_id, entry_date_et as date_day
+    from {{ ref('fct_bet365_pickem__entries') }}
+),
+
+bet365_pickem_regs_raw as (
+    select registration_date_et as date_day
+    from {{ ref('dim_bet365_pickem__users') }}
+),
+
+-- starts at the first entry or registration, so registrations show before any entries
+bet365_pickem_bounds as (
+    select min(date_day) as min_date
+    from (
+        select date_day from bet365_pickem_ents_raw
+        union all
+        select date_day from bet365_pickem_regs_raw
+    )
+),
+
+bet365_pickem_spine as (
+    select dateadd(day, seq4(), (select min_date from bet365_pickem_bounds)) as date_day
+    from table(generator(rowcount => 3000))
+    where date_day <= current_date()
+),
+
+bet365_pickem_daily as (
+    select date_day, count(*) as total_entries, count(distinct user_id) as unique_entrants
+    from bet365_pickem_ents_raw group by 1
+),
+
+bet365_pickem_wau as (
+    select s.date_day, count(distinct e.user_id) as wau
+    from bet365_pickem_spine s
+    left join bet365_pickem_ents_raw e
+        on e.date_day between dateadd(day, -6, s.date_day) and s.date_day
+    group by 1
+),
+
+bet365_pickem_mau as (
+    select s.date_day, count(distinct e.user_id) as mau
+    from bet365_pickem_spine s
+    left join bet365_pickem_ents_raw e
+        on e.date_day between dateadd(day, -27, s.date_day) and s.date_day
+    group by 1
+),
+
+bet365_pickem_regs as (
+    select date_day, count(*) as registrations
+    from bet365_pickem_regs_raw group by 1
+),
+
+bet365_pickem_first_entries_daily as (
+    select first_date as date_day, count(*) as first_entries
+    from (
+        select user_id, min(date_day) as first_date
+        from bet365_pickem_ents_raw group by 1
+    )
+    group by 1
+),
+
+game_bet365_pickem as (
+    select
+        s.date_day,
+        'bet365_pickem' as game_id,
+        'Bet365 Pickem' as game_name,
+        'pickem' as game_type,
+        'bet365' as client_id,
+        'bet365_pickem' as source_schema,
+        '{{ target.database }}' as source_database,
+        cast(null as varchar) as tenant_name,
+        coalesce(r.registrations, 0) as registrations,
+        coalesce(d.total_entries, 0) as entries,
+        coalesce(d.unique_entrants, 0) as dau,
+        coalesce(w.wau, 0) as wau,
+        coalesce(m.mau, 0) as mau,
+        coalesce(fe.first_entries, 0) as first_entries,
+        cast(null as integer) as purchases,
+        cast(null as number) as gross_revenue,
+        cast(null as integer) as dpu,
+        cast(null as integer) as first_purchases,
+        cast(null as integer) as wpu,
+        cast(null as integer) as mpu
+    from bet365_pickem_spine s
+    left join bet365_pickem_daily d on s.date_day = d.date_day
+    left join bet365_pickem_wau w on s.date_day = w.date_day
+    left join bet365_pickem_mau m on s.date_day = m.date_day
+    left join bet365_pickem_regs r on s.date_day = r.date_day
+    left join bet365_pickem_first_entries_daily fe on s.date_day = fe.date_day
+),
+
+--------------------------------------------------------------------------------
 -- oilers_picks (pickem, single-tenant)
 -- Reads the contracted core. Includes the 2024-25 season, whose contests are
 -- DRAFT in source; the Oilers share and Tableau views exclude those.
@@ -1920,6 +2019,8 @@ union all
 select * from game_newscorp_trivia
 union all
 select * from game_du_trivia
+union all
+select * from game_bet365_pickem
 union all
 select * from game_oilers_picks
 union all

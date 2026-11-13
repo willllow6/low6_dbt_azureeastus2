@@ -1,0 +1,36 @@
+version: 2
+
+models:
+
+  - name: int_bet365_pickem__selections_aggregated_to_entries
+    description: >
+      One row per entry. Grain change from picks to entries: pick count, average
+      decimal price and potential returns per entry.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_bet365_pickem__launches_unioned
+    description: >
+      One row per known user launch: captured launches (from 2026-11-13) unioned
+      with every player's first and latest launch from the players table,
+      deduped on (user_id, launched_at).
+    columns:
+      - name: launch_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_bet365_pickem__options_joined_to_competitors
+    description: >
+      One row per option, with its competitor name (merged competitors resolved
+      to the one they were merged into) and option_text: the option label
+      combined with the competitor, e.g. 'Kayla Harrison by Submission'. Used by
+      dim_bet365_pickem__options and, for fixture names, dim_bet365_pickem__questions.
+    columns:
+      - name: option_id
+        data_tests:
+          - unique
+          - not_null

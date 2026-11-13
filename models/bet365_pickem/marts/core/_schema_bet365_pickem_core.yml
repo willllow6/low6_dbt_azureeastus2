@@ -1,0 +1,111 @@
+version: 2
+
+models:
+
+  - name: dim_bet365_pickem__users
+    description: >
+      One row per player. Registration is SSO on first launch from bet365
+      (external_user_id is the bet365 gaming id). Tenant is the player's
+      country-state, e.g. US-NJ, or the country alone when there is no state.
+    columns:
+      - name: user_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_bet365_pickem__tenants
+    description: >
+      One row per tenant (country-state jurisdiction) seen on players or
+      entries. tenant_id is country_code plus '-' plus state_code where present.
+    columns:
+      - name: tenant_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_bet365_pickem__contests
+    description: >
+      One row per contest. Contests are not tied to a jurisdiction, so tenant_id
+      and tenant_name are null: tenants come from entries. contest_status is the
+      latest lifecycle step reached. starts_at is when the contest opens,
+      locks_at the first fixture lock, and ends_at the close (or cancellation).
+    columns:
+      - name: contest_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_bet365_pickem__questions
+    description: >
+      One row per question, including removed questions (is_active = false),
+      with its contest and fixture. question_text is a display label for the
+      definition key; fixture_name is built from the fixture's competitors
+      ('A vs B') because the source has no fixture name.
+    columns:
+      - name: question_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_bet365_pickem__options
+    description: >
+      One row per answer option on a question, including removed options
+      (is_active = false). option_label is the key alone ('KO/TKO/DQ', 'Round 3',
+      '100+'); option_text combines it with the competitor where there is one
+      ('Kayla Harrison', 'Kayla Harrison by KO/TKO/DQ').
+    columns:
+      - name: option_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_bet365_pickem__entries
+    description: >
+      One row per valid entry: submitted and not refused (drafts and refused
+      entries stay in staging). Tenant is the country-state the entry was made
+      from. entered_at is the submit time and user_entry_number counts valid
+      entries only.
+    columns:
+      - name: entry_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_bet365_pickem__selections
+    description: >
+      One row per pick on a valid entry. User and tenant come from the entry.
+    columns:
+      - name: selection_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_bet365_pickem__user_activity_daily
+    description: >
+      One row per user per active day (ET) per tenant. A user is active on a day
+      when they submit a valid entry; a user who enters from two jurisdictions
+      on one day has a row for each.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - user_id
+              - activity_date_et
+              - tenant_id
+
+  - name: fct_bet365_pickem__contest_funnel
+    description: >
+      One row per user per contest they were eligible to enter: they have an
+      entry row for it (saved or submitted), or a known launch fell inside the
+      contest's window (open until the first fixture lock; cancelled contests
+      excluded). Known launches are captured launches from 2026-11-13 plus each
+      player's first and latest launch (int_bet365_pickem__launches_unioned).
+      funnel_stage is launched_not_started, saved_not_submitted, refused or
+      submitted. launched_not_started is a lower bound for contests before
+      2026-11-13 and misses launches between two ADF runs; saved and submitted
+      counts are exact.
+    columns:
+      - name: contest_funnel_id
+        data_tests:
+          - unique
+          - not_null

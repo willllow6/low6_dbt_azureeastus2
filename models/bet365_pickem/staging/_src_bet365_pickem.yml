@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+
+  - name: bet365_pickem
+    description: >
+      bet365 pickem production database. Payouts are not modelled yet, so the
+      payouts table is not declared. Timestamps are TIMESTAMP_TZ, but the loader
+      writes UTC clock time labelled with the Los Angeles offset (-08:00/-07:00),
+      so staging casts with ::timestamp_ntz (keeps the clock time, drops the
+      offset) instead of convert_timezone('UTC', ...), which would add 7-8h.
+    database: low6_azureeastus2
+    schema: adfbet365pickem
+    tags: ['bet365']
+    tables:
+      - name: catalogue_competitors
+      - name: contests
+      - name: contest_fixtures
+      - name: entries
+      - name: picks
+      - name: players
+      - name: player_launches
+        description: >
+          Not a platform table: the ADF "Append player launches" Script activity
+          inserts each player's changed last_launched_at after every players
+          load (UTC, timestamp_ntz), deduped on (player_id, launched_at). History
+          starts 2026-11-13 and is only as fine as the pipeline schedule.
+      - name: question_options
+      - name: questions
+      - name: standings

@@ -11,13 +11,20 @@
                 1:1 with the contest
     extra_metrics
                 {name: aggregate expression over entries}, appended last
+    tenants_from_entries
+                true when contests are not tied to a tenant (contest tenant_id
+                is null) and the tenants come from the entries instead, e.g.
+                bet365_pickem's country-state jurisdictions. A contest then has
+                one row per tenant it was entered from, and one row with null
+                tenant_id while it has no entries.
 #}
 {% macro rpt_contest_performance_summary(
     contests,
     entries,
     payouts=none,
     extra_attributes=[],
-    extra_metrics={}
+    extra_metrics={},
+    tenants_from_entries=false
 ) %}
 
 with
@@ -52,6 +59,19 @@ paid_out_entries as (
 ),
 {%- endif %}
 
+{% if tenants_from_entries -%}
+contest_tenants as (
+
+    select
+        contest_id,
+        tenant_id,
+        max(tenant_name) as tenant_name
+    from entries
+    group by contest_id, tenant_id
+
+),
+{%- endif %}
+
 entry_metrics as (
 
     select
@@ -80,8 +100,13 @@ entry_metrics as (
 select
     contests.contest_id,
     contests.client_id,
+    {% if tenants_from_entries -%}
+    coalesce(contest_tenants.tenant_id, contests.tenant_id) as tenant_id,
+    coalesce(contest_tenants.tenant_name, contests.tenant_name) as tenant_name,
+    {%- else -%}
     contests.tenant_id,
     contests.tenant_name,
+    {%- endif %}
     contests.game_type,
 
     contests.contest_name,
@@ -101,8 +126,16 @@ select
     {%- endfor %}
 
 from contests
+{% if tenants_from_entries -%}
+left join contest_tenants
+    on contests.contest_id = contest_tenants.contest_id
+left join entry_metrics
+    on contest_tenants.contest_id = entry_metrics.contest_id
+    and contest_tenants.tenant_id = entry_metrics.tenant_id
+{%- else -%}
 left join entry_metrics
     on contests.contest_id = entry_metrics.contest_id
     and contests.tenant_id = entry_metrics.tenant_id
+{%- endif %}
 
 {% endmacro %}
