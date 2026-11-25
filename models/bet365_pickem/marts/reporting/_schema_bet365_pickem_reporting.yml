@@ -36,14 +36,35 @@ models:
     description: >
       One row per contest per tenant (country-state) it was entered from, plus
       one row with null tenant_id for a contest with no entries
-      (rpt_contest_performance_summary macro, tenants_from_entries). Payouts are
-      not modelled yet, so paid_out_entries is 0.
+      (rpt_contest_performance_summary macro, tenants_from_entries).
+      paid_out_entries counts entries with a payout, including pending ones.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
               - contest_id
               - tenant_id
+
+  - name: rpt_bet365_pickem__kpi_summary_weekly
+    description: >
+      One row per week (Monday-Sunday, ET) per client, tenant (country-state)
+      and game_type. Registrations are by registration week and the player's
+      tenant; active users are distinct users with a valid entry in the week;
+      entries, new players, winning entries and payouts are by entry week and
+      the entry's tenant. Payouts include pending ones and are split by
+      currency (CAD, USD) into leaderboard (place) and jackpot amounts;
+      payouts_{currency} is their total. The *_payout_count_{currency} columns
+      count payouts with a non-zero leaderboard / jackpot amount; a payout with
+      both counts in both. Every metric is additive across tenants, but
+      active_users is not additive across weeks.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - week_start_et
+              - client_id
+              - tenant_id
+              - game_type
 
   - name: rpt_bet365_pickem__contest_abandonment_summary
     description: >

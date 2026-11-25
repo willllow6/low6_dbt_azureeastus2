@@ -80,6 +80,19 @@ models:
           - unique
           - not_null
 
+  - name: fct_bet365_pickem__payouts
+    description: >
+      One row per payout (one per winning entry), on valid entries only. User,
+      contest and tenant come from the entry. prize_amount = place_amount +
+      jackpot_amount, in the entry's currency (USD or CAD): never sum across
+      currencies. paid_at is released_at, the only payout timestamp populated;
+      payouts stay payout_status 'pending' until resolved (resolved_at).
+    columns:
+      - name: payout_id
+        data_tests:
+          - unique
+          - not_null
+
   - name: fct_bet365_pickem__user_activity_daily
     description: >
       One row per user per active day (ET) per tenant. A user is active on a day

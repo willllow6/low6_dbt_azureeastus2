@@ -4,8 +4,7 @@ sources:
 
   - name: bet365_pickem
     description: >
-      bet365 pickem production database. Payouts are not modelled yet, so the
-      payouts table is not declared. Timestamps are TIMESTAMP_TZ, but the loader
+      bet365 pickem production database. Timestamps are TIMESTAMP_TZ, but the loader
       writes UTC clock time labelled with the Los Angeles offset (-08:00/-07:00),
       so staging casts with ::timestamp_ntz (keeps the clock time, drops the
       offset) instead of convert_timezone('UTC', ...), which would add 7-8h.
@@ -17,6 +16,7 @@ sources:
       - name: contests
       - name: contest_fixtures
       - name: entries
+      - name: payouts
       - name: picks
       - name: players
       - name: player_launches

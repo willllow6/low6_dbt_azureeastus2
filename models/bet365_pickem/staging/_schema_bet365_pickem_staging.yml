@@ -84,6 +84,17 @@ models:
           - unique
           - not_null
 
+  - name: stg_bet365_pickem__payouts
+    description: >
+      One row per payout on an entry. prize_amount = place_amount +
+      jackpot_amount. payout_status is the source state (pending until
+      resolved).
+    columns:
+      - name: payout_id
+        data_tests:
+          - unique
+          - not_null
+
   - name: stg_bet365_pickem__standings
     description: One row per entry, holding its current score and rank.
     columns:
